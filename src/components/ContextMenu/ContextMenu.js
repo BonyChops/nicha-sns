@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CSSTransition } from 'react-transition-group';
+import { CSSTransition, Transition } from 'react-transition-group';
 import SettingIcon from '../../resources/setting';
 import SignOutIcon from '../../resources/signout'
 
@@ -10,6 +10,7 @@ const ContextMenu = (props) => {
 
     const deleteState = () => {
         setBuf(false);
+        buf = false;
     }
 
     const current = props.state.contextMenu;
@@ -20,7 +21,6 @@ const ContextMenu = (props) => {
             return null;
         }
         console.log(current)
-        console.log("a");
         inSw = true
         buf = current;
     } else {
@@ -30,7 +30,7 @@ const ContextMenu = (props) => {
     }
 
 
-    console.log()
+    console.log(inSw);
     if (current === false) {
         return null;
     }
@@ -52,16 +52,23 @@ const ContextMenu = (props) => {
         )
     }[buf?.name];
 
+    const callBacks = {
+        onEnter: () => console.log("うんち"),
+        onEntered: () => console.log("うんち"),
+        onExit: () => console.log("うんち"),
+        onExited: () => console.log("うんち")
+    };
+
     return (
         <div>
-            {/* <CSSTransition
+            <Transition
                 in={inSw}
                 classNames="fade"
-                onExited={deleteState}> */}
+                timeout={550}
+                {...callBacks}>
                 {(contextDefine !== undefined) ? contextDefine : null}
-            {/* </CSSTransition> */}
+            </Transition>
         </div>
-
     )
 }
 

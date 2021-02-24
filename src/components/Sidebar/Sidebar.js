@@ -9,10 +9,10 @@ class Sidebar extends React.Component {
             <div className="bg-indigo-900 text-purple-lighter flex-none w-64 pb-6 hidden md:block scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 <div className="text-white mb-2 mt-3 px-4 flex justify-between">
                     <div className="flex-auto">
-                        <h1 className="font-semibold text-xl leading-tight mb-1 truncate">Bony_Chops</h1>
+                        <h1 className="font-semibold text-xl leading-tight mb-1 truncate">うんこ</h1>
                         <div className="flex items-center mb-6">
                             <span className="bg-green-400 rounded-full block w-2 h-2 mr-2"></span>
-                            <span className="text-white opacity-50 text-sm">@学籍番号</span>
+                            <span className="text-white opacity-50 text-sm">@ブリブリ学籍番号</span>
                         </div>
                     </div>
                     <div>

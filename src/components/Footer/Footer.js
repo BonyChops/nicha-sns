@@ -15,7 +15,7 @@ class Footer extends React.Component {
 
     render() {
         return (
-            <div className="absolute bottom-0 dark:bg-gray-900 h-16 w-screen shadow-2xl rounded-t-3xl">
+            <div className="absolute bottom-0 bg-gray-900 h-16 w-screen shadow- rounded-t-3xl">
                 <div className="relative left-3 top-3 mr-6 pr-6 origin-center">
                     <div className="flex">
                         <div className="flex items-center flex-no-shrink text-white ">

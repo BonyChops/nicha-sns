@@ -5,6 +5,7 @@ import CheckIcon from './resources/check'
 import Sidebar from './components/Sidebar/Sidebar';
 import Footer from './components/Footer/Footer';
 import ContextMenu from './components/ContextMenu/ContextMenu'
+import TimeLine from './components/TimeLine/TimeLine';
 
 class App extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class App extends React.Component {
       <div className="App dark">
         <div className="font-sans  h-screen">
           <div className={"fixed w-screen h-screen " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
-          <ContextMenu className="z-0" state={this.state}/>
+          <ContextMenu className="z-0" state={this.state} />
           <div className="h-full antialiased flex w-full">
             <div className="bg-gray-700 text-purple-lighter flex-none w-24 p-6 hidden md:block">
               <div className="cursor-pointer mb-4">
@@ -56,19 +57,15 @@ class App extends React.Component {
               </div>
             </div>
             <Sidebar />
-
             <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-hidden">
-              a
+              <TimeLine />
+            </div>
           </div>
-          </div>
-
-
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
         </div>
       </div>
     );
   }
-
 }
 
 export default App;
