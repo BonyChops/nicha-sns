@@ -7,7 +7,7 @@ import Footer from './components/Footer/Footer';
 import ContextMenu from './components/ContextMenu/ContextMenu'
 import TimeLine from './components/TimeLine/TimeLine';
 import Configuration from './components/Configuration/Configuration';
-import languageSwitcher from './functions/languageSwitcher';
+import contextSwitcher from './functions/contextSwitcher';
 
 const language = {
   ja: "日本語",
@@ -44,12 +44,11 @@ class App extends React.Component {
   }
 
   render() {
-    languageSwitcher(this.state, this.accessor);
+    contextSwitcher(this.state, this.accessor);
     return (
       <div className={"App " + (this.state.dark ? "dark" : "")}>
         <div className="font-sans  h-screen">
-
-          <div className="h-full antialiased flex w-full">
+          <div className="h-full antialiased flex w-full z-0s">
             <div className="bg-gray-700 text-purple-lighter flex-none w-24 p-6 hidden md:block">
               <div className="cursor-pointer mb-4">
                 <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
@@ -75,9 +74,10 @@ class App extends React.Component {
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
-          <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state}/>
-          <div className={"fixed w-screen h-screen z-40 " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
-          <ContextMenu state={this.state} accessor={this.accessor}/>
+
+          <div className={"fixed w-screen h-screen left-0 top-0 " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
+          {(this.state.popup?.title === "settings") ? <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
+          <ContextMenu className="z-50 fixed" state={this.state} accessor={this.accessor} />
         </div>
       </div>
     );

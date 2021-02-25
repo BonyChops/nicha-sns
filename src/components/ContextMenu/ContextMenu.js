@@ -40,15 +40,17 @@ const ContextMenu = (props) => {
     if (current === false) {
         return null;
     }
+
+    console.log(buf?.name);
     const contextDefine = {
         nichaSetup: (
             <div className="block absolute right-5 bottom-16 transition ease-out duration-100">
                 <div className="w-60 border border-gray-300 rounded-lg bg-white dark:bg-gray-800 flex flex-col text-sm py-4 px-2 dark:text-gray-100 text-gray-900 shadow-lg ">
                     {/* <hr className="my-3 border-gray-300" /> */}
-                    <div className="flex hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-2 rounded">
+                    <button className="flex hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-2 rounded" onClick={(e) => {returnResult(e, "settings")}}>
                         <div className="w-8 font-bold"><div className="w-5" ><SettingIcon /></div></div>
                         <div className="text-gray-500">Settings</div>
-                    </div>
+                    </button>
                     <div className="flex hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-2 rounded">
                         <div className="w-8 italic"><div className="w-5" ><SignOutIcon /></div></div>
                         <div className="text-gray-500">Sign Out</div>
@@ -57,7 +59,7 @@ const ContextMenu = (props) => {
             </div>
         ),
         languageSelect: (
-            <div className="block absolute transition ease-out duration-100" style={{left: buf?.pos.x + "px", top: buf?.pos.y }}>
+            <div className="block absolute transition ease-out duration-100" style={{left: buf?.pos?.x + "px", top: buf?.pos?.y }}>
                 <div className="w-60 border border-gray-300 rounded-lg bg-white dark:bg-gray-800 flex flex-col text-sm py-4 px-2 dark:text-gray-100 text-gray-900 shadow-lg ">
                     {/* <hr className="my-3 border-gray-300" /> */}
                     <button className="flex hover:bg-gray-100 dark:hover:bg-gray-600 py-1 px-2 rounded" onClick={(e) => {returnResult(e, "lang_ja")}}>

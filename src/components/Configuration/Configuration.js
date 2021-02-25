@@ -34,7 +34,7 @@ const Configuration = (props) => {
                     <h1 className="text-5xl">{langChoose({ja: "設定", en: "Settings"})}</h1>
                     <div className="my-16">
                         <div className="my-2">
-                            Language:
+                            {langChoose({ja: "言語", en: "Language"})}:
                             <button className="border border-gray-500 rounded-xl w-auto px-5 mx-5 py-2 focus:outline-none" onClick={langSelect}>
                                 {props.state.languageDefine[props.state.language]}
                             </button>
