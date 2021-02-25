@@ -9,7 +9,6 @@ class Footer extends React.Component {
     openAccountPopup = () => {
         this.props.toggleAccessor("contextMenu", {
             name: "nichaSetup"
-
         })
     }
 

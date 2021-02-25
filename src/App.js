@@ -6,12 +6,24 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Footer from './components/Footer/Footer';
 import ContextMenu from './components/ContextMenu/ContextMenu'
 import TimeLine from './components/TimeLine/TimeLine';
+import Configuration from './components/Configuration/Configuration';
+import languageSwitcher from './functions/languageSwitcher';
+
+const language = {
+  ja: "日本語",
+  en: "English"
+}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      contextMenu: false
+      contextMenu: false,
+      contextReturn: false,
+      popup: false,
+      dark: true,
+      language: "ja",
+      languageDefine: language,
     }
   }
 
@@ -30,12 +42,13 @@ class App extends React.Component {
       contextMenu: false
     })
   }
+
   render() {
+    languageSwitcher(this.state, this.accessor);
     return (
-      <div className="App dark">
+      <div className={"App " + (this.state.dark ? "dark" : "")}>
         <div className="font-sans  h-screen">
-          <div className={"fixed w-screen h-screen " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
-          <ContextMenu className="z-0" state={this.state} />
+
           <div className="h-full antialiased flex w-full">
             <div className="bg-gray-700 text-purple-lighter flex-none w-24 p-6 hidden md:block">
               <div className="cursor-pointer mb-4">
@@ -62,6 +75,9 @@ class App extends React.Component {
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
+          <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state}/>
+          <div className={"fixed w-screen h-screen z-40 " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
+          <ContextMenu state={this.state} accessor={this.accessor}/>
         </div>
       </div>
     );

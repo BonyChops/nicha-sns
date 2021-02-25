@@ -16,7 +16,8 @@ class TimeLine extends React.Component {
                         icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
                     },
                     timestamp: "14 seconds ago",
-                    contents: "俺のへ臭すぎ",
+                    contents: "トイレ行ってくるンゴ",
+                    comments: "3"
                 }} />
                 <Post data={{
                     userInfo: {
