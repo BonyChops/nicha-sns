@@ -1,4 +1,10 @@
 import { useState } from 'react';
+import LikeIcon from '../../resources/like';
+import DislikeIcon from '../../resources/dislike';
+import CommentIcon from '../../resources/comment';
+import CalenderIcon from '../../resources/calender';
+//import { useLocation } from 'react-router';
+
 
 const Post = (props) => {
 
@@ -86,7 +92,7 @@ const Post = (props) => {
                             </header>
                             <article class="py-4 text-grey-darkest">
                                 Lorem ipsum no lo se dolores ametandum come
-    </article>
+                            </article>
                             <footer class="border-t border-grey-lighter text-sm flex">
                                 <a href="#" class="block no-underline text-black flex px-4 py-2 items-center hover:bg-grey-lighter">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -132,8 +138,8 @@ const Post = (props) => {
                             </header>
                             <article class="py-4 text-grey-darkest leading-normal">
                                 <a class="no-underline text-blue" href="#">@max_the_great</a> Lorem ipsum no lo se dolores ametandum no come,
-      astare pero canime perferme
-    </article>
+                                astare pero canime perferme
+                                </article>
                             <footer class="border-t border-grey-lighter text-sm flex">
                                 <a href="#" class="block no-underline text-black flex px-4 py-2 items-center hover:bg-grey-lighter">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -166,14 +172,12 @@ const Post = (props) => {
                                     <polyline points="21 15 16 10 5 21"></polyline>
                                 </svg>
                             </button>
-                            <button class="py-2 px-4 bg-white border border-blue rounded rounded-full
-      hover:bg-blue hover:text-white">
+                            <button class="py-2 px-4 bg-white border border-blue rounded rounded-full hover:bg-blue hover:text-white">
                                 Reply
                             </button>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     )

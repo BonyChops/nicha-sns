@@ -1,3 +1,5 @@
+import firebase from '../Firebase';
+
 export default (state, accessor) => {
     let result = {};
     if (state.contextReturn !== false) {
@@ -6,17 +8,22 @@ export default (state, accessor) => {
                 language: state.contextReturn.split("_")[1],
             }
         }
-        if (state.contextReturn.match(/^settings$/) === null) {
-            console.log("うんち！w")
+        if (state.contextReturn.match(/^settings$/) !== null) {
+            console.log("うんち！w");
             result = {
                 popup: {
                     title: "settings"
                 }
             }
         }
+        if (state.contextReturn.match(/^signout$/) !== null) {
+            console.log(firebase.auth().currentUser);
+            firebase.auth().signOut();
+        }
 
 
         result.contextReturn = false;
+        console.log("いくわよ")
         accessor(result);
     }
 }

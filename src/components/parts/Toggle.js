@@ -20,7 +20,7 @@ class Toggle extends React.Component {
                 <div className="">
                     <div className={"flex justify-center items-center transition duration-200 ease-linear " + (toggle ? "bg-green-500" : "bg-gray-500") + " rounded-full"}>
                         <div className={"relative rounded-full w-12 h-6 transition duration-200 ease-linear" + (toggle ? 'bg-green-400' : 'bg-gray-400')}>
-                            <label for={this.props.name}
+                            <label htmlFor={this.props.name}
                                 className={"absolute left-0 bg-white border-2 mb-2 w-6 h-6 rounded-full transition transform duration-100 ease-linear cursor-pointer "
                                     + (toggle ? 'translate-x-full' : 'translate-x-0')}></label>
                             <input type="checkbox" id={this.props.name} name={this.props.name}
