@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from './Firebase';
 import logo from './logo.svg';
 import './App.css';
 import CheckIcon from './resources/check'
@@ -7,7 +8,12 @@ import Footer from './components/Footer/Footer';
 import ContextMenu from './components/ContextMenu/ContextMenu'
 import TimeLine from './components/TimeLine/TimeLine';
 import Configuration from './components/Configuration/Configuration';
+import Login from './components/Login/Login';
 import contextSwitcher from './functions/contextSwitcher';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import NotFound from './components/NotFound/NotFound';
+import Post from './components/Post/Post';
+import nichaConfig from './nicha.config';
 
 const language = {
   ja: "日本語",
@@ -24,6 +30,8 @@ class App extends React.Component {
       dark: true,
       language: "ja",
       languageDefine: language,
+      loginRequired: false,
+      hijackAttempted: false
     }
   }
 
@@ -43,8 +51,37 @@ class App extends React.Component {
     })
   }
 
-  render() {
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        //ログイン済み
+        console.log("ﾆﾁｬｱ...");
+        console.log(user.providerData);
+        if(user.providerData[0].email.match(new RegExp(`${nichaConfig.schoolAddresses.student}$`)) === null){
+          //学校生徒じゃない不届き者
+          this.setState({ hijackAttempted: true });
+          firebase.auth().signOut();
+        }
+
+      } else {
+        //未ログイン
+        console.log("は？");
+        this.setState({
+          loginRequired: true,
+          popup: {
+            title: "login"
+          }
+        })
+
+      }
+    })
+  }
+
+  componentDidUpdate() {
     contextSwitcher(this.state, this.accessor);
+  }
+
+  render() {
     return (
       <div className={"App " + (this.state.dark ? "dark" : "")}>
         <div className="font-sans  h-screen">
@@ -70,13 +107,19 @@ class App extends React.Component {
             </div>
             <Sidebar />
             <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-hidden">
-              <TimeLine />
+              <Router>
+                <Switch>
+                  <Route exact path="/" component={TimeLine} />
+                  {/* <Route path="/post/:id" children={() => <Post />} /> */}
+                  <Route render={() => <NotFound state={this.state} />} />
+                </Switch>
+              </Router>
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
-
-          <div className={"fixed w-screen h-screen left-0 top-0 " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
           {(this.state.popup?.title === "settings") ? <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
+          {(this.state.popup?.title === "login") ? <Login toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
+          <div className={"fixed w-screen h-screen left-0 top-0 " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
           <ContextMenu className="z-50 fixed" state={this.state} accessor={this.accessor} />
         </div>
       </div>
