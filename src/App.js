@@ -54,16 +54,16 @@ class App extends React.Component {
 
   componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
-      this.setState({loggedIn: user ? true : false});
+      this.setState({ loggedIn: user ? true : false });
       if (user) {
         //ログイン済み
         console.log("ﾆﾁｬｱ...");
         console.log(user.providerData);
-        if(user.providerData.find(user => user.providerId === "google.com").email.match(new RegExp(`${nichaConfig.schoolAddresses.student}$`)) === null){
+        if (user.providerData.find(user => user.providerId === "google.com").email.match(new RegExp(`${nichaConfig.schoolAddresses.student}$`)) === null) {
           //学校生徒じゃない不届き者
           this.setState({ hijackAttempted: true });
           firebase.auth().signOut();
-        }else{
+        } else {
           this.setState({
             googleAccount: user.providerData.find(user => user.providerId === "google.com")
           })
