@@ -13,6 +13,7 @@ const Login = (props) => {
     const loginGoogle = () => {
         const provider = new firebase.auth.GoogleAuthProvider()
         provider.addScope((["openid", "https://www.googleapis.com/auth/user.birthday.read", "email", "https://www.googleapis.com/auth/userinfo.profile"]).join(" "));
+        //const provider = new firebase.auth.OAuthProvider('microsoft.com');
         firebase.auth().signInWithRedirect(provider)
     }
     const test = () => {
@@ -35,7 +36,7 @@ const Login = (props) => {
                         <div className="my-2">
                             {langChoose({ ja: "学校のアカウントでログインしてください", en: "Login with school account" })}:
                             <button className="w-auto mx-5 focus:outline-none" onClick={loginGoogle}>
-                                <img src={GoogleIcon}/>
+                                <img src={GoogleIcon} />
                             </button>
                         </div>
                     </div>
