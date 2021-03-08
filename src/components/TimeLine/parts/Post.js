@@ -2,6 +2,16 @@ import LikeIcon from '../../../resources/like';
 import DislikeIcon from '../../../resources/dislike';
 import CommentIcon from '../../../resources/comment';
 import CalenderIcon from '../../../resources/calender';
+import gfm from 'remark-gfm';
+import ReactMarkdown from 'react-markdown'
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
+
+const renderers = {
+    code: ({ language, value }) => {
+        return <SyntaxHighlighter style={dark} language={language} children={value} />
+    }
+}
 
 const Post = (props) => {
     return (
@@ -41,7 +51,9 @@ const Post = (props) => {
                                 </div>
                             </header>
                             <article className="py-4 text-gray-800 dark:text-gray-300">
-                                {props.data.contents}
+                                <ReactMarkdown plugins={[gfm]} renderers={renderers}>
+                                    {props.data.contents}
+                                </ReactMarkdown>
                             </article>
                             <footer className="border-t border-grey-lighter text-sm flex">
                                 <a href="#" className="block no-underline text-blue-600 flex px-4 py-2 items-center hover:bg-grey-lighter">
