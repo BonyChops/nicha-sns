@@ -1,4 +1,4 @@
-# Nicha web client
+# nicha-sns
 <div>
 
 <img height="100px" src="https://github.com/BonyChops/nicha-sns/blob/main/src/resources/logo.png?raw=true">
@@ -8,12 +8,18 @@
 Share your feelings, repos, and so on!
 </div>
 
-# Components
+## Nicha Web Client
+
+
+### Components
 https://tailwindcomponents.com/component/toggle-1
 
-# nicha.config.js
+### `src/nicha.config.js`
 ```JavaScript
 module.exports ={
     apiDomain: "test.com"
 }
 ```
+
+## Nicha API
+[/functions](https://github.com/BonyChops/nicha-sns/tree/main/functions)

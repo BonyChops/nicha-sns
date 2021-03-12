@@ -5,15 +5,16 @@ import CalenderIcon from '../../../resources/calender';
 import gfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown'
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
-import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
-
-const renderers = {
-    code: ({ language, value }) => {
-        return <SyntaxHighlighter style={dark} language={language} children={value} />
-    }
-}
+import {dark, vscDarkPlus, vs} from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const Post = (props) => {
+    console.log(props.state.dark)
+    const renderers = {
+        code: ({ language, value }) => {
+            return <SyntaxHighlighter style={props.state.dark ? vscDarkPlus :  vs} language={language} children={value} />
+        }
+    }
+
     return (
         <div className="font-sans">
             <div className="font-sans">

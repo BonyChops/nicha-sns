@@ -114,7 +114,7 @@ class App extends React.Component {
             <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-hidden">
               <Router>
                 <Switch>
-                  <Route exact path="/" component={TimeLine} />
+                  <Route exact path="/" render={() => <TimeLine state={this.state}/>} />
                   {/* <Route path="/post/:id" children={() => <Post />} /> */}
                   <Route render={() => <NotFound state={this.state} />} />
                 </Switch>

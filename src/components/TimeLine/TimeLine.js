@@ -7,6 +7,8 @@ class TimeLine extends React.Component {
     }
 
     render() {
+
+        console.log(this.props.state.dark);
         return (
             <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 <Post data={{
@@ -18,7 +20,7 @@ class TimeLine extends React.Component {
                     timestamp: "14 seconds ago",
                     contents: "トイレ行ってくるンゴ",
                     comments: "3"
-                }} />
+                }} state={this.props.state} />
                 <Post data={{
                     userInfo: {
                         username: "BonyChops",
@@ -26,25 +28,19 @@ class TimeLine extends React.Component {
                         icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
                     },
                     timestamp: "14 seconds ago",
-                    contents: `A paragraph with *emphasis* and **strong importance**.
+                    contents: `
+学校課題で\`Hello world\`表示させなきゃいけないんだけど原因わからん．
+なんでや...
+\`\`\`c
+#include "stdio.h"
 
-> A block quote with ~strikethrough~ and a URL: https://reactjs.org.
-
-* Lists
-* [ ] todo
-* [x] done
-
-~~~js
-console.log("a"); =>
-~~~
-
-
-A table:
-
-| a | b |
-| - | - |`,
+int main(){
+    print("Hello world!");
+    return 0;
+}
+\`\`\``,
                     image: true
-                }} />
+                }} state={this.props.state} />
                 <Post data={{
                     userInfo: {
                         username: "BonyChops",
@@ -53,7 +49,7 @@ A table:
                     },
                     timestamp: "14 seconds ago",
                     contents: "俺のへ臭すぎ",
-                }} />
+                }} state={this.props.state} />
             </div>
         )
     }
