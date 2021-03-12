@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 app.get("/:id", (req, res, next) => {
-    res.send("syamu");
+
 });
 
 app.post("/", (req, res, next) => {
