@@ -35,7 +35,7 @@ class TimeLine extends React.Component {
 * [x] done
 
 ~~~js
-console.log("a");
+console.log("a"); =>
 ~~~
 
 
