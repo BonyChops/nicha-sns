@@ -7,8 +7,11 @@ const { error } = require("../returnResult");
 
 app.use((req, res, next) => {
     if (req.headers["content-type"] !== "application/json") {
-        console.log("a");
         error(res, 400, false, `Content-type must be 'application/json' but you sent as ${req.headers["content-type"]}`);
+        return;
+    }
+    if(req.headers["authorization"] === undefined){
+        error(res, 401);
         return;
     }
     next();
