@@ -8,6 +8,13 @@ const { success, error, checkParams } = require("../../returnResult");
 const { db } = require("../../firestore");
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min)
 const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1))
+const gitDiff = require("git-diff");
+
+const getDiff = (oldStr, newStr) => {
+    console.log(oldStr);
+    console.log(newStr);
+    return gitDiff(oldStr, newStr, { noHeaders: true, wordDiff: true, flags: "-b --word-diff-regex=." })
+}
 
 app.get("/:id", async (req, res, next) => {
     const post = await db.doc(`posts/${req.params.id}`).get();
@@ -20,8 +27,8 @@ app.get("/:id", async (req, res, next) => {
 });
 
 app.post("/", async (req, res, next) => {
-    if(!checkParams(req, res, ["content"])) return;
-    const time = new Date();
+    if (!checkParams(req, res, ["content"])) return;
+    const time = moment().format();
     let id
     do {
         id = moment(time).format("YYYYMMDDHHmmSS") + genRandomDigits(4);
@@ -30,7 +37,7 @@ app.post("/", async (req, res, next) => {
     const post = {
         id,
         content: {
-            content: req.body.content
+            body: req.body.content
         },
         createdAt: time,
         lastModified: time,
@@ -42,24 +49,31 @@ app.post("/", async (req, res, next) => {
     next();
 })
 
-app.put("/:id", async (req, res, next) => {
-    if(!checkParams(req, res, ["content"])) return;
+app.put("/:id", async function (req, res, next) {
+    if (!checkParams(req, res, ["content"])) return;
     const post = await db.doc(`posts/${req.params.id}`).get();
-    const time = new Date();
+    const time = moment().format();
     if (!post.exists) {
         error(res, 404, "post", "Post not found.");
         return;
     }
     const target = post.data();
+    if (target.content.body === req.body.content) {
+        error(res, 409, "not_modified", "That content hasn't changed.")
+    }
     target.modifiedTimes += 1;
     if (target.history === undefined) target.history = [];
     target.history.push({
         content: target.content,
-        mofifiedAt: target.lastModified
+        diff: getDiff(target.content.body, req.body.content),
+        mofifiedAt: time
     })
     target.lastModified = time;
-    db.doc(`posts/${req.params.id}`).update(target);
-
+    target.content = {
+        body: req.body.content
+    };
+    await db.doc(`posts/${req.params.id}`).update(target);
+    success(res, target);
 })
 
 app.delete("/:id", async (req, res, next) => {
