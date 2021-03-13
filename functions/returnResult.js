@@ -35,5 +35,7 @@ exports.checkParams = (req, res, required) => {
     const result = required.some(param => body[param] !== undefined);
     if (!result) {
         error(res, 400);
+        return false;
     }
+    return true;
 }
