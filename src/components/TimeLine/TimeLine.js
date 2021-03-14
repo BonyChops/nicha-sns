@@ -8,7 +8,7 @@ class TimeLine extends React.Component {
 
     render() {
 
-    console.log(this.props.state.dark);
+        console.log(this.props.state.dark);
         return (
             <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 <Post data={{
@@ -40,7 +40,7 @@ int main(){
 }
 \`\`\``,
                     image: true
-                }} state={this.props.state}/>
+                }} state={this.props.state} />
                 <Post data={{
                     userInfo: {
                         username: "BonyChops",
@@ -49,7 +49,7 @@ int main(){
                     },
                     timestamp: "14 seconds ago",
                     contents: "俺のへ臭すぎ",
-                }} state={this.props.state}/>
+                }} state={this.props.state} />
             </div>
         )
     }

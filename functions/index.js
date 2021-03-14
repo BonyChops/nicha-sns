@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const express = require('express');
+require("express-async-errors");
 const cookieParser = require('cookie-parser')();
 const cors = require('cors')(/* { origin: true } */);
 const app = express();
@@ -11,12 +12,12 @@ const runtimeOpts = {
     timeoutSeconds: timeoutSec + 1,
 }
 
-exports.api = functions.runWith(runtimeOpts).https.onRequest(app);
+exports.api = functions.region('asia-northeast1').runWith(runtimeOpts).https.onRequest(app);
 
 app.use(cors);
 app.use((req, res, next) => {
     res.setTimeout(timeoutSec * 1000, () => {
-        error(res, 503);
+        error(res, 503, "timedout");
         return;
     });
     next();
