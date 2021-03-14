@@ -114,8 +114,27 @@ class App extends React.Component {
             <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-hidden">
               <Router>
                 <Switch>
-                  <Route exact path="/" render={() => <TimeLine state={this.state}/>} />
-                  {/* <Route path="/post/:id" children={() => <Post />} /> */}
+                  <Route exact path="/" render={() => <TimeLine state={this.state} />} />
+                  <Route path="/posts/:id" children={() => <Post data={{
+                    userInfo: {
+                      username: "BonyChops",
+                      id: "BonyChops",
+                      icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
+                    },
+                    timestamp: "14 seconds ago",
+                    contents: `
+学校課題で\`Hello world\`表示させなきゃいけないんだけど原因わからん．
+なんでや...
+\`\`\`c
+#include "stdio.h"
+
+int main(){
+    print("Hello world!");
+    return 0;
+}
+\`\`\``,
+                    image: true
+                  }} state={this.state} />} />
                   <Route render={() => <NotFound state={this.state} />} />
                 </Switch>
               </Router>

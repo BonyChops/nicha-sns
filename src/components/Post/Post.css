@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+svg {
+  @apply feather feather-message-circle h-6 w-6 mr-1;
+}
