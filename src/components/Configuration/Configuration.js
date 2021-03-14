@@ -1,8 +1,11 @@
 import CheckBox from '../parts/Toggle';
 import CloseIcon from '../../resources/close';
 
+const langChooseG = (lang, property) => (property[lang]);
+
+
 const Configuration = (props) => {
-    const langChoose = (property) => (property[props.state.language]);
+    const langChoose = (property) => (langChooseG(props.state.language, property));
     const toggleDarkMode = () => {
         props.accessor({
             dark: !props.state.dark
@@ -52,5 +55,5 @@ const Configuration = (props) => {
     )
 
 }
-
+export { langChooseG };
 export default Configuration;

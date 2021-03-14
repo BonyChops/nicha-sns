@@ -1,4 +1,6 @@
 import LikeIcon from '../../resources/like';
+import HeartIcon from '../../resources/heart';
+import HeartFilledIcon from '../../resources/heartFilled';
 import DislikeIcon from '../../resources/dislike';
 import CommentIcon from '../../resources/comment';
 import CalenderIcon from '../../resources/calender';
@@ -7,6 +9,8 @@ import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { dark, vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import CommitIcon from '../../resources/modify';
+import { langChooseG } from '../Configuration/Configuration';
+
 
 const Post = (props) => {
     console.log(props.state.dark)
@@ -14,6 +18,13 @@ const Post = (props) => {
         code: ({ language, value }) => {
             return <SyntaxHighlighter style={props.state.dark ? vscDarkPlus : vs} language={language} children={value} />
         }
+    }
+    const openModified = () => {
+        props.accessor({
+            popup: {
+                title: "modifiedHistory"
+            }
+        })
     }
 
     return (
@@ -38,7 +49,7 @@ const Post = (props) => {
                     </div>) : null}
                     <div className="flex pt-4 px-4">
                         <div className="w-16 mr-2">
-                            <img className="p-2 rounded-full"
+                            <img className="w-16 rounded-full border-green-600 border-2"
                                 src={props.data.userInfo.icon} />
                         </div>
                         <div className="px-2 pt-2 flex-grow">
@@ -60,19 +71,19 @@ const Post = (props) => {
                             <footer className="border-t border-grey-lighter text-sm dark:text-gray-500 text-gray-600 my-2">
                                 <a href="#" className="block no-underline text-blue-600 flex px-4 py-2 items-center hover:bg-grey-lighter">
                                     <LikeIcon />
-                                    <span></span>
+                                    <span>1</span>
                                 </a>
-                                <a href="#" className="block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter">
-                                    <DislikeIcon />
-                                    <span></span>
+                                <a href="#" className="block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter text-pink-700">
+                                    {/* <HeartIcon className="w-6 h-6"/> */} <HeartFilledIcon className="w-6 h-6 mr-2"/>
+                                    <span>34</span>
                                 </a>
                                {/*  <a href="#" className="block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter">
                                     <CommentIcon />
                                     <span>{props.data.comments !== undefined ? props.data.comments : "Reply"}</span>
                                 </a> */}
-                                <a href="#" className="block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter">
-                                    <CommitIcon />
-                                    <span>3 件の編集履歴</span>
+                                <a href="#" className="block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter" onClick={openModified}>
+                                    <CommitIcon className="h-6 w-6"/>
+                                    <span>{langChooseG(props.state.language, {ja: "3 件の編集履歴", en: "3 Edited history"})}</span>
                                 </a>
                             </footer>
                         </div>

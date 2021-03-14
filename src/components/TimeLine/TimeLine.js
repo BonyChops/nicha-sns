@@ -17,8 +17,9 @@ class TimeLine extends React.Component {
                         id: "BonyChops",
                         icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
                     },
+                    id: "1234",
                     timestamp: "14 seconds ago",
-                    contents: "トイレ行ってくるンゴ",
+                    contents: "こういう感じの長文投稿でもどういう感じに表示になるのかを考案するのが大事だと思うんですねェ．チキンチキンかつえ？",
                     comments: "3"
                 }} state={this.props.state} />
                 <Post data={{
@@ -27,6 +28,7 @@ class TimeLine extends React.Component {
                         id: "BonyChops",
                         icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
                     },
+                    id: "1234",
                     timestamp: "14 seconds ago",
                     contents: `
 学校課題で\`Hello world\`表示させなきゃいけないんだけど原因わからん．
