@@ -8,12 +8,15 @@ import Footer from './components/Footer/Footer';
 import ContextMenu from './components/ContextMenu/ContextMenu'
 import TimeLine from './components/TimeLine/TimeLine';
 import Configuration from './components/Configuration/Configuration';
+import ModifiedHistory from './components/ModifiedHistory/ModifiedHistory';
 import Login from './components/Login/Login';
 import contextSwitcher from './functions/contextSwitcher';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound';
 import Post from './components/Post/Post';
 import nichaConfig from './nicha.config';
+import moment from 'moment';
+//a
 
 const language = {
   ja: "日本語",
@@ -53,6 +56,15 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    if(localStorage.getItem("timess") === null){
+      console.log("No data found!");
+      localStorage.setItem("timess", JSON.stringify([moment().format()]))
+    }else{
+      console.log("there is data");
+      console.log(localStorage.getItem("timess"))
+      localStorage.setItem("timess", JSON.stringify([...JSON.parse(localStorage.getItem("timess")), moment().format()]))
+
+    }
     firebase.auth().onAuthStateChanged(user => {
       this.setState({ loggedIn: user ? true : false });
       if (user) {
@@ -65,7 +77,8 @@ class App extends React.Component {
           firebase.auth().signOut();
         } else {
           this.setState({
-            googleAccount: user.providerData.find(user => user.providerId === "google.com")
+            googleAccount: user.providerData.find(user => user.providerId === "google.com"),
+            authData: user
           })
         }
       } else {
@@ -123,18 +136,18 @@ class App extends React.Component {
                     },
                     timestamp: "14 seconds ago",
                     contents: `
-学校課題で\`Hello world\`表示させなきゃいけないんだけど原因わからん．
-なんでや...
+早稲田に推薦で受かったやついるけど俺には
 \`\`\`c
-#include "stdio.h"
+#include "studio.h"
 
 int main(){
-    print("Hello world!");
-    return 0;
+  printf("†免許†");
+  return 0;
 }
-\`\`\``,
+\`\`\`
+があるから(ﾆﾁｬｱ)"`,
                     image: true
-                  }} state={this.state} />} />
+                  }} state={this.state} accessor={this.accessor}/>} />
                   <Route render={() => <NotFound state={this.state} />} />
                 </Switch>
               </Router>
@@ -143,6 +156,7 @@ int main(){
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
           {(this.state.popup?.title === "settings") ? <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
+          {(this.state.popup?.title === "modifiedHistory") ? <ModifiedHistory toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "login") ? <Login toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           <div className={"fixed w-screen h-screen left-0 top-0 " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
           <ContextMenu className="z-50 fixed" state={this.state} accessor={this.accessor} />

@@ -49,3 +49,8 @@ Modify the post
 
 ### * `DELETE /post/:id`
 Delete the post
+
+## Teapot API
+
+### * `GET /teapot`
+Returns possibility of brewing coffee with a teapot.

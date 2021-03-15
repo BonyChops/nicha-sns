@@ -3,8 +3,9 @@ const app = express();
 const postRouter = require("./posts/posts");
 const userRouter = require("./users/users");
 const accountsRouter = require("./accounts/accounts");
-const { error } = require("../returnResult");
+const { error, success } = require("../returnResult");
 const { errReport } = require("./errReport");
+const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 
 app.use((req, res, next) => {
     console.log(req.method);
@@ -19,7 +20,14 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use("/teapot", (req, res, next) => { error(res, 418); next(); })
+app.use("/teapot", (req, res, next) => {
+    ({
+        0: () => success(res, {mes: "Success to brew coffee with a teapot!"}),
+        1: () => error(res, 418)
+    })[rand(0, 1)]();
+
+    next();
+})
 app.use('/posts', postRouter);
 app.use('/users', userRouter);
 app.use('/accounts', accountsRouter);
@@ -31,10 +39,5 @@ app.get("/status", (req, res, next) => {
         status: "ok"
     })
 })
-
-app.use((err, req, res, next) => {
-    error(res, 503, "handled", false, err.stack.split("\n").slice(0, 2).join("\n"));
-    errReport(err.stack.split("\n").slice(0, 2).join("\n"), "server", req);
-});
 
 module.exports = app;
