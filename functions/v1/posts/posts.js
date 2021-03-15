@@ -66,7 +66,7 @@ app.put("/:id", async function (req, res, next) {
     target.history.push({
         content: target.content,
         diff: getDiff(target.content.body, req.body.content),
-        mofifiedAt: time
+        modifiedAt: time
     })
     target.lastModified = time;
     target.content = {

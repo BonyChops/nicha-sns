@@ -7,7 +7,7 @@ const getPost = async (authData, id) => {
         console.log("Not ready");
         return false;
     }
-    return new Promise((resolve, reject) => request(`${config.apiDomain}/v1/posts/${id}`, { method: "GET", headers: { "Authorization": authData } }, (error, response, body) => {
+    return new Promise((resolve, reject) => request(`${config.apiDomain}/v1/posts/${id}?authorization=${authData}`, { method: "GET" }, (error, response, body) => {
         //console.log(body);
 
         resolve(JSON.parse(body));

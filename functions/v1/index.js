@@ -9,11 +9,11 @@ const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 
 app.use((req, res, next) => {
     console.log(req.method);
-    if (req.method !== "GET" &&  req.headers["content-type"] !== "application/json") {
-        error(res, 400, false, `Content-type must be 'application/json' but you sent as ${req.headers["content-type"]}`);
+    if (req.method !== "GET" && !(["application/json", "application/x-www-form-urlencoded"]).includes(req.headers["content-type"])) {
+        error(res, 400, false, `Content-type must be 'application/json' or 'application/x-www-form-urlencoded' but you sent as ${req.headers["content-type"]}`);
         return;
     }
-    if(req.headers["authorization"] === undefined){
+    if (!(req.headers["authorization"] !== undefined || (req.method === "GET" && req.query.authorization !== undefined) || (req.method !== "GET" && req.body.authorization !== undefined))) {
         error(res, 401);
         return;
     }
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 
 app.use("/teapot", (req, res, next) => {
     ({
-        0: () => success(res, {mes: "Success to brew coffee with a teapot!"}),
+        0: () => success(res, { mes: "Success to brew coffee with a teapot!" }),
         1: () => error(res, 418)
     })[rand(0, 1)]();
 

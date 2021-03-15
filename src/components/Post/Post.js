@@ -15,6 +15,7 @@ import { getPost } from '../../functions/post';
 import { useParams } from 'react-router';
 import Loading from './parts/Loading/Loading';
 import Error from './parts/Error/Error';
+import getDate from '../../functions/getDate';
 import moment from 'moment';
 
 const Post = (props) => {
@@ -27,6 +28,11 @@ const Post = (props) => {
             setFlag(true);
         } else {
             console.log(props.state.authData);
+        }
+        if (postData !== false) {
+            props.accessor({
+                currentPost: postData
+            })
         }
     })
 
@@ -48,7 +54,7 @@ const Post = (props) => {
                 {postData === false || postData === undefined ? (
                     <Loading />
                 ) : ((postData.status == "error") ? (
-                    <Error errorData={JSON.stringify(postData, null, 2)} state={props.state}/>
+                    <Error errorData={postData} state={props.state} />
                 ) : (
                     <div className="bg-white dark:bg-gray-900 max-w-md mx-auto border border-grey-light rounded-b-lg shadow-2xl overflow-hidden">
                         {(postData.image !== false && postData.image !== undefined) ? (<div className="flex flex-wrap no-underline text-black h-64 overflow-hidden">
@@ -80,7 +86,7 @@ const Post = (props) => {
                                     </a>
                                     <div className="text-xs text-gray-400 flex items-center my-1">
                                         <CalenderIcon />
-                                        <span>{moment(props.lastModified).format("YYYY/MM/DD hh:mm")}</span>
+                                        <span>{getDate(props.state.language, postData.lastModified)}</span>
                                     </div>
                                 </header>
                                 <article className="py-4 text-gray-800 dark:text-gray-300">
@@ -101,10 +107,10 @@ const Post = (props) => {
                                     <CommentIcon />
                                     <span>{props.data.comments !== undefined ? props.data.comments : "Reply"}</span>
                                 </a> */}
-                                    <a className="cursor-pointer block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter" onClick={openModified}>
+                                    {postData.modifiedTimes > 0 ? (<a className="cursor-pointer block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter" onClick={openModified}>
                                         <CommitIcon className="h-6 w-6" />
-                                        <span>{langChooseG(props.state.language, { ja: "3 件の編集履歴", en: "3 Edited history" })}</span>
-                                    </a>
+                                        <span>{postData.modifiedTimes + langChooseG(props.state.language, { ja: " 件の編集履歴", en: " Edited history" })}</span>
+                                    </a>) : null}
                                 </footer>
                             </div>
                         </div>
