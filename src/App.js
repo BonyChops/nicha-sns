@@ -124,7 +124,7 @@ class App extends React.Component {
               </div>
             </div>
             <Sidebar />
-            <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-hidden">
+            <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
               <Router>
                 <Switch>
                   <Route exact path="/" render={() => <TimeLine state={this.state} />} />
@@ -135,22 +135,12 @@ class App extends React.Component {
                       icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
                     },
                     timestamp: "14 seconds ago",
-                    contents: `
-早稲田に推薦で受かったやついるけど俺には
-\`\`\`c
-#include "studio.h"
-
-int main(){
-  printf("†免許†");
-  return 0;
-}
-\`\`\`
-があるから(ﾆﾁｬｱ)"`,
                     image: true
                   }} state={this.state} accessor={this.accessor}/>} />
                   <Route render={() => <NotFound state={this.state} />} />
                 </Switch>
               </Router>
+              <br /><br /><br /><br /><br />
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
