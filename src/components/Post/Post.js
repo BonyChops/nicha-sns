@@ -27,9 +27,9 @@ const Post = (props) => {
             getPost(props.state.authData.refreshToken, id).then(value => { setPost(value) });
             setFlag(true);
         } else {
-            console.log(props.state.authData);
+           // console.log(props.state.authData);
         }
-        if (postData !== false) {
+        if (postData !== false && postData !== props.state.currentPost) {
             props.accessor({
                 currentPost: postData
             })
