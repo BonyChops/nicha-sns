@@ -111,7 +111,7 @@ class App extends React.Component {
               </div>
             </div>
             <Sidebar />
-            <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-hidden">
+            <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
               <Router>
                 <Switch>
                   <Route exact path="/" render={() => <TimeLine state={this.state} />} />
@@ -138,6 +138,7 @@ int main(){
                   <Route render={() => <NotFound state={this.state} />} />
                 </Switch>
               </Router>
+              <br /><br /><br /><br /><br />
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
