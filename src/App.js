@@ -15,6 +15,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound';
 import Post from './components/Post/Post';
 import nichaConfig from './nicha.config';
+import moment from 'moment';
+//a
 
 const language = {
   ja: "日本語",
@@ -54,6 +56,15 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    if(localStorage.getItem("timess") === null){
+      console.log("No data found!");
+      localStorage.setItem("timess", JSON.stringify([moment().format()]))
+    }else{
+      console.log("there is data");
+      console.log(localStorage.getItem("timess"))
+      localStorage.setItem("timess", JSON.stringify([...JSON.parse(localStorage.getItem("timess")), moment().format()]))
+
+    }
     firebase.auth().onAuthStateChanged(user => {
       this.setState({ loggedIn: user ? true : false });
       if (user) {
@@ -66,7 +77,8 @@ class App extends React.Component {
           firebase.auth().signOut();
         } else {
           this.setState({
-            googleAccount: user.providerData.find(user => user.providerId === "google.com")
+            googleAccount: user.providerData.find(user => user.providerId === "google.com"),
+            authData: user
           })
         }
       } else {

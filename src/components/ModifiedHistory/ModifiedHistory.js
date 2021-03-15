@@ -23,14 +23,14 @@ const ModifiedHistory = (props) => {
                     </div>
                     <div className="mb-2">
                         <h2 className="text-xl mb-2">v1 <span className="text-xs">2021/03/14 22:25</span></h2>
-                        <div className="bg-black">
-                            <div><GitDiff string="[-うん-]{+えっ+}ち" /></div>
+                        <div className="bg-black text-white">
+                            <div><GitDiff string="[-最初-]{+二度目+}の投稿" /></div>
                         </div>
                     </div>
-                    <div className="mb-2">
+                    <div className="mb-2t">
                         <h2 className="text-xl mb-2">v2 <span className="text-xs">2021/03/14 22:37</span></h2>
-                        <div className="bg-black">
-                            <div><GitDiff string="[-えっち-]{+Slackって言ったやつはころすね+}" /></div>
+                        <div className="bg-black text-white">
+                            <div><GitDiff string="二度目の投稿{+を編集+}" /></div>
                         </div>
                     </div>
                 </div>

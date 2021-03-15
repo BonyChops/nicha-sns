@@ -40,9 +40,4 @@ app.get("/status", (req, res, next) => {
     })
 })
 
-app.use((err, req, res, next) => {
-    error(res, 500, "handled", false, err.stack.split("\n").slice(0, 2).join("\n"));
-    errReport(err.stack.split("\n").slice(0, 2).join("\n"), "server", req);
-});
-
 module.exports = app;
