@@ -6,8 +6,8 @@ require('moment-timezone');
 moment.tz.setDefault('Asia/Tokyo'); //Doesn't required if you think it's not necessary
 const { success, error, checkParams } = require("../../returnResult");
 const { db } = require("../../firestore");
-const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min)
-const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1))
+const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
+const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1));
 const gitDiff = require("git-diff");
 
 const getDiff = (oldStr, newStr) => {
