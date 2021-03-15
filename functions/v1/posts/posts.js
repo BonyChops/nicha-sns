@@ -11,8 +11,6 @@ const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1
 const gitDiff = require("git-diff");
 
 const getDiff = (oldStr, newStr) => {
-    console.log(oldStr);
-    console.log(newStr);
     return gitDiff(oldStr, newStr, { noHeaders: true, wordDiff: true, flags: "-b --word-diff-regex=." })
 }
 

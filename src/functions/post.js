@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 
 const getPost = async (authData, id) => {
     if (authData === undefined) {
-        console.log("Not ready");
         return false;
     }
     return new Promise((resolve, reject) => request(`${config.apiDomain}/v1/posts/${id}?authorization=${authData}`, { method: "GET" }, (error, response, body) => {

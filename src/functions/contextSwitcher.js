@@ -9,7 +9,6 @@ export default (state, accessor) => {
             }
         }
         if (state.contextReturn.match(/^settings$/) !== null) {
-            console.log("うんち！w");
             result = {
                 popup: {
                     title: "settings"
@@ -23,7 +22,6 @@ export default (state, accessor) => {
 
 
         result.contextReturn = false;
-        console.log("いくわよ")
         accessor(result);
     }
 }

@@ -56,15 +56,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    if(localStorage.getItem("timess") === null){
-      console.log("No data found!");
-      localStorage.setItem("timess", JSON.stringify([moment().format()]))
-    }else{
-      console.log("there is data");
-      console.log(localStorage.getItem("timess"))
-      localStorage.setItem("timess", JSON.stringify([...JSON.parse(localStorage.getItem("timess")), moment().format()]))
-
-    }
     firebase.auth().onAuthStateChanged(user => {
       this.setState({ loggedIn: user ? true : false });
       if (user) {
@@ -140,7 +131,7 @@ class App extends React.Component {
                   <Route render={() => <NotFound state={this.state} />} />
                 </Switch>
               </Router>
-              <br /><br /><br /><br /><br />
+              <br /><br />
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />

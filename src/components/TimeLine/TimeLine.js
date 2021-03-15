@@ -7,8 +7,6 @@ class TimeLine extends React.Component {
     }
 
     render() {
-
-        console.log(this.props.state.dark);
         return (
             <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 <Post data={{

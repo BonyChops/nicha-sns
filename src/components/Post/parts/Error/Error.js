@@ -12,7 +12,6 @@ export default (props) => {
         }
     }
     const codes = statusCodes(props.state.language, props.errorData.type);
-    console.log(codes);
     return (
         <div className="bg-white dark:bg-gray-900 max-w-md mx-auto border border-grey-light rounded-b-lg shadow-2xl overflow-hidden">
             <div className="flex pt-4 px-4">

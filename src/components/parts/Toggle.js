@@ -7,7 +7,6 @@ class Toggle extends React.Component {
     }
 
     callback = () => {
-        console.log(this.props);
         if (this.props.callback !== undefined) {
             this.props.callback();
         }
