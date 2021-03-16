@@ -23,6 +23,7 @@ const Post = (props) => {
     const [fetchingFlag, setFlag] = useState(false);
     useEffect(() => {
         if (fetchingFlag === false && props.state.authData !== undefined) {
+            console.log("Start fetching...");
             getPost(props.state.authData.refreshToken, id).then(value => { setPost(value) });
             setFlag(true);
         } else {
@@ -83,7 +84,7 @@ const Post = (props) => {
                                         <span>{moment(props.lastModified).format("YYYY/MM/DD hh:mm")}</span>
                                     </div>
                                 </header>
-                                <article className="py-4 text-gray-800 dark:text-gray-300">
+                                <article className="py-4 text-gray-800 dark:text-gray-300 w-80">
                                     <ReactMarkdown plugins={[gfm]} renderers={renderers}>
                                         {postData.content.body}
                                     </ReactMarkdown>

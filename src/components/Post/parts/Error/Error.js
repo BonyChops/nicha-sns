@@ -24,7 +24,8 @@ export default (props) => {
                             <div className="font-normal text-gray-400 text">404 Not Found</div>
                         </a>
                     </header>
-                    <article className="py-4 text-gray-800 dark:text-gray-300">
+                    <article className="py-4 text-gray-800 dark:text-gray-300 w-80">
+                        投稿を見つけることができませんでした．URLが間違っている可能性があります．
                         <ReactMarkdown plugins={[gfm]} renderers={renderers}>
                             {"```\n" + props.errorData +"\n```"}
                         </ReactMarkdown>

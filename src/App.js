@@ -71,7 +71,7 @@ class App extends React.Component {
         //ログイン済み
         console.log("ﾆﾁｬｱ...");
         console.log(user.providerData);
-        if (user.providerData.find(user => user.providerId === "google.com").email.match(new RegExp(`${nichaConfig.schoolAddresses.student}$`)) === null) {
+        if (user.providerData.find(user => user.providerId === "google.com").email.match(new RegExp(`${nichaConfig.schoolAddress.student}$`)) === null) {
           //学校生徒じゃない不届き者
           this.setState({ hijackAttempted: true });
           firebase.auth().signOut();
