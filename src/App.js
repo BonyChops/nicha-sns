@@ -15,8 +15,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound';
 import Post from './components/Post/Post';
 import nichaConfig from './nicha.config';
-import moment from 'moment';
-//a
+import NewToLogin from './components/NewToLogin/NewToLogin';
+import HyperJump from './components/HyperJump/HyperJump';
+import { getUsers } from './functions/users';
 
 const language = {
   ja: "日本語",
@@ -71,6 +72,12 @@ class App extends React.Component {
             googleAccount: user.providerData.find(user => user.providerId === "google.com"),
             authData: user
           })
+          const token = firebase.auth().currentUser.getIdToken().then((idToken) => {
+            const users = getUsers(token);
+            console.log(users);
+          }).catch(function (error) {
+            // Handle error
+          });
         }
       } else {
         //未ログイン
@@ -114,7 +121,7 @@ class App extends React.Component {
                 </div>
               </div>
             </div>
-            <Sidebar />
+            <Sidebar accessor={this.accessor} />
             <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
               <Router>
                 <Switch>
@@ -127,7 +134,7 @@ class App extends React.Component {
                     },
                     timestamp: "14 seconds ago",
                     image: true
-                  }} state={this.state} accessor={this.accessor}/>} />
+                  }} state={this.state} accessor={this.accessor} />} />
                   <Route render={() => <NotFound state={this.state} />} />
                 </Switch>
               </Router>
@@ -135,6 +142,8 @@ class App extends React.Component {
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
+          {(this.state.popup?.title === "hyperJump") ? <HyperJump toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
+          {(this.state.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "settings") ? <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "modifiedHistory") ? <ModifiedHistory toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "login") ? <Login toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}

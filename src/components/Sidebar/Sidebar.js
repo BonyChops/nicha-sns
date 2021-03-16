@@ -3,8 +3,21 @@ import CheckIcon from '../../resources/check'
 import Topics from './parts/Topics'
 import NotificationIcon from '../../resources/notification';
 import PostButton from './parts/PostButton';
+import AddButton from '../../resources/add';
 
 class Sidebar extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    addApp = () => {
+        this.props.accessor({
+            popup: {
+                title: "addApp"
+            }
+        })
+    }
 
     render() {
         return (
@@ -77,9 +90,7 @@ class Sidebar extends React.Component {
                     <div className="px-4 mb-2 text-white flex justify-between items-center">
                         <div className="opacity-75">Direct Messages</div>
                         <div>
-                            <svg className="fill-current h-4 w-4 opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2v4zm-1 11a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-                            </svg>
+                            <AddButton />
                         </div>
                     </div>
                     <div className="flex items-center mb-3 px-4">
@@ -98,11 +109,9 @@ class Sidebar extends React.Component {
                 <div>
                     <div className="px-4 mb-2 text-white flex justify-between items-center">
                         <div className="opacity-75">Apps</div>
-                        <div>
-                            <svg className="fill-current h-4 w-4 opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M11 9h4v2h-4v4H9v-4H5V9h4V5h2v4zm-1 11a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />
-                            </svg>
-                        </div>
+                        <button className="focus:outline-none" onClick={this.addApp}>
+                            <AddButton />
+                        </button>
                     </div>
                 </div>
             </div>

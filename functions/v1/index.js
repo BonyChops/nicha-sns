@@ -1,4 +1,5 @@
 const express = require("express");
+const { db, admin } = require("../firestore");
 const app = express();
 const postRouter = require("./posts/posts");
 const userRouter = require("./users/users");
@@ -13,10 +14,22 @@ app.use((req, res, next) => {
         return;
     }
     if (!(req.headers["authorization"] !== undefined || (req.method === "GET" && req.query.authorization !== undefined) || (req.method !== "GET" && req.body.authorization !== undefined))) {
-        error(res, 401);
+        error(res, 401, "no_authorization_data");
         return;
+    } else {
+        const token = ([req.headers["authorization"], req.query.authorization, req.body.authorization]).find(token => token !== undefined);
+        admin.auth()
+            .verifyIdToken(token)
+            .then((decodedToken) => {
+                req.user = decodedToken;
+                console.log(token);
+                next();
+            })
+            .catch((e) => {
+                error(res, 401);
+                return;
+            });
     }
-    next();
 })
 
 app.use("/teapot", (req, res, next) => {

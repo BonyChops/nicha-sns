@@ -89,7 +89,7 @@ const Post = (props) => {
                                         <span>{getDate(props.state.language, postData.lastModified)}</span>
                                     </div>
                                 </header>
-                                <article className="py-4 text-gray-800 dark:text-gray-300">
+                                <article className="py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap">
                                     <ReactMarkdown plugins={[gfm]} renderers={renderers}>
                                         {postData.content.body}
                                     </ReactMarkdown>
@@ -116,7 +116,7 @@ const Post = (props) => {
                         </div>
                     </div>
                 ))}
-            </div>
+            </div><br /><br />
         </div>
     );
 };

@@ -1,4 +1,3 @@
-const functions = require('firebase-functions');
 const express = require("express");
 const app = express();
 const moment = require('moment');
@@ -9,6 +8,7 @@ const { db } = require("../../firestore");
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1));
 const gitDiff = require("git-diff");
+const partsRouter = require("./parts/parts");
 
 const getDiff = (oldStr, newStr) => {
     return gitDiff(oldStr, newStr, { noHeaders: true, wordDiff: true, flags: "-b --word-diff-regex=." })
@@ -83,5 +83,7 @@ app.delete("/:id", async (req, res, next) => {
     await db.doc(`posts/${req.params.id}`).delete();
     success(res);
 })
+
+app.use("/", partsRouter);
 
 module.exports = app;
