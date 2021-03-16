@@ -18,6 +18,7 @@ import Post from './components/Post/Post';
 import nichaConfig from './nicha.config';
 import NewToLogin from './components/NewToLogin/NewToLogin';
 import HyperJump from './components/HyperJump/HyperJump';
+import CreateNewUsers from './components/CreateNewUsers/CreateNewUsers';
 import { getUsers } from './functions/users';
 import Icon from './resources/logo.png';
 import Logo from './resources/logo_full.png';
@@ -87,12 +88,17 @@ class App extends React.Component {
                   loggedInUsers: users
                 })
               } else if (users.type === "not_found_users_created") {
+                console.log("popup");
                 this.setState({
-                  firstAccountCreation: true
+                  popup: {
+                    title: "usersCreation",
+                    page: "first_account"
+                  }
                 })
+              } else {
+                console.log(users.type);
               }
             });
-
           }).catch(function (error) {
             // Handle error
           });
@@ -153,6 +159,7 @@ class App extends React.Component {
             </div>
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
+          {(this.state.popup?.title === "usersCreation") ? <CreateNewUsers toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "hyperJump") ? <HyperJump toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "settings") ? <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}

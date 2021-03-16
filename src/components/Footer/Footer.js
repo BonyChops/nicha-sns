@@ -30,7 +30,7 @@ class Footer extends React.Component {
                         </div>
                         <button className="flex items-center flex-no-shrink text-white right-0 ml-auto focus:outline-none" onClick={this.openAccountPopup}>
                             <div className="w-10 right-0">
-                                <img className="rounded-full" src="https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg" />
+                                <img className="rounded-full" src={this.props.state.googleAccount?.photoURL} />
                                 {/* <SettingIcon /> */}
                             </div>
                         </button>

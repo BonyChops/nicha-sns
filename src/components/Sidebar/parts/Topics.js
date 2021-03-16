@@ -14,8 +14,8 @@ const Topics = (props) => {
                 </div>
             </div>
             {(
-                props.topics.map(topic => (
-                    <button className={(topic.selected ? "bg-green-700" : "focus:bg-gray-700 hover:bg-gray-700") + " focus:outline-none w-full py-1 px-4 text-white flex"}>
+                props.topics.map((topic, key) => (
+                    <button  key={key} className={(topic.selected ? "bg-green-700" : "focus:bg-gray-700 hover:bg-gray-700") + " focus:outline-none w-full py-1 px-4 text-white flex"}>
                         <span>{props.prefix}{topic.title}</span>
                         {(topic.isOfficial ? <span className="w-4 ml-1 mb-auto mt-auto">
                             <CheckIcon />
