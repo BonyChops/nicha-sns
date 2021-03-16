@@ -24,6 +24,7 @@ const Post = (props) => {
     const [fetchingFlag, setFlag] = useState(false);
     useEffect(() => {
         if (fetchingFlag === false && props.state.authData !== undefined) {
+            console.log("Start fetching...");
             getPost(props.state.authData.refreshToken, id).then(value => { setPost(value) });
             setFlag(true);
         } else {

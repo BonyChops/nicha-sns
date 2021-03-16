@@ -17,7 +17,10 @@ https://tailwindcomponents.com/component/toggle-1
 ### `src/nicha.config.js`
 ```JavaScript
 module.exports ={
-    apiDomain: "test.com"
+    apiDomain: "test.com",
+    schoolAddress: {
+        student: "domain-of-student"
+    }
 }
 ```
 
