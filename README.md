@@ -12,7 +12,10 @@ Share your feelings, repos, and so on!
 
 
 ### Components
-https://tailwindcomponents.com/component/toggle-1
+
+- https://tailwindcomponents.com/component/toggle-1  
+- https://tailwindcomponents.com/component/slack-clone-1  
+- https://tailwindcomponents.com/component/timeline
 
 ### `src/nicha.config.js`
 ```JavaScript

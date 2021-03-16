@@ -96,19 +96,19 @@ const Post = (props) => {
                                     </ReactMarkdown>
                                 </article>
                                 <footer className="border-t border-grey-lighter text-sm dark:text-gray-500 text-gray-600 my-2">
-                                    <a href="#" className="block no-underline text-blue-600 flex px-4 py-2 items-center hover:bg-grey-lighter">
+                                    <a href="#" className="block no-underline text-blue-600 px-4 py-2 items-center hover:bg-grey-lighter">
                                         <LikeIcon />
                                         <span>1</span>
                                     </a>
-                                    <a href="#" className="block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter text-pink-700">
+                                    <a href="#" className="block no-underline px-4 py-2 items-center hover:bg-grey-lighter text-pink-700">
                                         {/* <HeartIcon className="w-6 h-6"/> */} <HeartFilledIcon className="w-6 h-6 mr-2" />
                                         <span>34</span>
                                     </a>
-                                    {/*  <a href="#" className="block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter">
+                                    {/*  <a href="#" className="block no-underline px-4 py-2 items-center hover:bg-grey-lighter">
                                     <CommentIcon />
                                     <span>{props.data.comments !== undefined ? props.data.comments : "Reply"}</span>
                                 </a> */}
-                                    {postData.modifiedTimes > 0 ? (<a className="cursor-pointer block no-underline flex px-4 py-2 items-center hover:bg-grey-lighter" onClick={openModified}>
+                                    {postData.modifiedTimes > 0 ? (<a className="cursor-pointer block no-underline px-4 py-2 items-center hover:bg-grey-lighter" onClick={openModified}>
                                         <CommitIcon className="h-6 w-6" />
                                         <span>{postData.modifiedTimes + langChooseG(props.state.language, { ja: " 件の編集履歴", en: " Edited history" })}</span>
                                     </a>) : null}
