@@ -66,7 +66,7 @@ const Post = (props) => {
                                     </div>
                                 </div>
                             </header>
-                            <article className={"py-4 text-gray-800 dark:text-gray-300 w-80 " + (props.data.contents.length > 12 ? "" : "text-2xl")}>
+                            <article className={"py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap " + (props.data.contents.length > 12 ? "" : "text-2xl")}>
                                 <ReactMarkdown plugins={[gfm]} renderers={renderers}>
                                     {props.data.contents}
                                 </ReactMarkdown>

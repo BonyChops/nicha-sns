@@ -21,7 +21,6 @@ const ContextMenu = (props) => {
         if (current === false) {
             return null;
         }
-        console.log(current)
         inSw = true
         buf = current;
     } else {
@@ -31,12 +30,10 @@ const ContextMenu = (props) => {
     }
 
     const returnResult = (e, value) => {
-        console.log(value)
         props.accessor({
             contextMenu: false,
             contextReturn: value
         })
-        console.log("done");
     }
 
     console.log(inSw);
