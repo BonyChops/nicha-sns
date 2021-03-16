@@ -24,12 +24,11 @@ const runtimeOpts = {
     timeoutSeconds: timeoutSec + 1,
 }
 
-exports.api = functions.region('asia-northeast1').runWith(runtimeOpts).https.onRequest(app);
 
-app.use((err, req, res, next) => {
-    error(res, 500, "handled", false, err.stack.split("\n").slice(0, 2).join("\n"));
-    errReport(err.stack.split("\n").slice(0, 2).join("\n"), "server", req);
-});
+
+
+
+
 app.use(cors(corsOptions));
 app.use((req, res, next) => {
     res.setTimeout(timeoutSec * 1000, () => {
@@ -40,7 +39,20 @@ app.use((req, res, next) => {
 });
 app.use("/v1", v1Router);
 
+app.use((err, req, res, next) => {
+    //console.log(err);
+    //console.log("akan")
+    if (res.headersSent) {
+        return next(err)
+    }
+    error(res, 500, "handled", false, err.stack.split("\n").slice(0, 2).join("\n"));
+
+    //errReport(err.stack.split("\n").slice(0, 2).join("\n"), "server", req);
+});
+
 app.use("*", (req, res, next) => {
     error(res, 404);
-    next();
+    return;
 })
+
+exports.api = functions.region('asia-northeast1').runWith(runtimeOpts).https.onRequest(app);

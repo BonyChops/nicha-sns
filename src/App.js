@@ -18,6 +18,7 @@ import nichaConfig from './nicha.config';
 import NewToLogin from './components/NewToLogin/NewToLogin';
 import HyperJump from './components/HyperJump/HyperJump';
 import { getUsers } from './functions/users';
+import Icon from './resources/logo.png';
 
 const language = {
   ja: "日本語",
@@ -72,9 +73,23 @@ class App extends React.Component {
             googleAccount: user.providerData.find(user => user.providerId === "google.com"),
             authData: user
           })
+          this.setState({
+            loggedIn: true
+          })
           const token = firebase.auth().currentUser.getIdToken().then((idToken) => {
-            const users = getUsers(token);
-            console.log(users);
+            console.log(idToken);
+            getUsers(idToken).then(users => {
+              if (users.status === "ok") {
+                this.setState({
+                  loggedInUsers: users
+                })
+              } else if (users.type === "not_found_users_created") {
+                this.setState({
+                  firstAccountCreation: true
+                })
+              }
+            });
+
           }).catch(function (error) {
             // Handle error
           });
@@ -100,7 +115,13 @@ class App extends React.Component {
   render() {
     return (
       <div className={"App " + (this.state.dark ? "dark" : "")}>
-        <div className="font-sans  h-screen">
+        {!this.state.loggedIn ? (
+          <div className="absolute top-0 left-0 bg-gray-800 text-center w-full h-full">
+            <div className="m-auto">
+              <img src={Icon} width="24"></img>
+            </div>
+          </div>
+        ) :(<div className="font-sans  h-screen">
           <div className="h-full antialiased flex w-full z-0s">
             <div className="bg-gray-700 text-purple-lighter flex-none w-24 p-6 hidden md:block">
               <div className="cursor-pointer mb-4">
@@ -149,7 +170,7 @@ class App extends React.Component {
           {(this.state.popup?.title === "login") ? <Login toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           <div className={"fixed w-screen h-screen left-0 top-0 " + (this.state.contextMenu !== false ? "" : "hidden")} onClick={this.hideContextMenu} />
           <ContextMenu className="z-50 fixed" state={this.state} accessor={this.accessor} />
-        </div>
+        </div>)}
       </div>
     );
   }

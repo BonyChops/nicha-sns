@@ -17,16 +17,18 @@ app.use((req, res, next) => {
         error(res, 401, "no_authorization_data");
         return;
     } else {
-        const token = ([req.headers["authorization"], req.query.authorization, req.body.authorization]).find(token => token !== undefined);
+        let token = ([req.headers["authorization"], req.query.authorization, req.body.authorization]).find(token => token !== undefined);
+        if(token.match(/^Bearer (.*)$/) !== null) token = token.match(/^Bearer (.*)$/)[1];
         admin.auth()
             .verifyIdToken(token)
             .then((decodedToken) => {
                 req.user = decodedToken;
-                console.log(token);
+                console.log(decodedToken);
                 next();
             })
             .catch((e) => {
                 error(res, 401);
+                console.log(e);
                 return;
             });
     }
