@@ -22,6 +22,8 @@ import CreateNewUsers from './components/CreateNewUsers/CreateNewUsers';
 import { getUsers } from './functions/users';
 import Icon from './resources/logo.png';
 import Logo from './resources/logo_full.png';
+import Swal from 'sweetalert2/src/sweetalert2.js'
+import '@sweetalert2/themes/dark';
 
 const language = {
   ja: "日本語",
@@ -98,6 +100,11 @@ class App extends React.Component {
               })
             } else {
               console.log(users.type);
+              Swal.fire({
+                icon: 'error',
+                title: 'サーバーエラー',
+                text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...'
+              })
             }
           });
         }).catch(function (error) {

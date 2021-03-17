@@ -1,4 +1,5 @@
 const { db, admin } = require('../../firestore.js');
+const functions = require('firebase-functions');
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1));
 const { error, success, checkParams } = require("../../returnResult");
@@ -22,7 +23,20 @@ app.post("/", async (req, res, next) => {
         //Main account
         console.log(req.account)
         if (!checkParams(req, res, ["display_name", "bio"])) return;
-        if (req.body.bio.length > 140) error(res, 400, "too_long_bio"); return;
+        if (req.body.bio.length > 300) { error(res, 400, "too_long_bio"); return; }
+        const id = genRandomDigits(16);
+        admin.auth().setCustomUserClaims(uid, {
+            users: [
+                {
+                    id,
+                    id_str: String(id),
+                    icon: req.googleAccount.photoURL,
+
+                    student: (req.googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) !== null)
+
+                }
+            ]
+        })
 
     }
     //Sub-account
