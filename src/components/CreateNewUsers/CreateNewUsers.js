@@ -7,6 +7,8 @@ import CheckBox from '../parts/Toggle';
 import CloseIcon from '../../resources/close';
 
 class CreateNewUsers extends React.Component {
+    bioLimit = 300
+
     constructor(props) {
         super(props);
         this.state = {
@@ -15,7 +17,9 @@ class CreateNewUsers extends React.Component {
             page: props.state.popup.page,
             userName: props.state.popup.page === "first_account" ? this.props.state.googleAccount.displayName : "",
             userId: props.state.popup.page === "first_account" ? this.props.state.googleAccount.email.match(/^(.*)@(.*)$/)[1] : "",
-            bio: ""
+            bio: "",
+            errors: [],
+            sending: false
         }
     }
 
@@ -59,6 +63,23 @@ class CreateNewUsers extends React.Component {
         })
     }
 
+    confirm = (e) => {
+        e.preventDefault();
+        const errors = [];
+        if (this.state.userName === "") errors.push("no_username");
+        if (this.state.userName > 20) errors.push("username_too_long");
+        if (this.state.userId === "") errors.push("no_userId");
+        if (this.state.userId.match(/^[\w]{3,16}$/) === null) errors.push("not_valid_id");
+        if (this.state.bio.length > this.bioLimit) errors.push("bio_too_long");
+        this.setState({ errors });
+        if (errors.length !== 0) {
+            console.log("始めるにははやい");
+            return false;
+        }
+        console.log("（ ＾ω＾）おっ");
+        this.setState({ sending: true })
+    }
+
     pageSelector(page) {
         return ({
             first_account: (
@@ -86,7 +107,7 @@ class CreateNewUsers extends React.Component {
                         en: <p className="flex">You can always change these options by pressing <img className="w-6 h-6 mx-2 rounded-full" src={this.props.state.googleAccount.photoURL} /> at the right bottom.</p>
                     })}
                     <div className="text-right pr-4 pt-2">
-                        <button onClick={() => this.sceneChanger("create_user")} className="rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white">
+                        <button onClick={() => this.sceneChanger("create_user")} className="rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white" translate="no">
                             {this.langChoose({ ja: "次へ", en: "Next" })}
                         </button>
                     </div>
@@ -95,83 +116,107 @@ class CreateNewUsers extends React.Component {
             create_user: (
                 <div>
                     <div className="flex w-full mb-5">
-                        <h1 className="text-4xl flex align-text-bottom">{this.langChoose({
-                            ja: "アカウントの作成",
-                            en: "Create an account"
+                        <h1 className={"text-4xl flex align-text-bottom " + (this.state.sending ? "animate-pulse" : null)}>{this.langChoose({
+                            ja: this.state.sending ? "アカウントを作成しています..." : "アカウントの作成",
+                            en: this.state.sending ? "Creating your account..." : "Create an account"
                         })}</h1>
-                        {this.state.closeDisabled ? null : (<button className="ml-auto focus:outline-none" onClick={this.closeConfig}>
+                        {(this.state.closeDisabled || this.state.sending) ? null : (<button className="ml-auto focus:outline-none" onClick={this.closeConfig}>
                             <CloseIcon width="24" />
                         </button>)}
                     </div>
-                    {this.state.firstAccount ? this.langChoose({
-                        ja: (<p className="text-sm">
-                            まずはメインアカウントを作成しましょう．
-                            <ul class="list-disc mt-2">
-                                <li>このアカウントのプロフィールに<b>本名・クラス・学科が記載されます</b>．</li>
+                    {this.state.firstAccount ? (!this.state.sending ? (this.langChoose({
+                        ja: (<div className="text-sm">
+                            <p>まずはメインアカウントを作成しましょう．</p>
+                            <ul className="list-disc mt-2">
+                                <li>このアカウントのプロフィールに<b>ディスプレイ名・本名・クラス・学科が記載されます</b>．</li>
                                 <li>メインアカウントは教員・学生と連絡を取ったりなど，<u>学業関係に用いると良いでしょう</u>．</li>
                                 <li>メインアカウントの他に，IDが変更可能・個数制限なし・匿名のサブアカウントを作ることができるようになります．</li>
-                                <li>Nichaサービスを使用するに当たり，メインアカウントは削除できません．</li>
                             </ul>
-                        </p>),
+                        </div>),
                         en: (
-                            <p className="text-sm">
-                                //
-                            </p>
+                            <div className="text-sm">
+                                <p>Let's create your main account first.</p>
+                                <ui className="list-disc mt-2">
+                                    <li><b>Your display name, real name, classroom, department</b> will be displayed on your profile.</li>
+                                    <li>We recommend you to use the main account for <u>academic things</u>.</li>
+                                    <li>In addition to the main account, you can create the sub-account, having an editable ID, no limits to creating and anonymous.</li>
+                                </ui>
+                            </div>
                         )
-                    }) : ""}
-                    <form className="my-16">
-                        <div className="my-2 flex">
-                            {this.langChoose({ ja: "ディスプレイ名", en: "Account Name" })}:
-                            <input
-                                className="ml-auto border border-gray-500 dark:bg-gray-700 dark:text-gray-200 rounded-xl w-64 px-5 mx-5 py-2 focus:outline-none"
-                                value={this.state.userName}
-                                required={true}
-                                onChange={(e) => this.setState({ userName: e.target.value })}
-                            />
-                        </div>
-                        <div className="my-2 flex">
-                            <p>ID:</p>
-                            <div className={"flex ml-auto border border-gray-500 bg-white shadow-md dark:bg-gray-700  rounded-xl w-64 px-5 mx-5 py-2 " + (this.state.firstAccount ? "text-gray-500" : "dark:text-gray-200")}>
-                                @<input
-                                    className="dark:bg-gray-700 bg-white focus:outline-none w-52"
-                                    value={this.state.userId}
+                    })) : (
+                        <p className="animate-pulse">しばらくお待ちください...</p>
+                    )) : ""}
+                    <form onSubmit={this.confirm}>
+                        <div className="my-16">
+                            <div className="my-2 flex">
+                                {this.langChoose({ ja: "ディスプレイ名", en: "Display Name" })}:
+                                <input
+                                    className={"ml-auto border border-gray-500 dark:bg-gray-700 rounded-xl w-64 px-5 mx-5 py-2 focus:outline-none " + (this.state.sending ? "text-gray-500" : "dark:text-gray-200")}
+                                    value={this.state.userName}
+                                    disabled={this.state.sending}
                                     required={true}
-                                    disabled={this.state.firstAccount}
-                                    onChange={(e) => this.setState({ userId: e.target.value })}
+                                    maxLength={20}
+                                    onChange={(e) => this.setState({ userName: e.target.value })}
                                 />
+                                {this.state.errors.some(error => error === "no_username") ? <p className="text-red-600">ディスプレイ名を入力してください．</p> : null}
+                                {this.state.errors.some(error => error === "username_too_long") ? <p className="text-red-600">ディスプレイ名が長すぎます．</p> : null}
+                            </div>
+                            <div className="my-2 flex">
+                                <p>ID:</p>
+                                <div className={"flex ml-auto border border-gray-500 bg-white shadow-md dark:bg-gray-700  rounded-xl w-64 px-5 mx-5 py-2 " + ((this.state.firstAccount || this.state.sending) ? "text-gray-500" : "dark:text-gray-200")}>
+                                    @<input
+                                        className="dark:bg-gray-700 bg-white focus:outline-none w-52"
+                                        value={this.state.userId}
+                                        required={true}
+                                        maxLength={16}
+                                        disabled={this.state.firstAccount || this.state.sending}
+                                        onChange={(e) => this.setState({ userId: e.target.value })}
+                                    />
+                                    {this.state.errors.some(error => error === "no_userId") ? <p className="text-red-600">IDを入力してください．</p> : null}
+                                    {this.state.errors.some(error => error === "not_valid_id") ? <p className="text-red-600">無効なIDです．3〜16文字の英数字，アンダースコアのみ使用できます．</p> : null}
+                                </div>
+                            </div>
+                            <div className="my-2">
+                                <p>  {this.langChoose({ ja: "自己紹介文", en: "Bio" })}:</p>
+                                <div className={"ml-auto border border-gray-500 dark:bg-gray-700  rounded-xl w-full px-5 mx-5 py-2 shadow-md " + (this.state.sending ? "text-gray-500" : "dark:text-gray-200")}>
+                                    <textarea
+                                        className="mt-2 dark:bg-gray-700 focus:outline-none w-full h-16"
+                                        value={this.state.bio}
+                                        disabled={this.state.sending}
+                                        onChange={(e) => this.setState({ bio: e.target.value })}
+                                    />
+                                    <p className={"ml-auto w-10 " + (this.bioLimit - this.state.bio.length < 0 ? "text-red-600" : "")}>{this.bioLimit - this.state.bio.length}</p>
+                                </div>
+                                {this.state.errors.some(error => error === "bio_too_long") ? <p className="text-red-600">自己紹介文が長すぎます．ここは簡潔に書いたほうがかっこいいらしいですよ？</p> : null}
                             </div>
                         </div>
-                        <div className="my-2">
-                            <p>自己紹介文:</p>
-                            <div className={"ml-auto border border-gray-500 dark:bg-gray-700  rounded-xl w-full px-5 mx-5 py-2 dark:text-gray-200 shadow-md"}>
-                                <textarea
-                                    className="mt-2 dark:bg-gray-700 focus:outline-none w-full h-16"
-                                    value={this.state.bio}
-                                    onChange={(e) => this.setState({ bio: e.target.value })}
-                                />
-                                <p className={"ml-auto w-10 " + (140 - this.state.bio.length < 0 ? "text-red-600" : "")}>{140 - this.state.bio.length}</p>
+                        {this.langChoose({
+                            ja: <p className="flex">ここの項目はあなたのプロフィールからいつでも変更できます．</p>,
+                            en: <p className="flex">You can always change these options with your profile page.</p>
+                        })}
+                        <div className="relative h-auto">
+                            <div className="flex pr-4 pt-2 bottom-7">
+                                {this.state.firstAccount ? (<div className="relative">
+                                    <button onClick={() => this.sceneChanger("first_account")}
+                                        className={"ml-auto rounded-xl px-5 py-2 shadow-md text-white " + (this.state.sending ? "bg-gray-700" : "bg-blue-500")}
+                                        translate="no"
+                                        disabled={this.state.sending}
+                                    >
+                                        {this.langChoose({ ja: "戻る", en: "Back" })}
+                                    </button>
+                                </div>) : null}
+                                <div className="relative ml-auto">
+                                    <button type="submit"
+                                        className={"flex ml-auto rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white focus:outline-none " + (this.state.sending ? "animate-pulse" : "")}
+                                        translate="no"
+                                        disabled={this.state.sending}
+                                    >
+                                        <img src={Icon} className={"w-6 mr-2 " + (this.state.sending ? "animate-spin" : "")} /><p className="top-0 bottom-0 my-auto">{this.langChoose({ ja: "はじめる", en: "Start" })}</p>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </form>
-                    {this.langChoose({
-                        ja: <p className="flex">ここの項目はあなたのプロフィールからいつでも変更できます．</p>,
-                        en: <p className="flex">You can always change these options with your profile page.</p>
-                    })}
-                    <div className="relative h-auto">
-                        <div className="flex pr-4 pt-2 bottom-7">
-                            {this.state.firstAccount ? (<div className="relative">
-                                <button onClick={() => this.sceneChanger("first_account")} className="ml-auto rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white">
-                                    {this.langChoose({ ja: "戻る", en: "Back" })}
-                                </button>
-                            </div>) : null}
-                            <div className="relative ml-auto">
-                                <button className="flex ml-auto rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white">
-                                    <img src={Icon} className="w-6 mr-2" /><p className="top-0 bottom-0 my-auto">{this.langChoose({ ja: "はじめる", en: "Start" })}</p>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
 
                 </div>
             )
@@ -179,6 +224,7 @@ class CreateNewUsers extends React.Component {
     }
 
     render() {
+        console.log("レンダー")
         return (
             <div className="fixed top-0 left-0 w-full mx-auto h-full">
                 <div className="fixed bg-gray-600 opacity-50 w-full h-full" />

@@ -5,7 +5,11 @@ module.exports = {
     extend: {},
   },
   variants: {
-    scrollbar: ['rounded', "dark"]
+    scrollbar: ['rounded', "dark"],
+    extend: {
+      opacity: ['disabled']
+    },
+    opacity: ({ after }) => after(['disabled'])
   },
   plugins: [
     require('tailwind-scrollbar'),

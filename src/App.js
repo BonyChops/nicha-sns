@@ -71,7 +71,7 @@ class App extends React.Component {
         if (user.providerData.find(user => user.providerId === "google.com").email.match(new RegExp(`${nichaConfig.schoolAddress.student}$`)) === null) {
           //学校生徒じゃない不届き者
           this.setState({ hijackAttempted: true });
-          firebase.auth().signOut();
+          firebase.auth().currentUser.delete();
         } else {
           this.setState({
             googleAccount: user.providerData.find(user => user.providerId === "google.com"),
@@ -124,7 +124,7 @@ class App extends React.Component {
   render() {
     return (
       <div className={"App " + (this.state.dark ? "dark" : "")}>
-        {!this.state.loggedIn ? (
+        {!this.state.loggedIn ? (!this.state.loginRequired ? (
           <div className="absolute top-0 left-0 bg-gray-800 text-center w-full h-full">
             <div className="absolute top-0 bottom-0 left-0 right-0 m-auto h-32 w-96">
               <div className="flex ">
@@ -132,9 +132,10 @@ class App extends React.Component {
                 <img className="h-32" src={Logo} />
               </div>
             </div>
-
           </div>
-        ) : (<div className="font-sans  h-screen">
+        ) : (
+          <Login toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} />
+        )) : (<div className="font-sans  h-screen">
           <div className="h-full antialiased flex w-full z-0s">
             <AccountsManager state={this.state} accessor={this.accessor} />
 
