@@ -26,7 +26,21 @@
 </head>
 
 <body style="background-color: rgba(31, 41, 55, 1)">
-  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <noscript>You need to enable JavaScript to run this app.
+    <meta http-equiv="Refresh" content="0;/noscript.html">
+  </noscript>
+  <script>
+    window.onload = () => detectIE();
+    function detectIE() {
+      var ua = window.navigator.userAgent;
+      console.log(ua);
+      var msie = ua.indexOf("MSIE ");
+
+      if (msie !== -1) {
+        window.location = "/ie.html"
+      }
+    }
+  </script>
   <div id="root"></div>
   <!--
       This HTML file is a template.

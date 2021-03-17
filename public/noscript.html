@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nicha for NNCT</title>
+    <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/button.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body style="margin-left: 50px; margin-right: 50px; margin-top: 30px;">
+    <div class="app">
+        <script>
+            window.onload = () => jump();
+            const jump = () => {
+                $(".app").fadeOut(1000);
+                $(".load").fadeIn(1000);
+                setTimeout(() => {
+                    window.location = "/";
+                }, 1000);
+            }
+        </script>
+        <h1>JavaScript is not available.</h1>
+        <p>このブラウザではJavaScriptが無効になっているみたいです．JSの魔法がないとサイトをキレイに見せることが厳しいので有効にしてください＞＜</p>
+        <div style="display: flex;">
+            <a class="style-from-stackoverflow" style=" margin-right: 10px;" href="">
+                <p style="top: 0;">有効にしました</p>
+            </a>
+            <div style="width: 200px; height: 50px; border: double 10px black;">
+                <p style="position: absolute; left: 350px;">CSS完全に理解した</p>
+            </div>
+        </div>
+    </div>
+    <div class="load" style="display: none; top: 0%; left: 0%; position: fixed; width: 100%; height: 100%; background-color: rgba(31, 41, 55, 1);"></div>
+
+
+</body>
+
+</html>
