@@ -1,10 +1,12 @@
 import React from 'react';
+import { getIdToken } from '../../Firebase';
 import Icon from '../../resources/logo.png';
 import Logo from '../../resources/logo_full.png';
 import LogoWhite from '../../resources/logo_full_white.png';
 import { langChooseG } from '../Configuration/Configuration';
 import CheckBox from '../parts/Toggle';
 import CloseIcon from '../../resources/close';
+import { postUsers } from '../../functions/users';
 
 class CreateNewUsers extends React.Component {
     bioLimit = 300
@@ -77,7 +79,11 @@ class CreateNewUsers extends React.Component {
             return false;
         }
         console.log("（ ＾ω＾）おっ");
-        this.setState({ sending: true })
+        this.setState({ sending: true });
+        getIdToken.then(idToken => {postUsers({
+            display_name: this.state.userName,
+            bio: this.state.bio
+        }, idToken)})
     }
 
     pageSelector(page) {

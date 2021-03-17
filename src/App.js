@@ -80,7 +80,7 @@ class App extends React.Component {
           this.setState({
             loggedIn: true
           })
-          const token = firebase.auth().currentUser.getIdToken().then((idToken) => {
+          firebase.auth().currentUser.getIdToken().then((idToken) => {
             console.log(idToken);
             getUsers(idToken).then(users => {
               if (users.status === "ok") {

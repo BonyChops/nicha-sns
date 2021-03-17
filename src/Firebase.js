@@ -8,5 +8,11 @@ if (window.location.hostname === "localhost" || window.location.hostname === "12
     console.log("Nicha service launched in local environment!");
     firebase.auth().useEmulator("http://localhost:9099");
 }
-//export const db = firebase.firestore();
+
+const getIdToken = async () => {
+    return await firebase.auth().currentUser.getIdToken();
+}
+
+
+export { getIdToken };
 export default firebase;

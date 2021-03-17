@@ -34,11 +34,11 @@ exports.success = (res, data = false, statusCode = 200) => {
     res.send(data);
 }
 
-exports.checkParams = (req, res, required) => {
+exports.checkParams = (req, res, required, type = false, mes = false) => {
     const body = req.body;
     const result = required.some(param => body[param] !== undefined);
     if (!result) {
-        error(res, 400);
+        error(res, 400, type, mes);
         return false;
     }
     return true;

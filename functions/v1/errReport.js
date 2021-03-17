@@ -14,7 +14,7 @@ exports.errReport = (detail, type = "server", client) => {
             headers: client.headers,
             hostname: client.hostname,
             method: client.method,
-            url: client.originalUrl    
+            url: client.originalUrl
         }
     });
 }

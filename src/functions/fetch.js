@@ -8,4 +8,20 @@ const fetchGet = async (uri, auth = false) => {
         resolve(JSON.parse(body));
     }))
 }
-export { fetchGet };
+
+const fetchPost = async (uri, data, auth = false) => {
+    const body = Object.keys(data).map(key => (`${encodeURI(key)}=${encodeURI(data[key])}`).join(";")) + (auth !== false ? `authorization=${auth}` : "");
+    return await new Promise((resolve, reject) => request(uri + (auth !== false ? `?authorization=${auth}` : ""), {
+        method: "POST",
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+        body
+    }, (error, response, body) => {
+        if (error) {
+            reject(error);
+        }
+        resolve(JSON.parse(body));
+    }))
+}
+
+
+export { fetchGet, fetchPost };

@@ -15,7 +15,6 @@ const getDiff = (oldStr, newStr) => {
 }
 
 app.get("/:id", async (req, res, next) => {
-    unko.chinko()
     const post = await db.doc(`posts/${req.params.id}`).get();
     if (!post.exists) {
         error(res, 404, "post", "Post not found.");

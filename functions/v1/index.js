@@ -2,15 +2,16 @@ const express = require("express");
 const { db, admin } = require("../firestore");
 const app = express();
 const postRouter = require("./posts/posts");
+const userSelfRouter = require("./users/usersSelf");
 const userRouter = require("./users/users");
 const accountsRouter = require("./accounts/accounts");
-const { error, success } = require("../returnResult");
+const { error, success, checkParams } = require("../returnResult");
 const { errReport } = require("./errReport");
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 
 app.use((req, res, next) => {
     if (req.method !== "GET" && !(["application/json", "application/x-www-form-urlencoded"]).includes(req.headers["content-type"])) {
-        error(res, 400, false, `Content-type must be 'application/json' or 'application/x-www-form-urlencoded' but you sent as ${req.headers["content-type"]}`);
+        error(res, 400, "content_type_wrong", `Content-type must be 'application/json' or 'application/x-www-form-urlencoded' but you sent as ${req.headers["content-type"]}`);
         return;
     }
     if (!(req.headers["authorization"] !== undefined || (req.method === "GET" && req.query.authorization !== undefined) || (req.method !== "GET" && req.body.authorization !== undefined))) {
@@ -18,11 +19,11 @@ app.use((req, res, next) => {
         return;
     } else {
         let token = ([req.headers["authorization"], req.query.authorization, req.body.authorization]).find(token => token !== undefined);
-        if(token.match(/^Bearer (.*)$/) !== null) token = token.match(/^Bearer (.*)$/)[1];
+        if (token.match(/^Bearer (.*)$/) !== null) token = token.match(/^Bearer (.*)$/)[1];
         admin.auth()
             .verifyIdToken(token)
             .then((decodedToken) => {
-                req.user = decodedToken;
+                req.account = decodedToken;
                 console.log(decodedToken);
                 next();
             })
@@ -42,8 +43,22 @@ app.use("/teapot", (req, res, next) => {
 
     next();
 })
-app.use('/posts', postRouter);
+
+app.use('/users', userSelfRouter);
+
+app.use(async (req, res, next) => {
+    if (!checkParams(req, res, ["current_user"], "current_user_not_provided", "You have to provide current user's uid.")) return;
+    const currentUser = (req.method === "GET" ? req.query.current_user : req.body.current_user);
+    const account = await db.doc(`accounts/${req.account.uid}`).get();
+    if (!account.exists) { error(res, 401, "users_not_created", "You've not created first user."); return; }
+    const user = await account.data().users.find(user => user === currentUser);
+    if (user === undefined) { error(res, 401, "current_user_not_found", "Uid you've provided is not valid."); return; }
+    req.user = user;
+    next();
+})
+
 app.use('/users', userRouter);
+app.use('/posts', postRouter);
 app.use('/accounts', accountsRouter);
 app.get("/err-report", (req, res, next) => {
     //
