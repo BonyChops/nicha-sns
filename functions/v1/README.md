@@ -1,5 +1,8 @@
 # Nicha API v1
 
+## Problems?
+Check https://github.com/BonyChops/nicha-sns/blob/main/functions/docs/errors.md
+
 ## Endpoint
 `/api/v1`
 
