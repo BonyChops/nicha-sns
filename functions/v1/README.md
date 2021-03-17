@@ -1,5 +1,10 @@
 # Nicha API v1
 
+## Initialize
+```bash
+$ firebase functions:config:set schooladdress.student="domain-of-student"
+```
+
 ## Problems?
 Check https://github.com/BonyChops/nicha-sns/blob/main/functions/docs/errors.md
 

@@ -33,9 +33,7 @@
     window.onload = () => detectIE();
     function detectIE() {
       var ua = window.navigator.userAgent;
-      console.log(ua);
       var msie = ua.indexOf("MSIE ");
-
       if (msie !== -1) {
         window.location = "/ie.html"
       }

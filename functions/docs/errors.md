@@ -10,7 +10,8 @@
 |400|bad_request_current_user_not_provided|You have to provide current user's uid. `GET`: Attach on your params(`current_user={user_uid}`). `Others`: Attach on your body(`current_user={user_uid}` or `{"current_user": {user_uid}}`)|
 |401|not_authorized|Not authorized.
 |401|not_authorized_users_not_created|You've not created first user. You have to create the first user with `POST /v1/users`.
-|401|not_authorized_current_user_not_found|Uid you've provided is not valid. Check your Uid.
+|401|not_authorized_current_user_not_found|Uid you've provided is not valid. Check your Uid.|
+|401|not_authorized_not_allowed_account|You've tried to login with invalid domain's account.|
 |404|not_found|Endpoint not found...(nicha
 |404|not_found_post|Post not found. This error will also happen when it's not visible for current user.
 |409|conflict|Conflicted request.

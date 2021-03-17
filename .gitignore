@@ -5,6 +5,7 @@ firestore.rules
 .env
 key.js
 .VSCodeCounter
+.fuse_hidden*
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 

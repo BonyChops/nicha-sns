@@ -21,6 +21,7 @@
     "react-transition-group": "^4.4.1",
     "remark-gfm": "^1.0.0",
     "request": "^2.88.2",
+    "sweetalert": "^2.1.2",
     "tailwind-scrollbar": "^1.2.3",
     "web-vitals": "^1.1.0"
   },

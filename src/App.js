@@ -72,37 +72,37 @@ class App extends React.Component {
           //学校生徒じゃない不届き者
           this.setState({ hijackAttempted: true });
           firebase.auth().currentUser.delete();
-        } else {
-          this.setState({
-            googleAccount: user.providerData.find(user => user.providerId === "google.com"),
-            authData: user
-          })
-          this.setState({
-            loggedIn: true
-          })
-          firebase.auth().currentUser.getIdToken().then((idToken) => {
-            console.log(idToken);
-            getUsers(idToken).then(users => {
-              if (users.status === "ok") {
-                this.setState({
-                  loggedInUsers: users
-                })
-              } else if (users.type === "not_found_users_created") {
-                console.log("popup");
-                this.setState({
-                  popup: {
-                    title: "usersCreation",
-                    page: "first_account"
-                  }
-                })
-              } else {
-                console.log(users.type);
-              }
-            });
-          }).catch(function (error) {
-            // Handle error
-          });
+          return;
         }
+        this.setState({
+          googleAccount: user.providerData.find(user => user.providerId === "google.com"),
+          authData: user
+        })
+        this.setState({
+          loggedIn: true
+        })
+        firebase.auth().currentUser.getIdToken().then((idToken) => {
+          console.log(idToken);
+          getUsers(idToken).then(users => {
+            if (users.status === "ok") {
+              this.setState({
+                loggedInUsers: users
+              })
+            } else if (users.type === "not_found_users_created") {
+              console.log("popup");
+              this.setState({
+                popup: {
+                  title: "usersCreation",
+                  page: "first_account"
+                }
+              })
+            } else {
+              console.log(users.type);
+            }
+          });
+        }).catch(function (error) {
+          // Handle error
+        });
       } else {
         //未ログイン
         console.log("は？");
@@ -112,7 +112,6 @@ class App extends React.Component {
             title: "login"
           }
         })
-
       }
     })
   }

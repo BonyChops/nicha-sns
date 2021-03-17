@@ -1,4 +1,5 @@
 const express = require("express");
+const functions = require('firebase-functions');
 const { db, admin } = require("../firestore");
 const app = express();
 const postRouter = require("./posts/posts");
@@ -9,7 +10,7 @@ const { error, success, checkParams } = require("../returnResult");
 const { errReport } = require("./errReport");
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
     if (req.method !== "GET" && !(["application/json", "application/x-www-form-urlencoded"]).includes(req.headers["content-type"])) {
         error(res, 400, "content_type_wrong", `Content-type must be 'application/json' or 'application/x-www-form-urlencoded' but you sent as ${req.headers["content-type"]}`);
         return;
@@ -20,18 +21,34 @@ app.use((req, res, next) => {
     } else {
         let token = ([req.headers["authorization"], req.query.authorization, req.body.authorization]).find(token => token !== undefined);
         if (token.match(/^Bearer (.*)$/) !== null) token = token.match(/^Bearer (.*)$/)[1];
-        admin.auth()
-            .verifyIdToken(token)
-            .then((decodedToken) => {
-                req.account = decodedToken;
-                console.log(decodedToken);
-                next();
-            })
-            .catch((e) => {
+        const decodedToken = await new Promise((resolve, reject) => {
+            admin.auth().verifyIdToken(token).then((decodedToken) => {
+                resolve(decodedToken);
+            }).catch((e) => {
                 error(res, 401);
                 console.log(e);
-                return;
+                reject(e);
             });
+        })
+        const account = await new Promise((resolve, reject) => {
+            admin.auth().getUser(decodedToken.uid)
+                .then((userRecord) => {
+                    resolve(userRecord);
+                }).catch((e) => {
+                    error(res, 501);
+                    console.log(e);
+                    reject(e);
+                });
+        })
+        const googleAccount = account.providerData.find(data => data.providerId === "google.com");
+        if (googleAccount === undefined) { error(res, 401, "not_allowed_account", "You've tried to login with invalid domain's account."); return; }
+        if (functions.config().schooladdress === undefined) { error(res, 501, "email_config_not_set"); return; }
+        if (googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) === null) { error(res, 401, "not_allowed_account", "You've tried to login with invalid domain's account."); return; }
+        console.log(googleAccount);
+        req.account = account;
+        req.googleAccount = googleAccount;
+        console.log(decodedToken);
+        next();
     }
 })
 
