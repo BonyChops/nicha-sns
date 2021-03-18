@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from '../../Firebase';
 import { getIdToken } from '../../Firebase';
 import Icon from '../../resources/logo.png';
 import Logo from '../../resources/logo_full.png';
@@ -7,6 +8,10 @@ import { langChooseG } from '../Configuration/Configuration';
 import CheckBox from '../parts/Toggle';
 import CloseIcon from '../../resources/close';
 import { postUsers } from '../../functions/users';
+import Swal from 'sweetalert2/src/sweetalert2.js';
+import '@sweetalert2/themes/dark';
+import config from '../../nicha.config';
+import userEvent from '@testing-library/user-event';
 
 class CreateNewUsers extends React.Component {
     bioLimit = 300
@@ -29,6 +34,32 @@ class CreateNewUsers extends React.Component {
         /* fetch("https://lh3.googleusercontent.com/a-/AOh14GjyLzuM1DSCqli_RjpK2rSTfm8v8zrFWNxLT1z43nA=s96-c").then(data => {
             data.blob();
         }) */
+        if (config.sendGoogleToken) {
+            firebase.auth()
+                .getRedirectResult()
+                .then((result) => {
+                    if (result.credential) {
+                        const google_token = result.credential.accessToken;
+                        this.setState({ google_token })
+                    } else {
+                        console.log(result);
+                        Swal.fire({
+                            icon: 'error',
+                            title: '再ログインが必要です',
+                            text: 'Googleのトークンを取得できませんでした．ログインし直してください...',
+                            confirmButtonText: `ログアウト`,
+                        }).then(() => firebase.auth().signOut())
+                    }
+                }).catch(e => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '再ログインが必要です',
+                        text: 'Googleのトークンを取得できませんでした．ログインし直してください...',
+                        confirmButtonText: `ログアウト`,
+                    }).then(() => firebase.auth().signOut())
+                })
+        }
+
     }
 
     langChoose = (property) => (langChooseG(this.props.state.language, property));
@@ -79,11 +110,79 @@ class CreateNewUsers extends React.Component {
             return false;
         }
         console.log("（ ＾ω＾）おっ");
+
+
         this.setState({ sending: true });
-        getIdToken.then(idToken => {postUsers({
-            display_name: this.state.userName,
-            bio: this.state.bio
-        }, idToken)})
+        getIdToken().then(idToken => {
+            postUsers({
+                display_name: this.state.userName,
+                bio: this.state.bio,
+                isMain: this.state.firstAccount,
+                display_id: this.state.userId
+            }, idToken).then(result => {
+                if (result.status !== "ok") {
+                    switch (true) {
+                        case result.type.match(/^conflict\_(.*)/) !== null:
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'アカウントを作成できませんでした',
+                                text: 'サーバーの状況とクライアントの状況が衝突しました．最読み込みしてください...',
+                                confirmButtonText: `再読み込み`,
+                            }).then(res => { getIdToken(true).then(() => window.location.reload()) })
+                            return;
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'アカウントを作成できませんでした',
+                        text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...',
+                        showCancelButton: true,
+                        cancelButtonText: 'エラーの内容を表示する',
+                    }).then(res => {
+                        if (res.isDismissed) {
+                            Swal.fire({
+                                icon: "info",
+                                title: "Error Log",
+                                html: `You can also check these info by opening debug console.<br /><br /><pre><code>${JSON.stringify(result, null, 2)}</code></pre>`
+                            })
+                        }
+                    })
+                    this.setState({ sending: false });
+                    return;
+                }
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                console.log(result.users);
+                Toast.fire({
+                    icon: 'success',
+                    title: `${result.users.find(user => user.selected === true).display_name} さん，ようこそ！`
+                })
+                getIdToken(true);
+                this.props.accessor({
+                    popup: false,
+                    loggedInUsers: result.users
+                })
+            }).catch(e => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'アカウントを作成できませんでした',
+                    text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...',
+                })
+                console.error(e);
+                return;
+            })
+        })
+
+
     }
 
     pageSelector(page) {
@@ -178,10 +277,11 @@ class CreateNewUsers extends React.Component {
                                         disabled={this.state.firstAccount || this.state.sending}
                                         onChange={(e) => this.setState({ userId: e.target.value })}
                                     />
-                                    {this.state.errors.some(error => error === "no_userId") ? <p className="text-red-600">IDを入力してください．</p> : null}
-                                    {this.state.errors.some(error => error === "not_valid_id") ? <p className="text-red-600">無効なIDです．3〜16文字の英数字，アンダースコアのみ使用できます．</p> : null}
                                 </div>
                             </div>
+                            {this.state.errors.some(error => error === "no_userId") ? <p className="text-red-600">IDを入力してください．</p> : null}
+                            {this.state.errors.some(error => error === "not_valid_id") ? <p className="text-red-600">無効なIDです．3〜16文字の英数字，アンダースコアのみ使用できます．</p> : null}
+
                             <div className="my-2">
                                 <p>  {this.langChoose({ ja: "自己紹介文", en: "Bio" })}:</p>
                                 <div className={"ml-auto border border-gray-500 dark:bg-gray-700  rounded-xl w-full px-5 mx-5 py-2 shadow-md " + (this.state.sending ? "text-gray-500" : "dark:text-gray-200")}>
@@ -230,7 +330,6 @@ class CreateNewUsers extends React.Component {
     }
 
     render() {
-        console.log("レンダー")
         return (
             <div className="fixed top-0 left-0 w-full mx-auto h-full">
                 <div className="fixed bg-gray-600 opacity-50 w-full h-full" />

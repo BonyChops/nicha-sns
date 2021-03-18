@@ -19,7 +19,7 @@ class TimeLine extends React.Component {
                     timestamp: "14 seconds ago",
                     contents: "こういう感じの長文投稿でもどういう感じに表示になるのかを考案するのが大事だと思うんですねェ．チキンチキンかつえ？",
                     comments: "3"
-                }} state={this.props.state} />
+                }} state={this.props.state} baseState={this.props.baseState} />
                 <Post data={{
                     userInfo: {
                         username: "BonyChops",
@@ -40,7 +40,7 @@ int main(){
 }
 \`\`\``,
                     image: true
-                }} state={this.props.state} />
+                }} state={this.props.state} baseState={this.props.baseState} />
                 <Post data={{
                     userInfo: {
                         username: "BonyChops",
@@ -49,7 +49,7 @@ int main(){
                     },
                     timestamp: "14 seconds ago",
                     contents: "俺のへ臭すぎ",
-                }} state={this.props.state} />
+                }} state={this.props.state} baseState={this.props.baseState}/>
             </div>
         )
     }

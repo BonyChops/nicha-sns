@@ -10,10 +10,12 @@ const fetchGet = async (uri, auth = false) => {
 }
 
 const fetchPost = async (uri, data, auth = false) => {
-    const body = Object.keys(data).map(key => (`${encodeURI(key)}=${encodeURI(data[key])}`).join(";")) + (auth !== false ? `authorization=${auth}` : "");
+    const body = Object.keys(data).map(key => (`${encodeURI(key)}=${encodeURI(data[key])}`)).join("&") + (auth !== false ? `&authorization=${auth}` : "");
     return await new Promise((resolve, reject) => request(uri + (auth !== false ? `?authorization=${auth}` : ""), {
         method: "POST",
-        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
         body
     }, (error, response, body) => {
         if (error) {

@@ -4,17 +4,12 @@ import logo from './logo.svg';
 import './App.css';
 import CheckIcon from './resources/check'
 import AccountsManager from './AccountsManager';
-import Sidebar from './components/Sidebar/Sidebar';
 import Footer from './components/Footer/Footer';
 import ContextMenu from './components/ContextMenu/ContextMenu'
-import TimeLine from './components/TimeLine/TimeLine';
 import Configuration from './components/Configuration/Configuration';
 import ModifiedHistory from './components/ModifiedHistory/ModifiedHistory';
 import Login from './components/Login/Login';
 import contextSwitcher from './functions/contextSwitcher';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import NotFound from './components/NotFound/NotFound';
-import Post from './components/Post/Post';
 import nichaConfig from './nicha.config';
 import NewToLogin from './components/NewToLogin/NewToLogin';
 import HyperJump from './components/HyperJump/HyperJump';
@@ -83,33 +78,29 @@ class App extends React.Component {
         this.setState({
           loggedIn: true
         })
-        firebase.auth().currentUser.getIdToken().then((idToken) => {
-          console.log(idToken);
-          getUsers(idToken).then(users => {
-            if (users.status === "ok") {
-              this.setState({
-                loggedInUsers: users
-              })
-            } else if (users.type === "not_found_users_created") {
-              console.log("popup");
-              this.setState({
-                popup: {
-                  title: "usersCreation",
-                  page: "first_account"
-                }
-              })
-            } else {
-              console.log(users.type);
-              Swal.fire({
-                icon: 'error',
-                title: 'サーバーエラー',
-                text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...'
-              })
-            }
-          });
-        }).catch(function (error) {
-          // Handle error
-        });
+        firebase.auth().currentUser.getIdTokenResult().then(idTokenResult => {
+          console.log(idTokenResult);
+          if (idTokenResult.claims.usersAvailable) {
+            console.log("Claim users available")
+            this.setState({
+              loggedInUsers: idTokenResult.claims.users
+            })
+            return;
+          }
+          if (idTokenResult.claims.usersAvailable === undefined) {
+            console.log("Claim not defined")
+            this.setState({
+              popup: {
+                title: "usersCreation",
+                page: "first_account"
+              }
+            })
+            return;
+          }
+          console.log("Claim users unavailable.");
+          console.log("Try to get via REST API...")
+          this.authByRESTAPI();
+        })
       } else {
         //未ログイン
         console.log("は？");
@@ -121,6 +112,43 @@ class App extends React.Component {
         })
       }
     })
+  }
+
+  authByRESTAPI() {
+    firebase.auth().currentUser.getIdToken().then((idToken) => {
+      console.log(idToken);
+      getUsers(idToken).then(users => {
+        if (users.status === "ok") {
+          this.setState({
+            loggedInUsers: users.usersClaim
+          })
+        } else if (users.type === "not_found_users_created") {
+          console.log("popup");
+          this.setState({
+            popup: {
+              title: "usersCreation",
+              page: "first_account"
+            }
+          })
+        } else {
+          console.log(users.type);
+          Swal.fire({
+            icon: 'error',
+            title: 'サーバーエラー',
+            text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...',
+            confirmButtonText: `再読み込み`,
+          }).then(() => window.location.reload());
+        }
+      });
+    }).catch(function (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'サーバーエラー',
+        text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...',
+        confirmButtonText: `再読み込み`,
+      }).then(() => window.location.reload())
+      console.error(error);
+    });
   }
 
   componentDidUpdate() {
@@ -142,28 +170,10 @@ class App extends React.Component {
         ) : (
           <Login toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} />
         )) : (<div className="font-sans  h-screen">
-          <div className="h-full antialiased flex w-full z-0s">
+          <div className="">
             <AccountsManager state={this.state} accessor={this.accessor} />
 
-            <Sidebar accessor={this.accessor} />
-            <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
-              <Router>
-                <Switch>
-                  <Route exact path="/" render={() => <TimeLine state={this.state} />} />
-                  <Route path="/posts/:id" children={() => <Post data={{
-                    userInfo: {
-                      username: "BonyChops",
-                      id: "BonyChops",
-                      icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
-                    },
-                    timestamp: "14 seconds ago",
-                    image: true
-                  }} state={this.state} accessor={this.accessor} />} />
-                  <Route render={() => <NotFound state={this.state} />} />
-                </Switch>
-              </Router>
-              <br /><br />
-            </div>
+
           </div>
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
           {(this.state.popup?.title === "usersCreation") ? <CreateNewUsers toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}

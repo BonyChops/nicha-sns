@@ -29,7 +29,7 @@ const runtimeOpts = {
 
 
 
-app.use(cors(corsOptions));
+app.use(cors(/* corsOptions */));
 app.use((req, res, next) => {
     res.setTimeout(timeoutSec * 1000, () => {
         error(res, 503, "timedout");
@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 app.use("/v1", v1Router);
 
 app.use((err, req, res, next) => {
-    //console.log(err);
+    console.log(err);
     //console.log("akan")
     if (res.headersSent) {
         return next(err)

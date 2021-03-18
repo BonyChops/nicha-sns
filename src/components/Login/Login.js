@@ -12,7 +12,14 @@ const Login = (props) => {
     }
     const loginGoogle = () => {
         const provider = new firebase.auth.GoogleAuthProvider()
-        provider.addScope((["openid", "https://www.googleapis.com/auth/user.birthday.read", "email", "https://www.googleapis.com/auth/userinfo.profile"]).join(" "));
+        provider.addScope(([
+            "openid",
+            "https://www.googleapis.com/auth/user.birthday.read",
+            "email",
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/plus.login",
+            "https://www.googleapis.com/auth/plus.me",
+        ]).join(" "));
         //const provider = new firebase.auth.OAuthProvider('microsoft.com');
         firebase.auth().signInWithRedirect(provider)
     }

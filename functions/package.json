@@ -20,6 +20,7 @@
     "firebase-admin": "^9.2.0",
     "firebase-functions": "^3.11.0",
     "git-diff": "^2.0.6",
+    "googleapis": "^67.1.1",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33"
   },

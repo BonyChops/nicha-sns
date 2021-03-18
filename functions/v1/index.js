@@ -25,7 +25,7 @@ app.use(async (req, res, next) => {
             admin.auth().verifyIdToken(token).then((decodedToken) => {
                 resolve(decodedToken);
             }).catch((e) => {
-                error(res, 401);
+                error(res, 401, "invalid_token");
                 console.log(e);
                 reject(e);
             });
@@ -41,9 +41,17 @@ app.use(async (req, res, next) => {
                 });
         })
         const googleAccount = account.providerData.find(data => data.providerId === "google.com");
-        if (googleAccount === undefined) { error(res, 401, "not_allowed_account", "You've tried to login with invalid domain's account."); return; }
+        if (googleAccount === undefined) {
+            error(res, 401, "not_allowed_account", "You've tried to login with invalid domain's account.");
+            admin.auth().deleteUser(account.uid);
+            return;
+        }
         if (functions.config().schooladdress === undefined) { error(res, 500, "email_config_not_set"); return; }
-        if (googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) === null) { error(res, 401, "not_allowed_account", "You've tried to login with invalid domain's account."); return; }
+        if (googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) === null) {
+            error(res, 401, "not_allowed_account", "You've tried to login with invalid domain's account.");
+            admin.auth().deleteUser(account.uid);
+            return;
+        }
         console.log(googleAccount);
         req.account = account;
         req.googleAccount = googleAccount;

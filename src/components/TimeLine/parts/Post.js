@@ -14,10 +14,9 @@ import { langChooseG } from '../../Configuration/Configuration';
 
 
 const Post = (props) => {
-    console.log(props.state.dark)
     const renderers = {
         code: ({ language, value }) => {
-            return <SyntaxHighlighter style={props.state.dark ? vscDarkPlus : vs} language={language} children={value} />
+            return <SyntaxHighlighter style={props.baseState.dark ? vscDarkPlus : vs} language={language} children={value} />
         }
     }
 
@@ -53,8 +52,8 @@ const Post = (props) => {
                         <div className="px-2 pt-2 flex-grow">
                             <header>
                                 <a href="#" className="text-black dark:text-white no-underline">
-                                    <snap className="font-medium mr-2">{props.data.userInfo.username}</snap>
-                                    <snap className="font-normal text-gray-400 text-xs">@{props.data.userInfo.id}</snap>
+                                    <span className="font-medium mr-2">{props.data.userInfo.username}</span>
+                                    <span className="font-normal text-gray-400 text-xs">@{props.data.userInfo.id}</span>
                                 </a>
                                 <div className="text-xs text-gray-400 flex items-center my-1">
                                     <div className="flex mr-2">
