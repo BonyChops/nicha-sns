@@ -123,7 +123,6 @@ app.post("/", async (req, res, next) => {
         await admin.auth().setCustomUserClaims(req.account.uid, claimUserInfo);
     } catch (e) {
         //console.error(e);
-        const claimUserInfo = Object.assign({}, userInfo);
         claimUserInfo.users = false;
         claimUserInfo.usersAvailable = false;
         await admin.auth().setCustomUserClaims(req.account.uid, claimUserInfo);
@@ -134,11 +133,9 @@ app.post("/", async (req, res, next) => {
         follow: 0,
     }
     db.doc(`accounts/${req.account.uid}`).set(userInfo)
-    await Promise.all([db.doc(`accounts/${req.account.uid}`).set(userInfo), db.doc(`users/${usersInfo[0].id}`).set(usersInfo[0])])
-    usersInfo[0].selected = true;
-    success(res, { users: usersInfo });
-    return;
-
+    await Promise.all([db.doc(`accounts/${req.account.uid}`).set(userInfo), db.doc(`users/${usersInfo.id}`).set(usersInfo)])
+    userInfo.users.slice(-1)[0].selected = true;
+    success(res, { users: userInfo.users });
     return;
 });
 
