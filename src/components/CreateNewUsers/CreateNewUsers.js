@@ -333,8 +333,8 @@ class CreateNewUsers extends React.Component {
         return (
             <div className="fixed top-0 left-0 w-full mx-auto h-full">
                 <div className="fixed bg-gray-600 opacity-50 w-full h-full" />
-                <div className="fixed p-20 w-full h-full">
-                    <div className="bg-white dark:bg-gray-800 dark:text-gray-100 rounded-xl shadow-md text-lg h-full md:p-20 w-4/6 mx-auto overflow-auto">
+                <div className="fixed md:p-20 w-full h-full">
+                    <div className="bg-white dark:bg-gray-800 dark:text-gray-100 md:rounded-xl md:shadow-md text-lg h-full p-20 md:w-4/6 w-full md:mx-auto overflow-auto">
                         {this.pageSelector(this.state.page)}
                     </div>
                 </div>
