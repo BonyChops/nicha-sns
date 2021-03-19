@@ -9,6 +9,21 @@ import '@sweetalert2/themes/dark';
 firebase.initializeApp(firebaseConfig);
 if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "") {
     console.log("Nicha service launched in local environment!");
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+    Toast.fire({
+        icon: 'info',
+        title: `デベロッパーモード`
+    })
     firebase.auth().useEmulator("http://localhost:9099");
 }
 

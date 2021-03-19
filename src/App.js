@@ -19,6 +19,7 @@ import Icon from './resources/logo.png';
 import Logo from './resources/logo_full.png';
 import Swal from 'sweetalert2/src/sweetalert2.js'
 import '@sweetalert2/themes/dark';
+import moment from 'moment';
 
 const language = {
   ja: "日本語",
@@ -59,6 +60,24 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    const bootStart = moment();
+    setTimeout(() => {
+      if (!this.state.loggedIn) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+        Toast.fire({
+          icon: 'warning',
+          title: `通常よりも起動に時間がかかっています`,
+          text: "再読み込みしたほうがよいかもしれません．"
+        })
+      }
+    }, 5000)
     firebase.auth().onAuthStateChanged(user => {
       this.setState({ loggedIn: user ? true : false });
       if (user) {
@@ -78,6 +97,16 @@ class App extends React.Component {
         this.setState({
           loggedIn: true
         })
+        const bootEnd = moment();
+        if(bootEnd.diff(bootStart, "seconds") > 10){
+          Swal.fire({
+            icon: "warning",
+            title: `起動に${bootEnd.diff(bootStart, "seconds", true)}秒かかりました`,
+            text: "運営に報告しますか？",
+            showDenyButton: true,
+            denyButtonText: `Don't save`,
+          })
+        }
         firebase.auth().currentUser.getIdTokenResult().then(idTokenResult => {
           console.log(idTokenResult);
           if (idTokenResult.claims.usersAvailable) {
