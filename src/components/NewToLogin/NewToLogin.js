@@ -41,7 +41,7 @@ const NewToLogin = (props) => {
         <div className="fixed top-0 left-0 w-full mx-auto h-full" >
             <div className="fixed bg-gray-600 opacity-50 w-full h-full" />
             <div className="fixed p-20 w-full h-full">
-                <div className="bg-white dark:bg-gray-800 dark:text-gray-100 rounded-xl shadow-md text-lg h-full md:p-20 w-4/6 mx-auto overflow-auto">
+                <div className="bg-white dark:bg-gray-800 dark:text-gray-100 rounded-xl shadow-md text-lg h-full lg:p-20 w-4/6 mx-auto overflow-auto">
                     <div className="flex w-full mb-10">
                         <h1 className="text-5xl">{langChoose({ ja: "外部サービスと連携", en: "Choose App" })}</h1>
                         <button className="ml-auto focus:outline-none" onClick={closeConfig}>
