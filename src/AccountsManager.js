@@ -34,6 +34,8 @@ const AccountButton = (props) => {
 class AccountsManager extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {}
     }
     componentDidMount() {
     }
@@ -46,9 +48,14 @@ class AccountsManager extends React.Component {
         })
     }
 
-    userState = (id = this.props.state.loggedInUsers.find(user => user.selected)) => {
-        if (id === undefined) return false;
-        return this.state[`user_${id}`];
+    userState = (id = (this.props.state.loggedInUsers !== false ? this.props.state.loggedInUsers.find(user => user.selected)?.id : undefined)) => {
+        console.log(id);
+        if (this.state === null) return undefined;
+        if (id === undefined) return undefined;
+        let result = this.state[`user_${id}`];
+        if (typeof result !== "object") result = {};
+        result.userInfo = this.props.state.loggedInUsers.find(user => user.id === id);
+        return result;
     }
 
     switchAccount = (id) => {
@@ -59,12 +66,15 @@ class AccountsManager extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (JSON.stringify(this.props.state.loggedInUsers) !== JSON.stringify(prevProps.state.loggedInUsers) && this.props.state.loggedInUsers !== false && !this.props.state.loggedInUsers.some(user => user.selected)) {
-            const loggedInUsers = this.props.state.loggedInUsers;
-            loggedInUsers[0].selected = true;
-            this.props.accessor({
-                loggedInUsers
-            });
+        if (JSON.stringify(this.props.state.loggedInUsers) !== JSON.stringify(prevProps.state.loggedInUsers) && this.props.state.loggedInUsers !== false) {
+            if (!this.props.state.loggedInUsers.some(user => user.selected)) {
+                const loggedInUsers = this.props.state.loggedInUsers;
+                loggedInUsers[0].selected = true;
+                this.props.accessor({
+                    loggedInUsers
+                });
+            }
+            console.log("a");
         }
     }
 
@@ -90,7 +100,7 @@ class AccountsManager extends React.Component {
                         </div>
                     )}
                 </div>
-                <Sidebar accessor={this.accessor} />
+                <Sidebar accessor={this.accessor} state={this.userState()} />
                 <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
                     <Router>
                         <Switch>
