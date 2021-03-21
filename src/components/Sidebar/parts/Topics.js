@@ -16,8 +16,8 @@ const Topics = (props) => {
             {this.props.loading ? (
                 Array.from({ length: 5 }, () => (
                     <div key={key} className={(topic.selected ? "bg-green-700" : "focus:bg-gray-700 hover:bg-gray-700") + " focus:outline-none w-full py-1 px-4 text-white flex"}>
-                        <span>{props.prefix}{topic.title}</span>
-                    </button>
+                        {/* <div className={} /> */}
+                    </div>
                 ))
             ) : (
                     props.topics.map((topic, key) => (

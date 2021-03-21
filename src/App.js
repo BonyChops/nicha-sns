@@ -20,6 +20,7 @@ import Logo from './resources/logo_full.png';
 import Swal from 'sweetalert2/src/sweetalert2.js'
 import '@sweetalert2/themes/dark';
 import moment from 'moment';
+import EarthquakeWs from './functions/EarthquakeWs';
 
 const language = {
   ja: "日本語",
@@ -99,7 +100,7 @@ class App extends React.Component {
           loggedIn: true
         })
         const bootEnd = moment();
-        if(bootEnd.diff(bootStart, "seconds") > 10){
+        if (bootEnd.diff(bootStart, "seconds") > 10) {
           Swal.fire({
             icon: "warning",
             title: `起動に${bootEnd.diff(bootStart, "seconds", true)}秒かかりました`,
@@ -186,6 +187,7 @@ class App extends React.Component {
   }
 
   render() {
+    <EarthquakeWs state={this.state} />
     return (
       <div className={"App " + (this.state.dark ? "dark" : "")}>
         {!this.state.loggedIn ? (!this.state.loginRequired ? (
