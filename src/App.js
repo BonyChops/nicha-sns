@@ -30,6 +30,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      earthQuakeWarn: true,
       contextMenu: false,
       contextReturn: false,
       popup: false,

@@ -1,6 +1,7 @@
 import CheckBox from '../parts/Toggle';
 import CloseIcon from '../../resources/close';
-
+import Swal from 'sweetalert2/src/sweetalert2.js'
+import '@sweetalert2/themes/dark';
 const langChooseG = (lang, property) => (property[lang]);
 
 
@@ -9,6 +10,38 @@ const Configuration = (props) => {
     const toggleDarkMode = () => {
         props.accessor({
             dark: !props.state.dark
+        })
+    }
+    const toggleEarthQuakeWarn = () => {
+        if (props.state.earthQuakeWarn) {
+            Swal.fire({
+                icon: "warning",
+                iconColor: "red",
+                title: langChoose({ja: "地震速報はあなたを守ります", en: "EARTHQUAKE EARLY WARNING SAVES YOU"}),
+                html: langChoose({
+                    ja: "日本は地震大国です．あなたを守るため，あなたの大切な人を悲しませないためにも，いつ地震が起きても対処できるように日々準備をしておきましょう．<br /><br />本当に地震速報を無効にしますか？",
+                    en: "There are a lot of earthquakes in Japan. For your safety, not to make loved ones sad, be sure that you've prepared for the earthquake that can occur anywhere, anytime.<br /><br />Are you sure to want to disable it?"
+                }),
+                showDenyButton: true,
+                confirmButtonText: langChoose({
+                    ja: "有効にしておく",
+                    en: "Keep it enabled"
+                }),
+                denyButtonText: langChoose({
+                    ja: "はい，地震速報を無効にします",
+                    en: "Yes, I want to disable it"
+                }),
+            }).then(result => {
+                if(result.isDenied){
+                  props.accessor({
+                      earthQuakeWarn: false
+                  })
+                }
+              })
+            return;
+        }
+        props.accessor({
+            earthQuakeWarn: true
         })
     }
     const langSelect = (e) => {
@@ -48,6 +81,7 @@ const Configuration = (props) => {
                             </button>
                         </div>
                         <CheckBox name={langChoose({ ja: "ダークモード", en: "Dark Mode" })} toggle={props.state.dark} callback={toggleDarkMode} />
+                        <CheckBox name={langChoose({ ja: "地震速報を受信する", en: "Receive earthquake early warning" }) + "(β)"} toggle={props.state.earthQuakeWarn} callback={toggleEarthQuakeWarn} important={true}/>
                     </div>
                 </div>
             </div>
