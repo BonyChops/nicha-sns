@@ -24,12 +24,12 @@ class Sidebar extends React.Component {
         return (
             <div className="bg-indigo-900 text-purple-lighter flex-none w-64 pb-6 hidden md:block scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 <div className="text-white mb-2 mt-3 px-4 flex justify-between">
-                    <div className="flex-auto">
+                    <div className="flex-auto overflow-x-hidden">
                         {this.props.state?.userInfo !== undefined ? (<h1 className="font-semibold text-xl leading-tight mb-1 truncate">{this.props.state.userInfo?.display_name}</h1>)
                             : (<div className="w-8 h-2 bg-gray-700 rounded-xl" />)}
                         <div className="flex items-center mb-6">
-                            <span className="bg-green-400 rounded-full block w-2 h-2 mr-2"></span>
-                            {this.props.state?.userInfo !== undefined ? (<span className="text-white opacity-50 text-sm">@{this.props.state?.userInfo?.display_id}</span>)
+                            <span className="bg-green-400 rounded-full block w-2 h-2 mr-2" />
+                            {this.props.state?.userInfo !== undefined ? (<span className="text-white opacity-50 text-sm truncate overflow-x-hidden">@{this.props.state?.userInfo?.display_id}</span>)
                                 : (<div className="w-8 h-2 bg-gray-700 rounded-xl" />)}
                         </div>
                     </div>

@@ -26,7 +26,7 @@ const AccountButton = (props) => {
             <button onClick={props.callback} className={"focus:outline-none bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden " + (props.addButton ? "opacity-25 " : "") + (props.selected ? "ring" : "")}>
                 {props.addButton ? <AddButton /> : (props.img !== false ? <img src={props.img} alt={props.accountName} /> : "N")}
             </button>
-            <div className="text-center text-white opacity-50 text-sm overflow-x-hidden">{props.subTitle}</div>
+            <div className="text-center text-white opacity-50 text-sm overflow-x-hidden truncate">{props.subTitle}</div>
         </div>
     )
 }

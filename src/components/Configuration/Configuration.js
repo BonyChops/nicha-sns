@@ -17,7 +17,7 @@ const Configuration = (props) => {
             Swal.fire({
                 icon: "warning",
                 iconColor: "red",
-                title: langChoose({ja: "地震速報はあなたを守ります", en: "EARTHQUAKE EARLY WARNING SAVES YOU"}),
+                title: langChoose({ ja: "地震速報はあなたを守ります", en: "EARTHQUAKE EARLY-WARNING SAVES YOU" }),
                 html: langChoose({
                     ja: "日本は地震大国です．あなたを守るため，あなたの大切な人を悲しませないためにも，いつ地震が起きても対処できるように日々準備をしておきましょう．<br /><br />本当に地震速報を無効にしますか？",
                     en: "There are a lot of earthquakes in Japan. For your safety, not to make loved ones sad, be sure that you've prepared for the earthquake that can occur anywhere, anytime.<br /><br />Are you sure to want to disable it?"
@@ -32,16 +32,24 @@ const Configuration = (props) => {
                     en: "Yes, I want to disable it"
                 }),
             }).then(result => {
-                if(result.isDenied){
-                  props.accessor({
-                      earthQuakeWarn: false
-                  })
+                if (result.isDenied) {
+                    props.accessor({
+                        earthQuakeWarn: false
+                    })
                 }
-              })
+            })
             return;
         }
         props.accessor({
             earthQuakeWarn: true
+        })
+        Swal.fire({
+            icon: "success",
+            title: langChoose({ ja: "地震速報が有効になりました", en: "Earthquake early-warning enabled" }),
+            html: langChoose({
+                ja: "地震速報が有効になりました．この機能はベータ版ですので，通知が来たら常に公式の情報(気象庁やNERV防災など)を確認するようにしてください．",
+                en: "Earthquake early-warning enabled. This function is beta so please check the official information (such as Japan Meteorological Agency) if you received warnings."
+            }),
         })
     }
     const langSelect = (e) => {
@@ -81,7 +89,7 @@ const Configuration = (props) => {
                             </button>
                         </div>
                         <CheckBox name={langChoose({ ja: "ダークモード", en: "Dark Mode" })} toggle={props.state.dark} callback={toggleDarkMode} />
-                        <CheckBox name={langChoose({ ja: "地震速報を受信する", en: "Receive earthquake early warning" }) + "(β)"} toggle={props.state.earthQuakeWarn} callback={toggleEarthQuakeWarn} important={true}/>
+                        <CheckBox name={langChoose({ ja: "地震速報を受信する", en: "Receive earthquake early-warning" }) + "(β)"} toggle={props.state.earthQuakeWarn} callback={toggleEarthQuakeWarn} important={true} />
                     </div>
                 </div>
             </div>
