@@ -81,7 +81,7 @@ class AccountsManager extends React.Component {
     render() {
         return (
             <div className="h-screen antialiased flex w-full z-0s ">
-                <div className="bg-gray-800 text-purple-lighter flex-none w-24 p-6 hidden md:block overflow-auto scrollbar-thin ">
+                <div className="bg-gray-800 text-purple-lighter flex-none w-24 p-6 hidden lg:block overflow-auto scrollbar-thin ">
                     {this.props.state.loggedInUsers === false ? (
                         <div>
                             <LoadingButton />

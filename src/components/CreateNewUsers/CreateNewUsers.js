@@ -106,10 +106,8 @@ class CreateNewUsers extends React.Component {
         if (this.state.bio.length > this.bioLimit) errors.push("bio_too_long");
         this.setState({ errors });
         if (errors.length !== 0) {
-            console.log("始めるにははやい");
             return false;
         }
-        console.log("（ ＾ω＾）おっ");
 
 
         this.setState({ sending: true });
@@ -333,8 +331,8 @@ class CreateNewUsers extends React.Component {
         return (
             <div className="fixed top-0 left-0 w-full mx-auto h-full">
                 <div className="fixed bg-gray-600 opacity-50 w-full h-full" />
-                <div className="fixed md:p-20 w-full h-full">
-                    <div className="bg-white dark:bg-gray-800 dark:text-gray-100 md:rounded-xl md:shadow-md text-lg h-full p-20 md:w-4/6 w-full md:mx-auto overflow-auto">
+                <div className="fixed xl:p-20 w-full h-full">
+                    <div className="bg-white dark:bg-gray-800 dark:text-gray-100 xl:rounded-xl xl:shadow-md text-lg h-full p-20 xl:w-4/6 w-full xl:mx-auto overflow-auto">
                         {this.pageSelector(this.state.page)}
                     </div>
                 </div>
