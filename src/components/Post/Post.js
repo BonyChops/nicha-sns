@@ -16,6 +16,7 @@ import { useParams } from 'react-router';
 import Loading from './parts/Loading/Loading';
 import Error from './parts/Error/Error';
 import getDate from '../../functions/getDate';
+import firebase, { getIdToken } from '../../Firebase';
 import moment from 'moment';
 
 const Post = (props) => {
@@ -23,14 +24,17 @@ const Post = (props) => {
     const [postData, setPost] = useState(false);
     const [fetchingFlag, setFlag] = useState(false);
     useEffect(() => {
-        if (fetchingFlag === false && props.state.authData !== undefined) {
+        if (fetchingFlag === false && props.state !== undefined) {
             console.log("Start fetching...");
-            getPost(props.state.authData.refreshToken, id).then(value => { setPost(value) });
+            console.log(props.state)
+            getIdToken().then(token => {
+                getPost(token, props.state.userInfo.id, id).then(value => { setPost(value) });
+            })
             setFlag(true);
         } else {
-           // console.log(props.state.authData);
+            // console.log(props.state.authData);
         }
-        if (postData !== false && postData !== props.state.currentPost) {
+        if (postData !== false && JSON.stringify(postData) !== JSON.stringify(props.state.currentPost)) {
             props.accessor({
                 currentPost: postData
             })
@@ -39,7 +43,7 @@ const Post = (props) => {
 
     const renderers = {
         code: ({ language, value }) => {
-            return <SyntaxHighlighter style={props.state.dark ? vscDarkPlus : vs} language={language} children={value} />
+            return <SyntaxHighlighter style={props.baseState.dark ? vscDarkPlus : vs} language={language} children={value} />
         }
     }
     const openModified = () => {
@@ -55,7 +59,7 @@ const Post = (props) => {
                 {postData === false || postData === undefined ? (
                     <Loading />
                 ) : ((postData.status == "error") ? (
-                    <Error errorData={postData} state={props.state} />
+                    <Error errorData={postData} baseState={props.baseState} />
                 ) : (
                     <div className="bg-white dark:bg-gray-900 max-w-md mx-auto border border-grey-light rounded-b-lg shadow-2xl overflow-hidden">
                         {(postData.image !== false && postData.image !== undefined) ? (<div className="flex flex-wrap no-underline text-black h-64 overflow-hidden">
@@ -87,7 +91,7 @@ const Post = (props) => {
                                     </a>
                                     <div className="text-xs text-gray-400 flex items-center my-1">
                                         <CalenderIcon />
-                                        <span>{getDate(props.state.language, postData.lastModified)}</span>
+                                        <span>{getDate(props.baseState.language, postData.lastModified)}</span>
                                     </div>
                                 </header>
                                 <article className="py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap">
@@ -110,7 +114,7 @@ const Post = (props) => {
                                 </a> */}
                                     {postData.modifiedTimes > 0 ? (<a className="cursor-pointer block no-underline px-4 py-2 items-center hover:bg-grey-lighter" onClick={openModified}>
                                         <CommitIcon className="h-6 w-6" />
-                                        <span>{postData.modifiedTimes + langChooseG(props.state.language, { ja: " 件の編集履歴", en: " Edited history" })}</span>
+                                        <span>{postData.modifiedTimes + langChooseG(props.baseState.language, { ja: " 件の編集履歴", en: " Edited history" })}</span>
                                     </a>) : null}
                                 </footer>
                             </div>

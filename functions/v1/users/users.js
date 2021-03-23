@@ -7,7 +7,7 @@ const app = express();
 
 
 app.get("/:id/profile", (req, res, next) => {
-    const screenNameMode = (req.query.screen_name === "true");
+    const screenNameMode = (req.query.screen_id === "true");
     console.log(req.params);
     console.log(req.query);
 });

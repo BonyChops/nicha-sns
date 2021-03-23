@@ -8,10 +8,13 @@ import statusCodes from '../../../../functions/statusCodes';
 export default (props) => {
     const renderers = {
         code: ({ language, value }) => {
-            return <SyntaxHighlighter style={props.state.dark ? vscDarkPlus : vs} language={language} children={value} />
+            return <SyntaxHighlighter style={props.baseState.dark ? vscDarkPlus : vs} language={language} children={value} />
         }
     }
-    const codes = statusCodes(props.state.language, props.errorData.type);
+    const codes = statusCodes(props.baseState.language, props.errorData.type);
+    console.log(props.baseState);
+    console.log(codes)
+    console.log(props.errorData.type);
     return (
         <div className="bg-white dark:bg-gray-900 max-w-md mx-auto border border-grey-light rounded-b-lg shadow-2xl overflow-hidden">
             <div className="flex pt-4 px-4">

@@ -26,11 +26,11 @@ class Sidebar extends React.Component {
                 <div className="text-white mb-2 mt-3 px-4 flex justify-between">
                     <div className="flex-auto overflow-x-hidden">
                         {this.props.state?.userInfo !== undefined ? (<h1 className="font-semibold text-xl leading-tight mb-1 truncate">{this.props.state.userInfo?.display_name}</h1>)
-                            : (<div className="w-8 h-2 bg-gray-700 rounded-xl" />)}
-                        <div className="flex items-center mb-6">
-                            <span className="bg-green-400 rounded-full block w-2 h-2 mr-2" />
+                            : (<div className="w-32 h-4 bg-gray-700 rounded-xl animate-pulse" />)}
+                        <div className="flex items-center mt-2 mb-6">
+                            <span className={(this.props.state?.userInfo === undefined ? "bg-gray-700 animate-pulse" : "bg-green-400") + " rounded-full block w-2 h-2 mr-2"} />
                             {this.props.state?.userInfo !== undefined ? (<span className="text-white opacity-50 text-sm truncate overflow-x-hidden">@{this.props.state?.userInfo?.display_id}</span>)
-                                : (<div className="w-8 h-2 bg-gray-700 rounded-xl" />)}
+                                : (<div className="w-28 h-2 bg-gray-700 rounded-xl animate-pulse" />)}
                         </div>
                     </div>
                     <div>
@@ -38,7 +38,7 @@ class Sidebar extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <PostButton />
+                    <PostButton  loading={this.props.state?.userInfo === undefined}/>
                 </div>
                 <Topics loading={this.props.state?.userInfo === undefined} title="Topics" prefix="# " topics={[
                     {
@@ -65,7 +65,7 @@ class Sidebar extends React.Component {
                         title: "WACCA"
                     }
                 ]} />
-                <Topics title="Lists" prefix="" topics={[
+                <Topics loading={this.props.state?.userInfo === undefined} title="Lists" prefix="" topics={[
                     {
                         title: "NNCT",
                         isOfficial: true,

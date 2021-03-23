@@ -18,6 +18,5 @@ export default (lang, statusCode) => {
             title: langChoose({ ja: "投稿が見つかりませんでした", en: "Post not found" }),
             mes: langChoose({ ja: "投稿が見つかりませんでした．ツイ消し職人の仕事は早いねー...(それかURLが間違っています)", en: "We can't find the post you are looking for. Please make sure the link is really correct. (Maybe author deleted the post?)" })
         },
-
-    })[statusCode]
+    }[statusCode])
 }

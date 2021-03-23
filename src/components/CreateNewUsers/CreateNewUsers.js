@@ -1,6 +1,5 @@
 import React from 'react';
-import firebase from '../../Firebase';
-import { getIdToken } from '../../Firebase';
+import firebase, { getIdToken } from '../../Firebase';
 import Icon from '../../resources/logo.png';
 import Logo from '../../resources/logo_full.png';
 import LogoWhite from '../../resources/logo_full_white.png';
@@ -59,7 +58,6 @@ class CreateNewUsers extends React.Component {
                     }).then(() => firebase.auth().signOut())
                 })
         }
-
     }
 
     langChoose = (property) => (langChooseG(this.props.state.language, property));
@@ -100,8 +98,11 @@ class CreateNewUsers extends React.Component {
         e.preventDefault();
         const errors = [];
         if (this.state.userName === "") errors.push("no_username");
-        if (this.state.userName > 20) errors.push("username_too_long");
+        if (String(this.state.userName.length) > 20) errors.push("username_too_long");
         if (this.state.userId === "") errors.push("no_userId");
+        if (!this.state.firstAccount) {
+            if (this.state.userId.match(/(?=^[\w]{3,16})(?!^\d+$)^.+$/) === null) errors.push("not_valid_id_for_sub");
+        }
         if (this.state.userId.match(/^[\w]{3,16}$/) === null) errors.push("not_valid_id");
         if (this.state.bio.length > this.bioLimit) errors.push("bio_too_long");
         this.setState({ errors });
@@ -127,6 +128,25 @@ class CreateNewUsers extends React.Component {
                                 text: 'サーバーの状況とクライアントの状況が衝突しました．最読み込みしてください...',
                                 confirmButtonText: `再読み込み`,
                             }).then(res => { getIdToken(true).then(() => window.location.reload()) })
+                            this.setState({ sending: false });
+                            return;
+                        case result.type.match(/^bad_request_display_id_already_in_use$/) !== null:
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'アカウントを作成できませんでした',
+                                text: `ユーザーID: ${this.state.userId}はすでに存在します．`,
+                                cancelButtonText: 'エラーの内容を表示する',
+                                showCancelButton: true
+                            }).then(res => {
+                                if (res.isDismissed) {
+                                    Swal.fire({
+                                        icon: "info",
+                                        title: "Error Log",
+                                        html: `You can also check these info by opening debug console.<br /><br /><pre><code>${JSON.stringify(result, null, 2)}</code></pre>`
+                                    })
+                                }
+                            })
+                            this.setState({ sending: false });
                             return;
                     }
                     Swal.fire({
@@ -179,8 +199,6 @@ class CreateNewUsers extends React.Component {
                 return;
             })
         })
-
-
     }
 
     pageSelector(page) {
@@ -261,9 +279,9 @@ class CreateNewUsers extends React.Component {
                                     maxLength={20}
                                     onChange={(e) => this.setState({ userName: e.target.value })}
                                 />
-                                {this.state.errors.some(error => error === "no_username") ? <p className="text-red-600">ディスプレイ名を入力してください．</p> : null}
-                                {this.state.errors.some(error => error === "username_too_long") ? <p className="text-red-600">ディスプレイ名が長すぎます．</p> : null}
                             </div>
+                            {this.state.errors.some(error => error === "no_username") ? <p className="text-red-600 text-right">ディスプレイ名を入力してください．</p> : null}
+                            {this.state.errors.some(error => error === "username_too_long") ? <p className="text-red-600 text-right">ディスプレイ名が長すぎます．</p> : null}
                             <div className="my-2 flex">
                                 <p>ID:</p>
                                 <div className={"flex ml-auto border border-gray-500 bg-white shadow-md dark:bg-gray-700  rounded-xl w-64 px-5 mx-5 py-2 " + ((this.state.firstAccount || this.state.sending) ? "text-gray-500" : "dark:text-gray-200")}>
@@ -279,6 +297,7 @@ class CreateNewUsers extends React.Component {
                             </div>
                             {this.state.errors.some(error => error === "no_userId") ? <p className="text-red-600">IDを入力してください．</p> : null}
                             {this.state.errors.some(error => error === "not_valid_id") ? <p className="text-red-600">無効なIDです．3〜16文字の英数字，アンダースコアのみ使用できます．</p> : null}
+                            {this.state.errors.some(error => error === "not_valid_id_for_sub") ? <p className="text-red-600">数字のみのアカウントはメインアカウントでのみ使用できます．</p> : null}
 
                             <div className="my-2">
                                 <p>  {this.langChoose({ ja: "自己紹介文", en: "Bio" })}:</p>

@@ -15,13 +15,22 @@ const getDiff = (oldStr, newStr) => {
 }
 
 app.get("/:id", async (req, res, next) => {
-    const post = await db.doc(`posts/${req.params.id}`).get();
-    if (!post.exists) {
+    const postSnap = await db.doc(`posts/${req.params.id}`).get();
+    if (!postSnap.exists) {
         error(res, 404, "post", "Post not found.");
         return;
     }
-    success(res, post.data());
-    next();
+    const post = postSnap.data();
+    if (post.secret !== undefined) {
+        if (post.secret.expired_at !== undefined && moment(moment()).isAfter(post.secret.expired_at)) {
+            console.log("expired");
+            error(res, 404, "post", "Post not found.");
+            return;
+        }
+        delete post.secret;
+    }
+    success(res, post);
+    return;
 });
 
 app.post("/", async (req, res, next) => {
@@ -40,6 +49,10 @@ app.post("/", async (req, res, next) => {
         createdAt: time,
         lastModified: time,
         modifiedTimes: 0
+    }
+    if (req.body.expired_at !== undefined && moment(req.body.expired_at).isValid) {
+        post.secret = {};
+        post.secret.expired_at = moment(req.body.expired_at).format();
     }
 
     await db.doc(`posts/${id}`).set(post);

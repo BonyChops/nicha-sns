@@ -5,6 +5,7 @@ const app = express();
 const postRouter = require("./posts/posts");
 const userSelfRouter = require("./users/usersSelf");
 const userRouter = require("./users/users");
+const listRouter = require("./lists/lists");
 const accountsRouter = require("./accounts/accounts");
 const { error, success, checkParams } = require("../returnResult");
 const { errReport } = require("./errReport");
@@ -70,13 +71,14 @@ app.use("/teapot", (req, res, next) => {
 })
 
 app.use('/users', userSelfRouter);
+app.use('/accounts', accountsRouter);
 
 app.use(async (req, res, next) => {
     if (!checkParams(req, res, ["current_user"], "current_user_not_provided", "You have to provide current user's uid.")) return;
     const currentUser = (req.method === "GET" ? req.query.current_user : req.body.current_user);
     const account = await db.doc(`accounts/${req.account.uid}`).get();
     if (!account.exists) { error(res, 401, "users_not_created", "You've not created first user."); return; }
-    const user = await account.data().users.find(user => user === currentUser);
+    const user = account.data().users.find(user => user.id_str === currentUser);
     if (user === undefined) { error(res, 401, "current_user_not_found", "Uid you've provided is not valid."); return; }
     req.user = user;
     next();
@@ -84,7 +86,7 @@ app.use(async (req, res, next) => {
 
 app.use('/users', userRouter);
 app.use('/posts', postRouter);
-app.use('/accounts', accountsRouter);
+app.use('/lists', listRouter);
 app.get("/err-report", (req, res, next) => {
     //
 })

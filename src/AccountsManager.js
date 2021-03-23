@@ -40,7 +40,7 @@ class AccountsManager extends React.Component {
     componentDidMount() {
     }
 
-    accessor = (state, id = this.props.state.loggedInUsers.find(user => user.selected)) => {
+    accessor = (state, id = this.props.state.loggedInUsers.find(user => user.selected)?.id) => {
         if (id === undefined) return false;
         const keyName = `user_${id}`;
         this.setState({
@@ -49,7 +49,6 @@ class AccountsManager extends React.Component {
     }
 
     userState = (id = (this.props.state.loggedInUsers !== false ? this.props.state.loggedInUsers.find(user => user.selected)?.id : undefined)) => {
-        console.log(id);
         if (this.state === null) return undefined;
         if (id === undefined) return undefined;
         let result = this.state[`user_${id}`];
@@ -62,7 +61,8 @@ class AccountsManager extends React.Component {
         let users = this.props.state.loggedInUsers;
         users = users.map(user => (user.selected = false, user));
         users.find(user => user.id === id).selected = true;
-        this.props.accessor({ loggedInUsers: users })
+        this.props.accessor({ loggedInUsers: users });
+        this.render();
     }
 
     componentDidUpdate(prevProps) {
@@ -104,8 +104,8 @@ class AccountsManager extends React.Component {
                 <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
                     <Router>
                         <Switch>
-                            <Route exact path="/" render={() => <TimeLine state={this.state} baseState={this.props.state} />} />
-                            <Route path="/posts/:id" children={() => <Post data={{
+                            <Route exact path="/" render={() => <TimeLine key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
+                            <Route path="/posts/:id" children={() => <Post key={this.userState()?.userInfo.id} data={{
                                 userInfo: {
                                     username: "BonyChops",
                                     id: "BonyChops",
@@ -113,8 +113,8 @@ class AccountsManager extends React.Component {
                                 },
                                 timestamp: "14 seconds ago",
                                 image: true
-                            }} state={this.state} baseState={this.props.state} accessor={this.accessor} />} />
-                            <Route render={() => <NotFound state={this.state} />} />
+                            }}  state={this.userState()} baseState={this.props.state} accessor={this.accessor} />} />
+                            <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} />} />
                         </Switch>
                     </Router>
                     <br /><br />

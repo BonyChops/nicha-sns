@@ -1,5 +1,6 @@
 const { db, admin } = require('../../firestore.js');
 const functions = require('firebase-functions');
+const moment = require("moment");
 //const { google } = require('googleapis')
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1));
@@ -19,6 +20,8 @@ app.get("/", async (req, res, next) => {
 });
 
 app.get("")
+
+
 
 app.post("/", async (req, res, next) => {
     const users = await db.doc(`accounts/${req.account.uid}`).get();
@@ -59,12 +62,14 @@ app.post("/", async (req, res, next) => {
             }
         }); */
         console.log("-----");
+        const display_id = req.googleAccount.email.match(/^(.*)@(.*)$/)[1];
+        if (!(await db.collection("users").where("display_id", "==", display_id).get()).empty) { error(res, 400, "display_id_already_in_use"); return; }
         let usersInfo = [
             {
                 id,
                 id_str: String(id),
                 icon: req.googleAccount.photoURL,
-                display_id: req.googleAccount.email.match(/^(.*)@(.*)$/)[1],
+                display_id,
                 display_name: req.body.display_name,
                 student: (req.googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) !== null),
                 main: true,
@@ -74,6 +79,7 @@ app.post("/", async (req, res, next) => {
         const userInfo = {
             student: (req.googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) !== null),
             usersAvailable: true,
+            admin: false,
             users: usersInfo
         }
         try {
@@ -87,13 +93,20 @@ app.post("/", async (req, res, next) => {
         }
         userInfo.usersClaim = [];
         userInfo.usersClaim[0] = Object.assign({}, usersInfo[0]);
-        usersInfo[0] = {
-            ...usersInfo[0],
-            followers: 0,
-            follow: 0,
+        const userDetail = {
+            created_at: moment().format(),
+            bio: req.body.bio,
+            topics: []
         }
-        await Promise.all([db.doc(`accounts/${req.account.uid}`).set(userInfo), db.doc(`users/${usersInfo[0].id}`).set(usersInfo[0])])
+        userInfo.users[0].userDetail = db.doc(`users_detail/${usersInfo[0].id_str}`);
+        await Promise.all([
+            db.doc(`accounts/${req.account.uid}`).set(userInfo),
+            db.doc(`users/${usersInfo[0].id}`).set(usersInfo[0]),
+            usersInfo[0].userDetail.set(userDetail)
+        ])
         usersInfo[0].selected = true;
+        usersInfo[0].userDetail = userDetail;
+
         success(res, { users: usersInfo });
         return;
     }
@@ -101,7 +114,8 @@ app.post("/", async (req, res, next) => {
     if (req.body.isMain !== "false") { error(res, 409, "main_already_exists"); return; }
     if (!checkParams(req, res, ["display_name", "bio", "display_id"])) return;
     if (req.body.bio.length > 300) { error(res, 400, "too_long_bio"); return; }
-    if (req.body.display_id.match(/^[\w]{3,16}$/) === null) { error(res, 400, "invalid_display_id"); return; }
+    if (req.body.display_id.match(/(?=^[\w]{3,16})(?!^\d+$)^.+$/) === null) { error(res, 400, "invalid_display_id"); return; }
+    if (!(await db.collection("users").where("display_id", "==", req.body.display_id).get()).empty) { error(res, 400, "display_id_already_in_use"); return; }
     const userInfo = (await db.doc(`accounts/${req.account.uid}`).get()).data();
     let usersInfo = {
         id,
@@ -110,7 +124,8 @@ app.post("/", async (req, res, next) => {
         display_id: req.body.display_id,
         display_name: req.body.display_name,
         student: false,
-        main: false
+        main: false,
+        userDetail: db.doc(`users_detail/${usersInfo.id}`)
     }
     userInfo.users
     userInfo.users.push(usersInfo)
@@ -127,13 +142,15 @@ app.post("/", async (req, res, next) => {
         claimUserInfo.usersAvailable = false;
         await admin.auth().setCustomUserClaims(req.account.uid, claimUserInfo);
     }
-    usersInfo = {
-        ...usersInfo,
-        followers: 0,
-        follow: 0,
+    const userDetail = {
+        created_at: moment().format(),
+        bio: req.body.bio
     }
-    db.doc(`accounts/${req.account.uid}`).set(userInfo)
-    await Promise.all([db.doc(`accounts/${req.account.uid}`).set(userInfo), db.doc(`users/${usersInfo.id}`).set(usersInfo)])
+    await Promise.all([
+        db.doc(`accounts/${req.account.uid}`).set(userInfo),
+        db.doc(`users/${usersInfo.id}`).set(usersInfo),
+        usersInfo.userDetail.set(userDetail)
+    ])
     userInfo.users.slice(-1)[0].selected = true;
     success(res, { users: userInfo.users });
     return;

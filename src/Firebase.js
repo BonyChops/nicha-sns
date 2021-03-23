@@ -43,6 +43,13 @@ const getIdToken = async (forceRefresh = false) => {
     })
 }
 
+global.getToken = async () => {
+    const result = await getIdToken();
+    console.log(result);
+    return result;
+}
+
+global.currentUser = () => firebase.auth().currentUser.providerData.find(data => data.providerId === "google.com");
 
 export { getIdToken };
 export default firebase;

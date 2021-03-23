@@ -20,7 +20,7 @@ import Logo from './resources/logo_full.png';
 import Swal from 'sweetalert2/src/sweetalert2.js'
 import '@sweetalert2/themes/dark';
 import moment from 'moment';
-import EarthquakeWs from './functions/EarthquakeWs';
+//import EarthquakeWs from './functions/EarthquakeWs';
 
 const language = {
   ja: "日本語",
@@ -116,6 +116,7 @@ class App extends React.Component {
             this.setState({
               loggedInUsers: idTokenResult.claims.users
             })
+            console.log(idTokenResult.claims.users)
             return;
           }
           if (idTokenResult.claims.usersAvailable === undefined) {
@@ -131,6 +132,14 @@ class App extends React.Component {
           console.log("Claim users unavailable.");
           console.log("Try to get via REST API...")
           this.authByRESTAPI();
+        }).catch(e => {
+          console.log(e.code);
+          Swal.fire({
+            icon: 'error',
+            title: 'サーバーエラー',
+            text: (e.code === "auth/network-request-failed" ? "サーバーに接続できませんでした．" : 'サーバーのエラーによりログインできませんでした．') + '時間を置いて再読込してみてください...',
+            confirmButtonText: `再読み込み`,
+          }).then(() => window.location.reload());
         })
       } else {
         //未ログイン
@@ -170,6 +179,13 @@ class App extends React.Component {
             confirmButtonText: `再読み込み`,
           }).then(() => window.location.reload());
         }
+      }).catch(e => {
+        Swal.fire({
+          icon: 'error',
+          title: 'サーバーエラー',
+          text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...',
+          confirmButtonText: `再読み込み`,
+        }).then(() => window.location.reload());
       });
     }).catch(function (error) {
       Swal.fire({
@@ -187,7 +203,7 @@ class App extends React.Component {
   }
 
   render() {
-    <EarthquakeWs state={this.state} />
+    {/* <EarthquakeWs state={this.state} /> */}
     return (
       <div className={"App " + (this.state.dark ? "dark" : "")}>
         {!this.state.loggedIn ? (!this.state.loginRequired ? (

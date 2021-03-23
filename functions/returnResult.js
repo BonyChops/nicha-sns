@@ -1,6 +1,7 @@
 const mesDefine = {
     400: { type: "bad_request", mes: "Please check api docs. https://github.com/BonyChops/nicha-sns/blob/main/functions/docs/v1.md" },
     401: { type: "not_authorized", mes: "Not authorized." },
+    403: { type: "forbidden", mes: "Not permitted request." },
     404: { type: "not_found", mes: "Endpoint not found...(nicha" },
     409: { type: "conflict", mes: "Conflicted request." },
     418: { type: "I_am_a_teapot", mes: "Failed to brew coffee with a teapot." },
@@ -35,7 +36,7 @@ exports.success = (res, data = false, statusCode = 200) => {
 }
 
 exports.checkParams = (req, res, required, type = false, mes = false) => {
-    const body = req.body;
+    const body = (req.method === "GET") ? req.query : req.body;
     const result = required.every(param => body[param] !== undefined);
     if (!result) {
         error(res, 400, type, mes);

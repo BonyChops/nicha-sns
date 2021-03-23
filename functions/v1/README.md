@@ -37,8 +37,18 @@ Get all users currently you've logged in
 ### * `POST /users`
 Create new users.
 
-### `GET /users/:id/profile`
+### `GET /users/:id`
 Get users profile.
+
+#### Params
+
+|Param|Value|Details|
+|-----|-----|-------|
+|screen_id|`boolean`|Search users by screen_id|
+|bio|`boolean`|Get bio if you have permission to access|
+|follow|`boolean`|Get Follow users if you have permission to access|
+|followers|`boolean`|Get Followers if you have permission to access|
+
 
 ### * `PUT /users/:id/profile`
 Modify your profile.
@@ -52,11 +62,26 @@ Get post by id
 ### * `POST /post`
 Post new post
 
+|Param|Value|Details|
+|-----|-----|-------|
+|expired_at|`timestamp`|Search users by screen_id|
+
 ### * `PUT /post/:id`
 Modify the post 
 
 ### * `DELETE /post/:id`
 Delete the post
+
+## Lists API
+
+### * `POST /lists`
+Create new list.
+
+#### Params
+
+|Param|Value|Details|
+|-----|-----|-------|
+|members|`boolean`|Users' ids separated by `,`. Invalid id will be automatically rejected.|
 
 ## Teapot API
 
