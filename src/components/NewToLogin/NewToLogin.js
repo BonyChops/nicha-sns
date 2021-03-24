@@ -6,7 +6,7 @@ import { useState } from 'react';
 import ServiceButton from './parts/ServiceButton';
 
 const NewToLogin = (props) => {
-    const langChoose = (property) => (langChooseG(props.state.language, property));
+    const langChoose = (property) => (langChooseG(props.baseState.language, property));
     const [service, setService] = useState(false);
     const closeConfig = () => {
         props.accessor({
@@ -27,6 +27,8 @@ const NewToLogin = (props) => {
             var credential = result.credential;
             var user = result.user;
             // ...
+            props.accessor({popup: false});
+
           }).catch((error) => {
             // Handle Errors here.
             // ...

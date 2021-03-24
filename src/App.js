@@ -11,7 +11,6 @@ import ModifiedHistory from './components/ModifiedHistory/ModifiedHistory';
 import Login from './components/Login/Login';
 import contextSwitcher from './functions/contextSwitcher';
 import nichaConfig from './nicha.config';
-import NewToLogin from './components/NewToLogin/NewToLogin';
 import HyperJump from './components/HyperJump/HyperJump';
 import CreateNewUsers from './components/CreateNewUsers/CreateNewUsers';
 import { getUsers } from './functions/users';
@@ -24,14 +23,14 @@ import moment from 'moment';
 
 const language = {
   ja: "日本語",
-  en: "English"
+  en: "English(β)"
 }
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      earthQuakeWarn: true,
+      earthQuakeWarn: false,
       contextMenu: false,
       contextReturn: false,
       popup: false,
@@ -226,7 +225,6 @@ class App extends React.Component {
           <Footer toggleAccessor={this.toggleAccessor} state={this.state} />
           {(this.state.popup?.title === "usersCreation") ? <CreateNewUsers toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "hyperJump") ? <HyperJump toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
-          {(this.state.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "settings") ? <Configuration toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "modifiedHistory") ? <ModifiedHistory toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}
           {(this.state.popup?.title === "login") ? <Login toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.state} /> : null}

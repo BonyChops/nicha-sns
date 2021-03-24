@@ -1,3 +1,5 @@
+const firebase = require('firebase');
+
 const mesDefine = {
     400: { type: "bad_request", mes: "Please check api docs. https://github.com/BonyChops/nicha-sns/blob/main/functions/docs/v1.md" },
     401: { type: "not_authorized", mes: "Not authorized." },
@@ -43,4 +45,8 @@ exports.checkParams = (req, res, required, type = false, mes = false) => {
         return false;
     }
     return true;
+}
+
+firebase.firestore.DocumentReference.prototype.toJSON = function () {
+    return this.path;
 }

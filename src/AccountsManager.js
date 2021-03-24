@@ -7,6 +7,9 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NotFound from './components/NotFound/NotFound';
 import Post from './components/Post/Post';
 import TimeLine from './components/TimeLine/TimeLine';
+import NewToLogin from './components/NewToLogin/NewToLogin';
+import NewPost from './components/NewPost/NewPost';
+
 const merge = require('deepmerge');
 
 const AddButton = () => (
@@ -113,12 +116,14 @@ class AccountsManager extends React.Component {
                                 },
                                 timestamp: "14 seconds ago",
                                 image: true
-                            }}  state={this.userState()} baseState={this.props.state} accessor={this.accessor} />} />
-                            <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} />} />
+                            }} state={this.userState()} baseState={this.props.state} accessor={this.accessor} />} />
+                            <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
                         </Switch>
                     </Router>
                     <br /><br />
                 </div>
+                {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state}/> : null}
+                {(this.userState()?.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state}/> : null}
             </div>
         )
     }

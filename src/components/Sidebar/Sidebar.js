@@ -4,6 +4,8 @@ import Topics from './parts/Topics'
 import NotificationIcon from '../../resources/notification';
 import PostButton from './parts/PostButton';
 import AddButton from '../../resources/add';
+import Swal from 'sweetalert2';
+import '@sweetalert2/themes/dark';
 
 class Sidebar extends React.Component {
 
@@ -12,10 +14,22 @@ class Sidebar extends React.Component {
     }
 
     addApp = () => {
+        Swal.fire({
+            title: "開発中です！",
+            text: "完成したらTwitterやGitHub，カスタムトークンの発行などができるようになります！\n\n乞うご期待！！"
+        })
+        return;
         this.props.accessor({
             popup: {
                 title: "addApp"
             }
+        })
+    }
+
+    newPost = () => {
+        console.log("a")
+        this.props.accessor({
+            popup: { title: "newPost" }
         })
     }
 
@@ -38,7 +52,7 @@ class Sidebar extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <PostButton  loading={this.props.state?.userInfo === undefined}/>
+                    <PostButton loading={this.props.state?.userInfo === undefined} onClick={this.newPost} />
                 </div>
                 <Topics loading={this.props.state?.userInfo === undefined} title="Topics" prefix="# " topics={[
                     {

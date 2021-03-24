@@ -40,6 +40,11 @@ const Configuration = (props) => {
             })
             return;
         }
+        Swal.fire({
+            title: "開発中です！",
+            text: "リアルタイムで地震速報を受信する仕組みを作っています...(無理かもしれません...)"
+        })
+        return;
         props.accessor({
             earthQuakeWarn: true
         })

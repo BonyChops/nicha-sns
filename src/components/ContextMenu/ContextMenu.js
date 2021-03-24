@@ -3,6 +3,8 @@ import { CSSTransition, Transition } from 'react-transition-group';
 import SettingIcon from '../../resources/setting';
 import SignOutIcon from '../../resources/signout'
 import ContextButton from './parts/button';
+import Swal from 'sweetalert2/src/sweetalert2.js';
+import '@sweetalert2/themes/dark';
 
 const ContextMenu = (props) => {
     const langChoose = (property) => (property[props.state.language]);
@@ -57,7 +59,14 @@ const ContextMenu = (props) => {
                 <div className="w-60 border border-gray-300 rounded-lg bg-white dark:bg-gray-800 flex flex-col text-sm py-4 px-2 dark:text-gray-100 text-gray-900 shadow-lg ">
                     {/* <hr className="my-3 border-gray-300" /> */}
                     <ContextButton title="日本語" onClick={(e) => { returnResult(e, "lang_ja") }} />
-                    <ContextButton title="English" onClick={(e) => { returnResult(e, "lang_en") }} />
+                    <ContextButton title="English(β)" onClick={(e) => {
+                        Swal.fire({
+                            icon: "info",
+                            title: "This language is still beta!",
+                            text: "Translation may not be perfect! Could you report to me(owner) if you found mistranslation? Thanks for your help."
+                        })
+                        returnResult(e, "lang_en")
+                    }} />
                 </div>
             </div>
         )

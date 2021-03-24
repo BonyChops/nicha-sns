@@ -16,7 +16,13 @@ app.get("/", async (req, res, next) => {
         return;
     }
     success(res, users.data());
-    next();
+    console.log(users.data());
+    console.log(JSON.stringify(users.data().users[0].userDetail, null, 2))
+    console.log("----------------------------------")
+    console.log(users.data().users[0].userDetail)
+    console.log(users.data().users[0].userDetail.test())
+    console.log(users.data().users[0].userDetail.toJSON())
+    return;
 });
 
 app.get("")

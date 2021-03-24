@@ -1,5 +1,5 @@
 const NotFound = (props) => {
-    const langChoose = (property) => (property[props.state.language]);
+    const langChoose = (property) => (property[props.baseState.language]);
     return(
         <div className="mx-72 mt-32 text-center dark:text-gray-100">
             <h1 className="text-5xl">404 NotFound</h1>
