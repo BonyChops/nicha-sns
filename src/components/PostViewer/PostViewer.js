@@ -1,8 +1,10 @@
 import gfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { Link, BrowserRouter } from 'react-router-dom';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dark, vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import SyntaxHighlighter from 'react-syntax-highlighter'
+import { vs, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+//import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+//import { dark, vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism'
 const PostViewer = (props) => {
     const powerWordLength = 20;
 
@@ -22,18 +24,24 @@ const PostViewer = (props) => {
         }
         return <Link to={href.match(new RegExp(`^${window.location.origin}(.*)$`))[1]}>{children}</Link>;
     };
+    const breakLine = (props) => {
+        console.log(props);
+        return null;
+    }
 
     const renderers = {
         code: ({ language, value }) => {
-            return <SyntaxHighlighter style={props.baseState.dark ? vscDarkPlus : vs} language={language} children={value} />
+            return <SyntaxHighlighter className="my-2" style={props.baseState.dark ? vs2015 : vs} language={language} children={value} />
         },
-        link: linkBlock
+        link: linkBlock,
+        break: breakLine,
+        thematicBreak: breakLine
     }
 
     return (
         <BrowserRouter>
             <ReactMarkdown
-                className={props.className + " " + (props.children.length < powerWordLength ? "text-3xl" : "text-base")}
+                className={props.className + " whitespace-pre-wrap " + (props.children.length < powerWordLength ? "text-3xl" : "text-base")}
                 plugins={[gfm]}
                 renderers={renderers}
             >

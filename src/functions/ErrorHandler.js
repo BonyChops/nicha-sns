@@ -24,7 +24,7 @@ class ErrorHandler extends React.Component {
     render() {
         if (this.state.hasError) {
             // You can render any custom fallback UI
-            return <p className="text-red-600">投稿の描画に失敗しました</p>;
+            return <p className="text-red-600">投稿の描画に失敗しました．マークダウン記法が間違っている可能性があります．</p>;
         }
 
         return this.props.children;
