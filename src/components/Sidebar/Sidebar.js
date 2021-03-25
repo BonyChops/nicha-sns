@@ -14,11 +14,11 @@ class Sidebar extends React.Component {
     }
 
     addApp = () => {
-        Swal.fire({
+        /* Swal.fire({
             title: "開発中です！",
             text: "完成したらTwitterやGitHub，カスタムトークンの発行などができるようになります！\n\n乞うご期待！！"
         })
-        return;
+        return; */
         this.props.accessor({
             popup: {
                 title: "addApp"

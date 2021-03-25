@@ -40,7 +40,8 @@ class App extends React.Component {
       loginRequired: false,
       hijackAttempted: false,
       loggedIn: false,
-      loggedInUsers: false
+      loggedInUsers: false,
+      hideSadPosts: false,
     }
   }
 

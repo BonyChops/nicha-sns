@@ -12,6 +12,11 @@ const Configuration = (props) => {
             dark: !props.state.dark
         })
     }
+    const toggleSad = () => {
+        props.accessor({
+            hideSadPosts: !props.state.hideSadPosts
+        })
+    }
     const toggleEarthQuakeWarn = () => {
         if (props.state.earthQuakeWarn) {
             Swal.fire({
@@ -94,6 +99,7 @@ const Configuration = (props) => {
                             </button>
                         </div>
                         <CheckBox name={langChoose({ ja: "ダークモード", en: "Dark Mode" })} toggle={props.state.dark} callback={toggleDarkMode} />
+                        <CheckBox name={langChoose({ ja: "悲しい投稿を表示しない", en: "Hide sad posts" }) + "(β)"} toggle={props.state.hideSadPosts} callback={toggleSad} />
                         <CheckBox name={langChoose({ ja: "地震速報を受信する", en: "Receive earthquake early-warning" }) + "(β)"} toggle={props.state.earthQuakeWarn} callback={toggleEarthQuakeWarn} important={true} />
                     </div>
                 </div>

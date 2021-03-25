@@ -21,8 +21,10 @@
     "firebase-functions": "^3.11.0",
     "git-diff": "^2.0.6",
     "googleapis": "^67.1.1",
+    "kuromojin": "^1.5.1",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.33"
+    "moment-timezone": "^0.5.33",
+    "negaposi-analyzer-ja": "^1.0.1"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"

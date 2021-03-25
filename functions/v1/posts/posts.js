@@ -9,6 +9,8 @@ const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1));
 const gitDiff = require("git-diff");
 const partsRouter = require("./parts/parts");
+const kuromojin = require("kuromojin");
+const analyze = require("negaposi-analyzer-ja");
 
 const getDiff = (oldStr, newStr) => {
     return gitDiff(oldStr, newStr, { noHeaders: true, wordDiff: true, flags: "-b --word-diff-regex=." })
@@ -48,8 +50,10 @@ app.post("/", async (req, res, next) => {
         },
         createdAt: time,
         lastModified: time,
-        modifiedTimes: 0
-    }
+        modifiedTimes: 0,
+        feeling: analyze(await kuromojin(req.body.content)),
+    };
+
     if (req.body.expired_at !== undefined && moment(req.body.expired_at).isValid) {
         post.secret = {};
         post.secret.expired_at = moment(req.body.expired_at).format();
