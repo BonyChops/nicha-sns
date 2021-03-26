@@ -22,7 +22,7 @@ const PostViewer = (props) => {
         if (href.slice(0, 1) == '#') {
             return <a href={href}>{children}</a>;
         }
-        return <Link to={href.match(new RegExp(`^${window.location.origin}(.*)$`))[1]}>{children}</Link>;
+        return <Link key={props.children} to={href.match(new RegExp(`^${window.location.origin}(.*)$`))[1]}>{children}</Link>;
     };
     const breakLine = (props) => {
         console.log(props);
@@ -31,7 +31,7 @@ const PostViewer = (props) => {
 
     const renderers = {
         code: ({ language, value }) => {
-            return <SyntaxHighlighter className="my-2" style={props.baseState.dark ? vs2015 : vs} language={language} children={value} />
+            return (value !== undefined ? <SyntaxHighlighter className="my-2 text-sm" style={props.baseState.dark ? vs2015 : vs} language={language} children={value} /> : null)
         },
         link: linkBlock,
         break: breakLine,
@@ -41,9 +41,10 @@ const PostViewer = (props) => {
     return (
         <BrowserRouter>
             <ReactMarkdown
-                className={props.className + " whitespace-pre-wrap " + (props.children.length < powerWordLength ? "text-3xl" : "text-base")}
+                className={props.className + " whitespace-pre-wrap w-full break-words  " + (props.children.length < powerWordLength ? "text-3xl" : "text-base")}
                 plugins={[gfm]}
                 renderers={renderers}
+                history={props.history}
             >
                 {props.children}
             </ReactMarkdown>

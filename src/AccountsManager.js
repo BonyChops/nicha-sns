@@ -3,12 +3,15 @@ import firebase from './Firebase';
 import nichaConfig from './nicha.config';
 import { getUsers } from './functions/users';
 import Sidebar from './components/Sidebar/Sidebar';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Router } from "react-router"
 import NotFound from './components/NotFound/NotFound';
 import Post from './components/Post/Post';
 import TimeLine from './components/TimeLine/TimeLine';
 import NewToLogin from './components/NewToLogin/NewToLogin';
 import NewPost from './components/NewPost/NewPost';
+import { createBrowserHistory } from "history";
+const history = createBrowserHistory();
 
 const merge = require('deepmerge');
 
@@ -105,25 +108,32 @@ class AccountsManager extends React.Component {
                 </div>
                 <Sidebar accessor={this.accessor} state={this.userState()} />
                 <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
-                    <Router>
-                        <Switch>
-                            <Route exact path="/" render={() => <TimeLine key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
-                            <Route path="/posts/:id" children={() => <Post key={this.userState()?.userInfo.id} data={{
-                                userInfo: {
-                                    username: "BonyChops",
-                                    id: "BonyChops",
-                                    icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
-                                },
-                                timestamp: "14 seconds ago",
-                                image: true
-                            }} state={this.userState()} baseState={this.props.state} accessor={this.accessor} />} />
-                            <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
-                        </Switch>
-                    </Router>
+                    <BrowserRouter>
+                        <div>
+                            <Switch>
+                                <Route exact path="/" render={(props) => <TimeLine
+                                    key={this.userState()?.userInfo.id}
+                                    state={this.state}
+                                    baseState={this.props.state}
+                                    {...props}
+                                />} />
+                                <Route path="/posts/:id" children={(props) => (<Post
+                                    history={props.history}
+                                    key={props.match.params.id}
+                                    state={this.userState()}
+                                    baseState={this.props.state}
+                                    accessor={this.accessor}
+                                    {...props}
+                                />)
+                                } />
+                                <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
+                            </Switch>
+                            {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
+                            {(this.userState()?.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
+                        </div>
+                    </BrowserRouter>
                     <br /><br />
                 </div>
-                {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state}/> : null}
-                {(this.userState()?.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state}/> : null}
             </div>
         )
     }

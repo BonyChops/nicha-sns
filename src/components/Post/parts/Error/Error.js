@@ -1,20 +1,10 @@
 import Icon from '../../../../resources/logo.png';
-import gfm from 'remark-gfm';
-import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dark, vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import PostViewer from '../../../PostViewer/PostViewer';
+import ErrorHandler from '../../../../functions/ErrorHandler';
 import statusCodes from '../../../../functions/statusCodes';
 
 export default (props) => {
-    const renderers = {
-        code: ({ language, value }) => {
-            return <SyntaxHighlighter style={props.baseState.dark ? vscDarkPlus : vs} language={language} children={value} />
-        }
-    }
     const codes = statusCodes(props.baseState.language, props.errorData.type);
-    console.log(props.baseState);
-    console.log(codes)
-    console.log(props.errorData.type);
     return (
         <div className="bg-white dark:bg-gray-900 max-w-md mx-auto border border-grey-light rounded-b-lg shadow-2xl overflow-hidden">
             <div className="flex pt-4 px-4">
@@ -30,9 +20,11 @@ export default (props) => {
                         </a>
                     </header>
                     <article className="py-4 text-gray-800 dark:text-gray-300 w-80">
-                        <ReactMarkdown plugins={[gfm]} renderers={renderers}>
-                            {codes.mes + "\n```\n" + JSON.stringify(props.errorData, null, 2) + "\n```"}
-                        </ReactMarkdown>
+                        <ErrorHandler>
+                            <PostViewer className={"h-full w-full overflow-auto"} baseState={props.baseState}>
+                                {codes.mes + "\n```\n" + JSON.stringify(props.errorData, null, 2) + "\n```"}
+                            </PostViewer>
+                        </ErrorHandler>
                     </article>
                 </div>
             </div>

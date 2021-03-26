@@ -135,14 +135,14 @@ class CreateNewUsers extends React.Component {
                                 icon: 'error',
                                 title: 'アカウントを作成できませんでした',
                                 text: `ユーザーID: ${this.state.userId}はすでに存在します．`,
-                                cancelButtonText: 'エラーの内容を表示する',
-                                showCancelButton: true
+                                denyButtonText: 'エラーの内容を表示する',
+                                showDenyButton: true
                             }).then(res => {
-                                if (res.isDismissed) {
+                                if (res.isDenied) {
                                     Swal.fire({
                                         icon: "info",
                                         title: "Error Log",
-                                        html: `You can also check these info by opening debug console.<br /><br /><pre><code>${JSON.stringify(result, null, 2)}</code></pre>`
+                                        html: `You can also check these info by opening debug console.<br /><br /><div class="text-left overflow-auto"><pre><code>${JSON.stringify(result, null, 2)}</code></pre></div>`
                                     })
                                 }
                             })
@@ -160,7 +160,7 @@ class CreateNewUsers extends React.Component {
                             Swal.fire({
                                 icon: "info",
                                 title: "Error Log",
-                                html: `You can also check these info by opening debug console.<br /><br /><pre><code>${JSON.stringify(result, null, 2)}</code></pre>`
+                                html: `You can also check these info by opening debug console.<br /><br /><div class="text-left overflow-auto"><pre><code>${JSON.stringify(result, null, 2)}</code></pre></div>`
                             })
                         }
                     })

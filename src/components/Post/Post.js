@@ -4,10 +4,6 @@ import HeartFilledIcon from '../../resources/heartFilled';
 import DislikeIcon from '../../resources/dislike';
 import CommentIcon from '../../resources/comment';
 import CalenderIcon from '../../resources/calender';
-import gfm from 'remark-gfm';
-import ReactMarkdown from 'react-markdown'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dark, vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import CommitIcon from '../../resources/modify';
 import { langChooseG } from '../Configuration/Configuration';
 import { useState, useEffect } from 'react';
@@ -17,35 +13,27 @@ import Loading from './parts/Loading/Loading';
 import Error from './parts/Error/Error';
 import getDate from '../../functions/getDate';
 import firebase, { getIdToken } from '../../Firebase';
-import moment from 'moment';
+import PostViewer from '../PostViewer/PostViewer';
+import ErrorHandler from '../../functions/ErrorHandler';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 const Post = (props) => {
+    console.log(props)
     const { id } = useParams();
     const [postData, setPost] = useState(false);
     const [fetchingFlag, setFlag] = useState(false);
     useEffect(() => {
-        if (fetchingFlag === false && props.state !== undefined) {
+        if (fetchingFlag === false && props.state !== undefined && postData === false) {
             console.log("Start fetching...");
             console.log(props.state)
             getIdToken().then(token => {
-                getPost(token, props.state.userInfo.id, id).then(value => { setPost(value) });
+                getPost(token, props.state.userInfo.id, id).then(value => { setPost(value) }).catch(e => { setPost(e) });
             })
             setFlag(true);
         } else {
             // console.log(props.state.authData);
         }
-        if (postData !== false && JSON.stringify(postData) !== JSON.stringify(props.state.currentPost)) {
-            props.accessor({
-                currentPost: postData
-            })
-        }
     })
-
-    const renderers = {
-        code: ({ language, value }) => {
-            return <SyntaxHighlighter style={props.baseState.dark ? vscDarkPlus : vs} language={language} children={value} />
-        }
-    }
     const openModified = () => {
         props.accessor({
             popup: {
@@ -57,9 +45,9 @@ const Post = (props) => {
         <div className="font-sans">
             <div className="font-sans">
                 {postData === false || postData === undefined ? (
-                    <Loading />
+                    <Loading key={id} />
                 ) : ((postData.status == "error") ? (
-                    <Error errorData={postData} baseState={props.baseState} />
+                    <Error key={id} errorData={postData} baseState={props.baseState} />
                 ) : (
                     <div className="bg-white dark:bg-gray-900 max-w-md mx-auto border border-grey-light rounded-b-lg shadow-2xl overflow-hidden">
                         {(postData.image !== false && postData.image !== undefined) ? (<div className="flex flex-wrap no-underline text-black h-64 overflow-hidden">
@@ -81,13 +69,13 @@ const Post = (props) => {
                         <div className="flex pt-4 px-4">
                             <div className="w-16 mr-2">
                                 <img className="w-16 rounded-full border-green-600 border-2"
-                                    src={props.data.userInfo.icon} />
+                                    src={postData.author.icon} />
                             </div>
                             <div className="px-2 pt-2 flex-grow">
                                 <header>
                                     <a href="#" className="text-black dark:text-white no-underline">
-                                        <span className="font-medium mr-2">{props.data.userInfo.username}</span>
-                                        <span className="font-normal text-gray-400 text">@{props.data.userInfo.id}</span>
+                                        <span className="font-medium mr-2">{postData.author.display_name}</span>
+                                        <span className="font-normal text-gray-400 text">@{postData.author.display_id}</span>
                                     </a>
                                     <div className="text-xs text-gray-400 flex items-center my-1">
                                         <CalenderIcon />
@@ -95,16 +83,20 @@ const Post = (props) => {
                                     </div>
                                 </header>
                                 <article className="py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap">
-                                    <ReactMarkdown plugins={[gfm]} renderers={renderers}>
-                                        {postData.content.body}
-                                    </ReactMarkdown>
+                                    <BrowserRouter>
+                                        <ErrorHandler>
+                                            <PostViewer className={"h-full w-full overflow-auto"} baseState={props.baseState} history={props.history}>
+                                                {postData.content.body}
+                                            </PostViewer>
+                                        </ErrorHandler>
+                                    </BrowserRouter>
                                 </article>
                                 <footer className="border-t border-grey-lighter text-sm dark:text-gray-500 text-gray-600 my-2">
-                                    <a href="#" className="block no-underline text-blue-600 px-4 py-2 items-center hover:bg-grey-lighter">
+                                    <a href="#" className="flex no-underline text-blue-600 px-4 py-2 items-center hover:bg-grey-lighter">
                                         <LikeIcon />
                                         <span>1</span>
                                     </a>
-                                    <a href="#" className="block no-underline px-4 py-2 items-center hover:bg-grey-lighter text-pink-700">
+                                    <a href="#" className="flex no-underline px-4 py-2 items-center hover:bg-grey-lighter text-pink-700">
                                         {/* <HeartIcon className="w-6 h-6"/> */} <HeartFilledIcon className="w-6 h-6 mr-2" />
                                         <span>34</span>
                                     </a>

@@ -53,10 +53,8 @@ app.use(async (req, res, next) => {
             admin.auth().deleteUser(account.uid);
             return;
         }
-        console.log(googleAccount);
         req.account = account;
         req.googleAccount = googleAccount;
-        console.log(decodedToken);
         next();
     }
 })

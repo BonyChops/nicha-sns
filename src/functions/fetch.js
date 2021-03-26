@@ -15,7 +15,7 @@ const fetchGet = async (uri, auth = false, currentUser = false) => {
 }
 
 const fetchPost = async (uri, data, auth = false, currentUser = false) => {
-    const body = Object.keys(data).map(key => (`${encodeURI(key)}=${encodeURI(data[key])}`)).join("&") + (auth !== false ? `&authorization=${auth}` : "")+ (currentUser !== false ? `&current_user=${currentUser}` : "");
+    const body = Object.keys(data).map(key => (`${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)).join("&") + (auth !== false ? `&authorization=${auth}` : "")+ (currentUser !== false ? `&current_user=${currentUser}` : "");
     return await new Promise((resolve, reject) => request(uri + (auth !== false ? `?authorization=${auth}` : ""), {
         method: "POST",
         headers: {

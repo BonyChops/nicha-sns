@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react';
 import { langChooseG } from '../Configuration/Configuration';
 import CloseIcon from '../../resources/close';
 import { useState } from 'react';
@@ -6,6 +7,9 @@ import PostViewer from '../PostViewer/PostViewer';
 import CheckBox from '../parts/Toggle';
 import ErrorHandler from '../../functions/ErrorHandler';
 import Swal from 'sweetalert2';
+import firebase, { getIdToken } from '../../Firebase';
+import { postPost } from '../../functions/post';
+import { useHistory } from 'react-router-dom';
 
 const NewPost = (props) => {
     const powerWordLength = 20;
@@ -40,7 +44,11 @@ const NewPost = (props) => {
         setSubmit(false);
     }
     const successPreview = () => {
+        console.log("assfwadfewagwaegeawgewgewagwragewag")
         setPreviewRendered(true);
+        if (submitSw) {
+            submit();
+        }
     }
     const confirm = () => {
         setSubmit(true);
@@ -51,12 +59,60 @@ const NewPost = (props) => {
         }
     }
     const submit = () => {
-        if (!(previewRendered && submitSw)) {
-            return;
-        }
-        setSubmitting(true)
-        setSubmitting(false)
-        setSubmit(false);
+        setSubmitting(true);
+        getIdToken().then(token => {
+            console.log(token);
+            postPost(token, props.state.userInfo.id, {
+                content: post
+            }).then(post => {
+                if (post.status === "ok") {
+                    Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        confirmButtonText: "表示",
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    }).fire({
+                        icon: 'success',
+                        title: '投稿しました(nicha...'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            jumpPage(post.id);
+                            props.accessor({ popup: false });
+                        }
+                    })
+                    props.accessor({ popup: false });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '投稿できませんでした',
+                        text: `サーバーのエラーにより投稿できませんでした．時間を置いて再読込してみてください...`,
+                        denyButtonText: 'エラーの内容を表示する',
+                        showDenyButton: true
+                    }).then(res => {
+                        if (res.isDenied) {
+                            Swal.fire({
+                                icon: "info",
+                                title: "Error Log",
+                                html: `You can also check these info by opening debug console.<br /><br /><div class="text-left overflow-auto"><pre><code>${JSON.stringify(post, null, 2)}</code></pre>
+                                </div>`
+                            })
+                        }
+                    })
+                }
+                setSubmitting(false);
+                setSubmit(false);
+            })
+
+        })
+    }
+    const history = useHistory();
+    const jumpPage = (id) => {
+        history.push(`/posts/${id}`);
     }
     /* const handleKeyDown = (e) => {
 
@@ -98,10 +154,10 @@ const NewPost = (props) => {
                                     placeholder="今どんな気持ち？"
                                     value={post}
                                     onChange={postHandler}
-                                   /*  onKeyDown={handleKeyDown.bind(this)} */
+                                /*  onKeyDown={handleKeyDown.bind(this)} */
                                 />) : (
                                 <ErrorHandler error={errorHandled} callback={successPreview}>
-                                    <PostViewer className={"h-full w-full overflow-auto"} baseState={props.baseState}>
+                                    <PostViewer className={"h-full w-full overflow-y-auto"} baseState={props.baseState}>
                                         {post}
                                     </PostViewer>
                                 </ErrorHandler>

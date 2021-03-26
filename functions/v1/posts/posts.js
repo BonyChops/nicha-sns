@@ -23,6 +23,7 @@ app.get("/:id", async (req, res, next) => {
         return;
     }
     const post = postSnap.data();
+    post.author = (await post.author.get()).data();
     if (post.secret !== undefined) {
         if (post.secret.expired_at !== undefined && moment(moment()).isAfter(post.secret.expired_at)) {
             console.log("expired");
@@ -36,18 +37,21 @@ app.get("/:id", async (req, res, next) => {
 });
 
 app.post("/", async (req, res, next) => {
+    const postLimits = 2000;
     if (!checkParams(req, res, ["content"])) return;
+    if (req.body.content.length > 2000) { error(res, 400, "too_long_content"); return; }
     const time = moment().format();
     let id
     do {
         id = moment(time).format("YYYYMMDDHHmmSS") + genRandomDigits(4);
     } while (await db.doc(`posts/${id}`).get().exists);
-
+    console.log(req.body.content);
     const post = {
         id,
         content: {
             body: req.body.content
         },
+        author: db.doc(`users/${req.user.id}`),
         createdAt: time,
         lastModified: time,
         modifiedTimes: 0,
@@ -61,6 +65,7 @@ app.post("/", async (req, res, next) => {
 
     await db.doc(`posts/${id}`).set(post);
     success(res, post);
+    return;
 })
 
 app.put("/:id", async function (req, res, next) {

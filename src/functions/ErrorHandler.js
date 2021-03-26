@@ -12,13 +12,17 @@ class ErrorHandler extends React.Component {
     }
 
     componentDidCatch(error, errorInfo) {
-        this.props.error(error, errorInfo);
+        if (typeof this.props.error === "function") {
+            this.props.error(error, errorInfo);
+        }
         console.error(error);
         console.error(errorInfo);
     }
 
-    componentDidMount(){
-        this.props.callback();
+    componentDidMount() {
+        if (typeof this.props.callback === "function") {
+            this.props.callback();
+        }
     }
 
     render() {
