@@ -131,7 +131,7 @@ app.post("/", async (req, res, next) => {
         display_name: req.body.display_name,
         student: false,
         main: false,
-        userDetail: db.doc(`users_detail/${usersInfo.id}`)
+        userDetail: db.doc(`users_detail/${id}`)
     }
     userInfo.users
     userInfo.users.push(usersInfo)

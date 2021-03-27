@@ -106,9 +106,10 @@ class AccountsManager extends React.Component {
                         </div>
                     )}
                 </div>
-                <Sidebar accessor={this.accessor} state={this.userState()} />
-                <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
-                    <BrowserRouter>
+
+                <BrowserRouter>
+                    <Sidebar accessor={this.accessor} state={this.userState()} />
+                    <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
                         <div>
                             <Switch>
                                 <Route exact path="/" render={(props) => <TimeLine
@@ -131,9 +132,9 @@ class AccountsManager extends React.Component {
                             {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
                             {(this.userState()?.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
                         </div>
-                    </BrowserRouter>
-                    <br /><br />
-                </div>
+                        <br /><br />
+                    </div>
+                </BrowserRouter>
             </div>
         )
     }

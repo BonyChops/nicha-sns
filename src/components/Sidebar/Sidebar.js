@@ -6,6 +6,8 @@ import PostButton from './parts/PostButton';
 import AddButton from '../../resources/add';
 import Swal from 'sweetalert2';
 import '@sweetalert2/themes/dark';
+import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 class Sidebar extends React.Component {
 
@@ -14,11 +16,11 @@ class Sidebar extends React.Component {
     }
 
     addApp = () => {
-        /* Swal.fire({
+        Swal.fire({
             title: "開発中です！",
             text: "完成したらTwitterやGitHub，カスタムトークンの発行などができるようになります！\n\n乞うご期待！！"
         })
-        return; */
+        return;
         this.props.accessor({
             popup: {
                 title: "addApp"
@@ -34,7 +36,7 @@ class Sidebar extends React.Component {
     }
 
     render() {
-        console.log(this.props.state);
+        console.log(window.location);
         return (
             <div className="bg-indigo-900 text-purple-lighter flex-none w-64 pb-6 hidden lg:block scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 <div className="text-white mb-2 mt-3 px-4 flex justify-between">
@@ -54,6 +56,14 @@ class Sidebar extends React.Component {
                 <div>
                     <PostButton loading={this.props.state?.userInfo === undefined} onClick={this.newPost} />
                 </div>
+                <Topics loading={this.props.state?.userInfo === undefined} hideTitle={true} topics={[
+                    {
+                        title: "Home",
+                        home: true,
+                        selected: this.props.location.pathname.match(/^\/$/) !== null,
+                        to: "/"
+                    }
+                ]} />
                 <Topics loading={this.props.state?.userInfo === undefined} title="Topics" prefix="# " topics={[
                     {
                         title: "エヴァネタバレ"
@@ -72,8 +82,7 @@ class Sidebar extends React.Component {
                     },
                     {
                         title: "programming",
-                        isOfficial: true,
-                        selected: true
+                        isOfficial: true
                     },
                     {
                         title: "WACCA"
@@ -136,4 +145,4 @@ class Sidebar extends React.Component {
     }
 }
 
-export default Sidebar
+export default withRouter(Sidebar)
