@@ -65,14 +65,18 @@ app.post("/", async (req, res, next) => {
 
     //Lists Search
     const targetLists = await db.collectionGroup("listUsers").where("id", "==", req.user.id).get();
+    await db.doc(`posts/${id}`).set(post);
     if (!targetLists.empty) {
         console.log("Matched");
         targetLists.forEach(async (list) => {
-            console.log(list.parent);
+            list.ref.parent.parent.collection("listPosts").doc(id).set({
+                id,
+                created_at: time,
+                post_reference: db.doc(`posts/${id}`)
+            })
+            console.log();
         })
     }
-
-    await db.doc(`posts/${id}`).set(post);
     success(res, post);
     return;
 });
