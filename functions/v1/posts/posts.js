@@ -63,10 +63,19 @@ app.post("/", async (req, res, next) => {
         post.secret.expired_at = moment(req.body.expired_at).format();
     }
 
+    //Lists Search
+    const targetLists = await db.collectionGroup("listUsers").where("id", "==", req.user.id).get();
+    if (!targetLists.empty) {
+        console.log("Matched");
+        targetLists.forEach(async (list) => {
+            console.log(list.parent);
+        })
+    }
+
     await db.doc(`posts/${id}`).set(post);
     success(res, post);
     return;
-})
+});
 
 app.put("/:id", async function (req, res, next) {
     if (!checkParams(req, res, ["content"])) return;

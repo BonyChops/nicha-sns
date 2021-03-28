@@ -20,12 +20,10 @@ app.get("/", async (req, res, next) => {
     console.log(JSON.stringify(users.data().users[0].userDetail, null, 2))
     console.log("----------------------------------")
     console.log(users.data().users[0].userDetail)
-    console.log(users.data().users[0].userDetail.test())
     console.log(users.data().users[0].userDetail.toJSON())
+    console.log((await users.data().users[0].userDetail.get()).data())
     return;
 });
-
-app.get("")
 
 
 
@@ -34,6 +32,7 @@ app.post("/", async (req, res, next) => {
     if (!checkParams(req, res, ["isMain"])) return;
     if (req.body.bio.length > 300) { error(res, 400, "too_long_bio"); return; }
     const id = genRandomDigits(16);
+    const listId = genRandomDigits(16);
     if (!users.exists) {
         //Main account
         if (!checkParams(req, res, ["display_name", "bio"])) return;
@@ -79,6 +78,8 @@ app.post("/", async (req, res, next) => {
                 display_name: req.body.display_name,
                 student: (req.googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) !== null),
                 main: true,
+                userDetail: db.doc(`users_detail/${id}`),
+                follow: db.doc(`lists/${listId}`)
                 //longData: "nawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapvawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapvawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapv"
             }
         ]
@@ -104,12 +105,28 @@ app.post("/", async (req, res, next) => {
             bio: req.body.bio,
             topics: []
         }
-        userInfo.users[0].userDetail = db.doc(`users_detail/${usersInfo[0].id_str}`);
+        const followList = {
+            id: listId,
+            id_str: String(listId),
+            scope_type: "secret"
+        }
         await Promise.all([
             db.doc(`accounts/${req.account.uid}`).set(userInfo),
             db.doc(`users/${usersInfo[0].id}`).set(usersInfo[0]),
-            usersInfo[0].userDetail.set(userDetail)
-        ])
+            usersInfo[0].userDetail.set(userDetail),
+            usersInfo[0].follow.set(followList),
+            usersInfo[0].follow.collection("listUsers").doc(String(id)).set({
+                id,
+                listed_at: moment().format(),
+                user_reference: db.doc(`users/${id}`)
+            }),
+            usersInfo[0].follow.collection("listScopeUsers").doc(String(id)).set({
+                id,
+                listed_at: moment().format(),
+                user_reference: db.doc(`users/${id}`)
+            }),
+        ]);
+
         usersInfo[0].selected = true;
         usersInfo[0].userDetail = userDetail;
 
@@ -131,7 +148,8 @@ app.post("/", async (req, res, next) => {
         display_name: req.body.display_name,
         student: false,
         main: false,
-        userDetail: db.doc(`users_detail/${id}`)
+        userDetail: db.doc(`users_detail/${id}`),
+        follow: db.doc(`lists/${listId}`)
     }
     userInfo.users
     userInfo.users.push(usersInfo)
@@ -152,10 +170,27 @@ app.post("/", async (req, res, next) => {
         created_at: moment().format(),
         bio: req.body.bio
     }
+    userInfo.users[0].follow = db.doc(`lists/${listId}`);
+    const followList = {
+        id: listId,
+        id_str: String(listId),
+        scope_type: "secret"
+    }
     await Promise.all([
         db.doc(`accounts/${req.account.uid}`).set(userInfo),
         db.doc(`users/${usersInfo.id}`).set(usersInfo),
-        usersInfo.userDetail.set(userDetail)
+        usersInfo.userDetail.set(userDetail),
+        usersInfo.follow.set(followList),
+        usersInfo.follow.collection("listUsers").doc(String(id)).set({
+            id,
+            listed_at: moment().format(),
+            user_reference: db.doc(`users/${id}`)
+        }),
+        usersInfo.follow.collection("listScopeUsers").doc(String(id)).set({
+            id,
+            listed_at: moment().format(),
+            user_reference: db.doc(`users/${id}`)
+        }),
     ])
     userInfo.users.slice(-1)[0].selected = true;
     success(res, { users: userInfo.users });

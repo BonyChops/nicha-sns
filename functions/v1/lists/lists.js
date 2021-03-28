@@ -16,17 +16,10 @@ app.get("/:id/profile", (req, res, next) => {
 
 app.post("/", async (req, res, next) => {
     if (!checkParams(req, res, ["members", "display_name", "type"])) { return };
-    if (!(["full_controlled", "public"]).includes(req.body.type)) { error(res, 400, "invalid_type"); return; }
+    if (!(["full_controlled", "public", "secret"]).includes(req.body.type)) { error(res, 400, "invalid_type"); return; }
     const membersList = [...new Set(req.body.members.split(","))].filter(name => name !== "").map(name => String(name));
     if (!membersList.includes(req.user.id_str)) { membersList.push(req.user.id_str) };
     console.log(membersList);
-    const members = [];
-    let currentUserRef;
-    for (const display_id in membersList) {
-        const userRefs = db.doc(`users/${membersList[display_id]}`);
-        if(membersList[display_id] === req.user.id_str) currentUserRef = userRefs;
-        if ((await userRefs.get()).exists) members.push(userRefs);
-    }
     console.log(members);
     let id;
     do {
@@ -41,6 +34,19 @@ app.post("/", async (req, res, next) => {
         created_by: currentUserRef
     }
     await db.doc(`lists/${id}`).set(list);
+    const members = [];
+    let currentUserRef;
+    for (const display_id in membersList) {
+        const userRefs = db.doc(`users/${membersList[display_id]}`);
+        if(membersList[display_id] === req.user.id_str) currentUserRef = userRefs;
+        if ((await userRefs.get()).exists) {
+            db.doc(`lists/${id}`).collection("listUsers").doc(String(display_id)).set({
+                id: Number(display_id),
+                listed_at: moment().format(),
+                user_reference: userRefs
+            })
+        };
+    }
     list.members = membersList;
     list.created_by = req.user.id;
     success(res, list);

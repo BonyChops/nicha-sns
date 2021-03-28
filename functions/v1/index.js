@@ -6,6 +6,7 @@ const postRouter = require("./posts/posts");
 const userSelfRouter = require("./users/usersSelf");
 const userRouter = require("./users/users");
 const listRouter = require("./lists/lists");
+const topicRouter = require("./topics/topics");
 const accountsRouter = require("./accounts/accounts");
 const { error, success, checkParams } = require("../returnResult");
 const { errReport } = require("./errReport");
@@ -85,6 +86,7 @@ app.use(async (req, res, next) => {
 app.use('/users', userRouter);
 app.use('/posts', postRouter);
 app.use('/lists', listRouter);
+app.use('/topics', topicRouter);
 app.get("/err-report", (req, res, next) => {
     //
 })
