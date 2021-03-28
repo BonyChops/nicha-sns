@@ -8,10 +8,32 @@ const { user } = require('firebase-functions/lib/providers/auth');
 const app = express();
 
 
-app.get("/:id/profile", (req, res, next) => {
-    const screenNameMode = (req.query.screen_id === "true");
-    console.log(req.params);
-    console.log(req.query);
+app.get("/:id", async (req, res, next) => {
+    const listRef = db.doc(`lists/${req.params.id}`);
+    const list = await listRef.get();
+    if (!list.exists) { error(res, 404, "lists"); return; }
+    if (
+        list.scope_type === "secret"
+        && !(await listRef.collection("listScopeUsers").doc(String(req.user.id)).get()).exists
+    ) { error(res, 404, "lists"); return; }
+    const result = {};
+    if (req.query.posts === "true") {
+        const postSnaps = await listRef.collection("listPosts").orderBy("id", "desc").limit(50).get();
+        const posts = [];
+        if (!postSnaps.empty) {
+            for (let key in (postSnaps.docs)) {
+                console.log(postSnaps.docs[key].data());
+                const postData = await postSnaps.docs[key].data().post_reference.get()
+                if (postData.exists) posts.push(postData.data());
+            }
+        }
+        result.posts = posts;
+    }
+    if (req.query.members === "true") {
+        //
+    }
+    success(res, result);
+    return;
 });
 
 app.post("/", async (req, res, next) => {
@@ -38,7 +60,7 @@ app.post("/", async (req, res, next) => {
     let currentUserRef;
     for (const display_id in membersList) {
         const userRefs = db.doc(`users/${membersList[display_id]}`);
-        if(membersList[display_id] === req.user.id_str) currentUserRef = userRefs;
+        if (membersList[display_id] === req.user.id_str) currentUserRef = userRefs;
         if ((await userRefs.get()).exists) {
             db.doc(`lists/${id}`).collection("listUsers").doc(String(display_id)).set({
                 id: Number(display_id),
