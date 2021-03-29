@@ -1,9 +1,29 @@
 import React from 'react';
+import { withRouter } from 'react-router';
 import Post from './parts/Post';
+import { cacheList } from '../../functions/lists';
+import firebase, { getIdToken } from '../../Firebase';
 
 class TimeLine extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            listId: (this.props.location.pathname === "/") ? this.props.state.userInfo.follow.match(/^lists\/(.*)$/)[1] : this.props.match.params.id
+        }
+    }
+
+    componentDidMount = () => {
+        if (this.props.state?.lists?.[this.state.listId] === undefined) {
+            console.log("aaa");
+            getIdToken().then(token => cacheList(
+                token,
+                this.props.state.userInfo.id,
+                this.state.listId,
+                true,
+                false,
+                this.props.accessor
+            ));
+        }
     }
 
     render() {
@@ -49,10 +69,10 @@ int main(){
                     },
                     timestamp: "14 seconds ago",
                     contents: "俺のへ臭すぎ",
-                }} state={this.props.state} baseState={this.props.baseState}/>
+                }} state={this.props.state} baseState={this.props.baseState} />
             </div>
         )
     }
 }
 
-export default TimeLine;
+export default withRouter(TimeLine);

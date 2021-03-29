@@ -1,12 +1,11 @@
 import request from 'request';
 
-const fetchGet = async (uri, auth = false, currentUser = false) => {
-    const obj = {
-        authorization: auth,
-        current_user: currentUser
-    }
+const fetchGet = async (uri, auth = false, currentUser = false, params = {}) => {
+    const obj = params;
+    obj.authorization = auth;
+    obj.current_user = currentUser;
     console.log(currentUser)
-    return await new Promise((resolve, reject) => request(uri + ("?" + Object.keys(obj).map(key => (`${encodeURI(key)}=${encodeURI(obj[key])}`)).join("&")), { method: "GET" }, (error, response, body) => {
+    return await new Promise((resolve, reject) => request(uri + ("?" + Object.keys(obj).map(key => (`${encodeURIComponent(String(key))}=${encodeURIComponent(String(obj[key]))}`)).join("&")), { method: "GET" }, (error, response, body) => {
         if (error) {
             reject(error);
         }

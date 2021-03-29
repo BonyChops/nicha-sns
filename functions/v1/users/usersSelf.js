@@ -3,7 +3,7 @@ const functions = require('firebase-functions');
 const moment = require("moment");
 //const { google } = require('googleapis')
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
-const genRandomDigits = (digits) => (rand(10 ** digits, (10 ** (digits + 1)) - 1));
+const genRandomDigits = (digits) => (rand(10 ** (digits - 1), (10 ** digits) - 1));
 const { error, success, checkParams } = require("../../returnResult");
 const express = require("express");
 const app = express();

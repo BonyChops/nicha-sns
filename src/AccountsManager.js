@@ -107,15 +107,16 @@ class AccountsManager extends React.Component {
                     )}
                 </div>
 
-                <BrowserRouter>
+                {this.userState() === undefined ? null : (<BrowserRouter>
                     <Sidebar accessor={this.accessor} state={this.userState()} />
                     <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
                         <div>
                             <Switch>
                                 <Route exact path="/" render={(props) => <TimeLine
                                     key={this.userState()?.userInfo.id}
-                                    state={this.state}
+                                    state={this.userState()}
                                     baseState={this.props.state}
+                                    accessor={this.accessor}
                                     {...props}
                                 />} />
                                 <Route path="/posts/:id" children={(props) => (<Post
@@ -127,6 +128,13 @@ class AccountsManager extends React.Component {
                                     {...props}
                                 />)
                                 } />
+                                <Route path="/lists/:id" render={(props) => <TimeLine
+                                    key={this.userState()?.userInfo.id}
+                                    state={this.userState()}
+                                    baseState={this.props.state}
+                                    accessor={this.accessor}
+                                    {...props}
+                                />} />
                                 <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
                             </Switch>
                             {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
@@ -134,7 +142,7 @@ class AccountsManager extends React.Component {
                         </div>
                         <br /><br />
                     </div>
-                </BrowserRouter>
+                </BrowserRouter>)}
             </div>
         )
     }
