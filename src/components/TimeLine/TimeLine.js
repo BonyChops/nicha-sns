@@ -13,7 +13,7 @@ class TimeLine extends React.Component {
     }
 
     componentDidMount = () => {
-        if (this.props.state?.lists?.[this.state.listId] === undefined) {
+        if (true || this.props.state?.lists?.[this.state.listId] === undefined) {
             console.log("aaa");
             getIdToken().then(token => cacheList(
                 token,
@@ -21,55 +21,29 @@ class TimeLine extends React.Component {
                 this.state.listId,
                 true,
                 false,
+                true,
                 this.props.accessor
             ));
         }
     }
 
     render() {
+        console.log(this.props.state)
+        if (this.props.state.posts === undefined || this.props.state.lists === undefined) {
+            return null;
+        }
         return (
             <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
-                <Post data={{
-                    userInfo: {
-                        username: "BonyChops",
-                        id: "BonyChops",
-                        icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
-                    },
-                    id: "1234",
-                    timestamp: "14 seconds ago",
-                    contents: "こういう感じの長文投稿でもどういう感じに表示になるのかを考案するのが大事だと思うんですねェ．チキンチキンかつえ？",
-                    comments: "3"
-                }} state={this.props.state} baseState={this.props.baseState} />
-                <Post data={{
-                    userInfo: {
-                        username: "BonyChops",
-                        id: "BonyChops",
-                        icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
-                    },
-                    id: "1234",
-                    timestamp: "14 seconds ago",
-                    contents: `
-学校課題で\`Hello world\`表示させなきゃいけないんだけど原因わからん．
-なんでや...
-\`\`\`c
-#include "stdio.h"
-
-int main(){
-    print("Hello world!");
-    return 0;
-}
-\`\`\``,
-                    image: true
-                }} state={this.props.state} baseState={this.props.baseState} />
-                <Post data={{
-                    userInfo: {
-                        username: "BonyChops",
-                        id: "BonyChops",
-                        icon: "https://pbs.twimg.com/profile_images/1347203616076042241/lOT_l9fu_400x400.jpg"
-                    },
-                    timestamp: "14 seconds ago",
-                    contents: "俺のへ臭すぎ",
-                }} state={this.props.state} baseState={this.props.baseState} />
+                {this.props.state.lists[this.state.listId] === undefined ? (
+                    <div>
+                        {Array.from({ length: 3 }, (v, k) => (
+                            <Post loading={true} key={k} />
+                        ))}
+                    </div>
+                ) : this.props.state.lists[this.state.listId].map((postId, k) => (
+                    <Post key={k} data={this.props.state.posts[postId]} />
+                )
+                )}
             </div>
         )
     }

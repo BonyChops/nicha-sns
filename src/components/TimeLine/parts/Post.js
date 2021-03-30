@@ -11,24 +11,16 @@ import { dark, vscDarkPlus, vs } from 'react-syntax-highlighter/dist/esm/styles/
 import { withRouter } from 'react-router';
 import { langChooseG } from '../../Configuration/Configuration';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Loading from './Loading';
 
 const Post = (props) => {
-    const renderers = {
-        code: ({ language, value }) => {
-            return <SyntaxHighlighter style={props.baseState.dark ? vscDarkPlus : vs} language={language} children={value} />
-        }
-    }
-
     const openPost = () => {
         props.history.push(`/posts/${props.data.id}`)
     }
 
-    console.log(props.data.contents);
     return (
         <div>{props.loading === "loading" ? (
-            <div>
-
-            </div>
+            <Loading />
         ) : (
             <div className="font-sans">
                 <div className="font-sans">
@@ -52,13 +44,13 @@ const Post = (props) => {
                         <div className="flex pt-4 px-4 cursor-pointer" onClick={openPost}>
                             <div className="w-16 p-2 mr-2">
                                 <img className="w-16 rounded-full"
-                                    src={props.data.userInfo.icon} />
+                                    src="" />
                             </div>
                             <div className="px-2 pt-2 flex-grow">
                                 <header>
                                     <a href="#" className="text-black dark:text-white no-underline">
-                                        <span className="font-medium mr-2">{props.data.userInfo.username}</span>
-                                        <span className="font-normal text-gray-400 text-xs">@{props.data.userInfo.id}</span>
+                                        <span className="font-medium mr-2">a</span>
+                                        <span className="font-normal text-gray-400 text-xs">a</span>
                                     </a>
                                     <div className="text-xs text-gray-400 flex items-center my-1">
                                         <div className="flex mr-2">
@@ -70,11 +62,11 @@ const Post = (props) => {
                                         </div>
                                     </div>
                                 </header>
-                                <article className={"py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap " + (props.data.contents.length > 12 ? "" : "text-2xl")}>
+                                <article className={"py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap " + (props.data.content.body.length > 12 ? "" : "text-2xl")}>
                                     <BrowserRouter>
                                         <ErrorHandler>
                                             <PostViewer className={"h-full w-full overflow-auto"} baseState={props.baseState} history={props.history}>
-                                                {props.data.contents}
+                                                {props.data.content.body}
                                             </PostViewer>
                                         </ErrorHandler>
                                     </BrowserRouter>

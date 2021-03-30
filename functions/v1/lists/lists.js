@@ -11,7 +11,7 @@ const app = express();
 app.get("/:id", async (req, res, next) => {
     const listRef = db.doc(`lists/${req.params.id}`);
     const list = await listRef.get();
-    if (!list.exists) { error(res, 404, "lists" ,"List not found."); return; }
+    if (!list.exists) { error(res, 404, "lists", "List not found."); return; }
     if (
         list.data().scope_type === "secret"
         && !(await listRef.collection("listScopeUsers").doc(String(req.user.id)).get()).exists
@@ -23,6 +23,7 @@ app.get("/:id", async (req, res, next) => {
         if (!postSnaps.empty) {
             for (let key in (postSnaps.docs)) {
                 const postData = await postSnaps.docs[key].data().post_reference.get()
+                if (req.query.posts_author === "true") postData.data().author = (await postData.data().author.get()).data();
                 if (postData.exists) posts.push(postData.data());
             }
         }
