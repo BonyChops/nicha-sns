@@ -31,11 +31,11 @@ const PostViewer = (props) => {
 
     const renderers = {
         code: ({ language, value }) => {
-            return (value !== undefined ? <SyntaxHighlighter className="my-2 text-sm" style={props.baseState.dark ? vs2015 : vs} language={language} children={value} /> : null)
+            return (value !== undefined ? <SyntaxHighlighter className="my-2 text-sm border border-gray-500" style={props.baseState.dark ? vs2015 : vs} language={language} children={value} /> : null)
         },
         link: linkBlock,
         break: breakLine,
-        thematicBreak: breakLine
+        thematicBreak: breakLine,
     }
 
     return (

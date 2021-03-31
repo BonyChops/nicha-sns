@@ -11,6 +11,7 @@ import TimeLine from './components/TimeLine/TimeLine';
 import NewToLogin from './components/NewToLogin/NewToLogin';
 import NewPost from './components/NewPost/NewPost';
 import { createBrowserHistory } from "history";
+import Icon from './resources/logo.png';
 const history = createBrowserHistory();
 
 const merge = require('deepmerge');
@@ -64,6 +65,7 @@ class AccountsManager extends React.Component {
         let result = this.state[`user_${id}`];
         if (typeof result !== "object") result = {};
         result.userInfo = this.props.state.loggedInUsers.find(user => user.id === id);
+        result = merge(result, { users: { nicha: { icon: Icon, display_id: "nichaSNS", display_name: "Nicha for NNCT" } } })
         return result;
     }
 
@@ -111,42 +113,43 @@ class AccountsManager extends React.Component {
                     )}
                 </div>
 
-                {this.userState() === undefined ? null : (<BrowserRouter>
+                <BrowserRouter>
                     <Sidebar accessor={this.accessor} state={this.userState()} />
-                    <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
-                        <div>
-                            <Switch>
-                                <Route exact path="/" render={(props) => <TimeLine
-                                    key={this.userState()?.userInfo.id}
-                                    state={this.userState()}
-                                    baseState={this.props.state}
-                                    accessor={this.accessor}
-                                    {...props}
-                                />} />
-                                <Route path="/posts/:id" children={(props) => (<Post
-                                    history={props.history}
-                                    key={props.match.params.id}
-                                    state={this.userState()}
-                                    baseState={this.props.state}
-                                    accessor={this.accessor}
-                                    {...props}
-                                />)
-                                } />
-                                <Route path="/lists/:id" render={(props) => <TimeLine
-                                    key={this.userState()?.userInfo.id}
-                                    state={this.userState()}
-                                    baseState={this.props.state}
-                                    accessor={this.accessor}
-                                    {...props}
-                                />} />
-                                <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
-                            </Switch>
-                            {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
-                            {(this.userState()?.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
-                        </div>
-                        <br /><br />
-                    </div>
-                </BrowserRouter>)}
+                    {this.userState() === undefined ? null : (
+                        <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
+                            <div>
+                                <Switch>
+                                    <Route exact path="/" render={(props) => <TimeLine
+                                        key={this.userState()?.userInfo.id}
+                                        state={this.userState()}
+                                        baseState={this.props.state}
+                                        accessor={this.accessor}
+                                        {...props}
+                                    />} />
+                                    <Route path="/posts/:id" children={(props) => (<Post
+                                        history={props.history}
+                                        key={props.match.params.id}
+                                        state={this.userState()}
+                                        baseState={this.props.state}
+                                        accessor={this.accessor}
+                                        {...props}
+                                    />)
+                                    } />
+                                    <Route path="/lists/:id" render={(props) => <TimeLine
+                                        key={this.userState()?.userInfo.id}
+                                        state={this.userState()}
+                                        baseState={this.props.state}
+                                        accessor={this.accessor}
+                                        {...props}
+                                    />} />
+                                    <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
+                                </Switch>
+                                {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
+                                {(this.userState()?.popup?.title === "addApp") ? <NewToLogin toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}
+                            </div>
+                            <br /><br />
+                        </div>)}
+                </BrowserRouter>
             </div>
         )
     }

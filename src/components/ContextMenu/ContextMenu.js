@@ -48,7 +48,37 @@ const ContextMenu = (props) => {
         nichaSetup: (
             <div className="block absolute right-5 bottom-16 transition ease-out duration-100">
                 <div className="w-60 border border-gray-300 rounded-lg bg-white dark:bg-gray-800 flex flex-col text-sm py-4 px-2 dark:text-gray-100 text-gray-900 shadow-lg ">
-                    {/* <hr className="my-3 border-gray-300" /> */}
+                    <ContextButton title={langChoose({ en: "Feedback", ja: "フィードバック / お問い合わせ" })} onClick={(e) => {
+                        Swal.fire({
+                            title: "フィードバック / お問い合わせ",
+                            input: 'textarea',
+                            html: '何かお気づきの点がございましたでしょうか？ご意見やご不明点，ご質問などを受け付けておりますので何なりとお申し付けください．<br />通常，我々は返答いたしませんが，送信された内容がご質問等，ご利用者様がご返答を希望する場合のみこちらからご連絡させていただきます．',
+                            inputPlaceholder: 'Type your message here...',
+                            inputAttributes: {
+                                'aria-label': 'Type your message here'
+                            },
+                            showCancelButton: true,
+                            footer: '<a href="https://github.com/BonyChops/nicha-sns/issues" target="_blank">技術的なご意見はこちらへもどうぞ</a>'
+                        }).then(result => {
+                            if (result.isConfirmed) {
+                                Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                }).fire({
+                                    icon: 'success',
+                                    title: 'フィードバックへのご協力ありがとうございました' + result.value
+                                })
+                            }
+                        })
+                    }} icon={<SettingIcon />} />
+                    <hr className="my-3 border-gray-300" />
                     <ContextButton title={langChoose({ en: "Settings", ja: "設定" })} onClick={(e) => { returnResult(e, "settings") }} icon={<SettingIcon />} />
                     <ContextButton title={langChoose({ en: "Sign Out", ja: "サインアウト" })} onClick={(e) => { returnResult(e, "signout") }} icon={<SignOutIcon />} />
                 </div>

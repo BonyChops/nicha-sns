@@ -12,6 +12,7 @@ import { withRouter } from 'react-router';
 import { langChooseG } from '../../Configuration/Configuration';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Loading from './Loading';
+import getDate from '../../../functions/getDate';
 
 const Post = (props) => {
     const openPost = () => {
@@ -19,13 +20,11 @@ const Post = (props) => {
     }
 
     return (
-        <div>{props.loading === "loading" ? (
-            <Loading />
-        ) : (
+        <div>
             <div className="font-sans">
                 <div className="font-sans">
                     <div className="bg-white dark:bg-gray-900 max-w-md mx-auto my-8 border border-grey-light rounded-lg shadow-2xl overflow-hidden">
-                        {(props.data.image !== false && props.data.image !== undefined) ? (<div className="flex flex-wrap no-underline text-black h-64 overflow-hidden">
+                        {(props.data?.image !== false && props.data?.image !== undefined) ? (<div className="flex flex-wrap no-underline text-black h-64 overflow-hidden">
                             <div className="w-3/4 h-full">
                                 <img className="block pr-px w-full h-full" src="https://pbs.twimg.com/media/DRKabGUW0AA4yzH.jpg:large" alt=""
                                     style={{ "objectFit": "cover" }} />
@@ -55,14 +54,14 @@ const Post = (props) => {
                                     <div className="text-xs text-gray-400 flex items-center my-1">
                                         <div className="flex mr-2">
                                             <CalenderIcon />
-                                            <span>{props.data.timestamp}</span>
+                                            <span>{getDate(props.baseState.language, props.data.lastModified)}</span>
                                         </div>
                                         <div className="flex">
                                             <ModifyIcon className="h-4 w-4" /> 4
                                         </div>
                                     </div>
                                 </header>
-                                <article className={"py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap " + (props.data.content.body.length > 12 ? "" : "text-2xl")}>
+                                <article className={"pb-4 pt-2 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap " + (props.data.content.body.length > 12 ? "" : "text-2xl")}>
                                     <BrowserRouter>
                                         <ErrorHandler>
                                             <PostViewer className={"h-full w-full overflow-auto"} baseState={props.baseState} history={props.history}>
@@ -71,7 +70,7 @@ const Post = (props) => {
                                         </ErrorHandler>
                                     </BrowserRouter>
                                 </article>
-                                <footer className="border-t border-grey-lighter text-sm flex">
+                                {props.disableActions !== true ? (<footer className="border-t border-grey-lighter text-sm flex">
                                     <a href="#" className="block no-underline text-blue-600 flex px-4 py-2 items-center hover:bg-grey-lighter">
                                         <LikeIcon />
                                         <span></span>
@@ -88,12 +87,12 @@ const Post = (props) => {
                                         <ModifyIcon className="h-6 w-6" />
                                         <span>{props.data.comments !== undefined ? props.data.comments : "Reply"}</span>
                                     </a>
-                                </footer>
+                                </footer>) : null}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>)}
+            </div>
         </div>
     );
 };
