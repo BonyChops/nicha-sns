@@ -22,9 +22,10 @@ app.get("/:id", async (req, res, next) => {
         const posts = [];
         if (!postSnaps.empty) {
             for (let key in (postSnaps.docs)) {
-                const postData = await postSnaps.docs[key].data().post_reference.get()
-                if (req.query.posts_author === "true") postData.data().author = (await postData.data().author.get()).data();
-                if (postData.exists) posts.push(postData.data());
+                const post = await postSnaps.docs[key].data().post_reference.get()
+                const postData = post.data();
+                if (req.query.posts_author === "true") postData.author = (await postData.author.get()).data();
+                if (post.exists) posts.push(postData);
             }
         }
         result.posts = posts;

@@ -15,5 +15,13 @@ const postUsers = async (data, authData) => {
     return await fetchPost(`${config.apiDomain}/v1/users`, data, authData)
 }
 
+const cacheUsers = (user, accessor) => {
+    const userData = user;
+    accessor({
+        users: {
+            [userData.id]: userData
+        }
+    })
+}
 
-export { getUsers, postUsers };
+export { getUsers, postUsers, cacheUsers };

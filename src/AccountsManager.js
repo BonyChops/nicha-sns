@@ -50,7 +50,11 @@ class AccountsManager extends React.Component {
         if (id === undefined) return false;
         const keyName = `user_${id}`;
         this.setState({
-            [keyName]: merge((this.state[keyName] === undefined ? {} : this.state[keyName]), state)
+            [keyName]: merge(
+                (this.state[keyName] === undefined ? {} : this.state[keyName]),
+                state,
+                { arrayMerge: (destinationArray, sourceArray, options) => sourceArray }
+            )
         })
     }
 

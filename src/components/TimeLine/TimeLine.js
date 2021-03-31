@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import Post from './parts/Post';
-import { cacheList } from '../../functions/lists';
+import { getCacheList } from '../../functions/lists';
 import firebase, { getIdToken } from '../../Firebase';
 
 class TimeLine extends React.Component {
@@ -15,7 +15,7 @@ class TimeLine extends React.Component {
     componentDidMount = () => {
         if (true || this.props.state?.lists?.[this.state.listId] === undefined) {
             console.log("aaa");
-            getIdToken().then(token => cacheList(
+            getIdToken().then(token => getCacheList(
                 token,
                 this.props.state.userInfo.id,
                 this.state.listId,
@@ -32,6 +32,7 @@ class TimeLine extends React.Component {
         if (this.props.state.posts === undefined || this.props.state.lists === undefined) {
             return null;
         }
+        console.log(this.props.state.lists[this.state.listId])
         return (
             <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 {this.props.state.lists[this.state.listId] === undefined ? (
@@ -41,7 +42,7 @@ class TimeLine extends React.Component {
                         ))}
                     </div>
                 ) : this.props.state.lists[this.state.listId].map((postId, k) => (
-                    <Post key={k} data={this.props.state.posts[postId]} />
+                    <Post key={k} data={this.props.state.posts[postId]} state={this.props.state}/>
                 )
                 )}
             </div>

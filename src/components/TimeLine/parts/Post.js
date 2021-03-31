@@ -44,13 +44,13 @@ const Post = (props) => {
                         <div className="flex pt-4 px-4 cursor-pointer" onClick={openPost}>
                             <div className="w-16 p-2 mr-2">
                                 <img className="w-16 rounded-full"
-                                    src="" />
+                                    src={props.state.users[props.data.author].icon} />
                             </div>
                             <div className="px-2 pt-2 flex-grow">
                                 <header>
                                     <a href="#" className="text-black dark:text-white no-underline">
-                                        <span className="font-medium mr-2">a</span>
-                                        <span className="font-normal text-gray-400 text-xs">a</span>
+                                        <span className="font-medium mr-2">{props.state.users[props.data.author].display_name}</span>
+                                        <span className="font-normal text-gray-400 text-xs">@{props.state.users[props.data.author].display_id}</span>
                                     </a>
                                     <div className="text-xs text-gray-400 flex items-center my-1">
                                         <div className="flex mr-2">
