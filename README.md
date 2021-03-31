@@ -15,7 +15,8 @@ Share your feelings, repos, and so on!
 
 - https://tailwindcomponents.com/component/toggle-1  
 - https://tailwindcomponents.com/component/slack-clone-1  
-- https://tailwindcomponents.com/component/timeline
+- https://tailwindcomponents.com/component/timeline  
+- https://tailwindcomponents.com/component/clean-right-click-menu
 
 ### `src/nicha.config.js`
 ```JavaScript
