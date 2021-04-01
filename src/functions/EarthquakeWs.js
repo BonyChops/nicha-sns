@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import socketio from 'socket.io-client';
-import swal from 'sweetalert2';
+import Swal from 'sweetalert2/src/sweetalert2.js'
+import '@sweetalert2/themes/dark';
 import '@sweetalert2/themes/dark';
 
 //const socket = socketio.connect('https://api.p2pquake.net/v2/ws')

@@ -6,7 +6,8 @@ import Icon from '../../resources/logo.png';
 import PostViewer from '../PostViewer/PostViewer';
 import CheckBox from '../parts/Toggle';
 import ErrorHandler from '../../functions/ErrorHandler';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/src/sweetalert2.js'
+import '@sweetalert2/themes/dark';
 import firebase, { getIdToken } from '../../Firebase';
 import { postPost } from '../../functions/post';
 import { useHistory } from 'react-router-dom';

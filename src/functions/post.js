@@ -36,9 +36,9 @@ const cachePost = (post, accessor) => {
     return postData;
 }
 
-const getCacheList = async (authData, currentUserId, id) => {
+const getCachePost = async (authData, currentUserId, id) => {
     const post = await getPost(authData, currentUserId, id);
     return cachePost(post);
 }
 
-export { getPost, postPost, cachePost };
+export { getPost, postPost, cachePost, getCachePost };

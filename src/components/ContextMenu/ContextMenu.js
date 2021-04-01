@@ -84,6 +84,18 @@ const ContextMenu = (props) => {
                 </div>
             </div>
         ),
+        postConf: (
+            <div className="block absolute right-5 bottom-16 transition ease-out duration-100">
+                <div className="w-60 border border-gray-300 rounded-lg bg-white dark:bg-gray-800 flex flex-col text-sm py-4 px-2 dark:text-gray-100 text-gray-900 shadow-lg ">
+                    <ContextButton title={langChoose({ en: "Feedback", ja: "投稿を報告する" })} onClick={(e) => {
+                        //
+                    }} icon={<SettingIcon />} />
+                    <hr className="my-3 border-gray-300" />
+                    <ContextButton title={langChoose({ en: "Settings", ja: "設定" })} onClick={(e) => { returnResult(e, "settings") }} icon={<SettingIcon />} />
+                    <ContextButton title={langChoose({ en: "Sign Out", ja: "サインアウト" })} onClick={(e) => { returnResult(e, "signout") }} icon={<SignOutIcon />} />
+                </div>
+            </div>
+        ),
         languageSelect: (
             <div className="block absolute transition ease-out duration-100" style={{ left: buf?.pos?.x + "px", top: buf?.pos?.y }}>
                 <div className="w-60 border border-gray-300 rounded-lg bg-white dark:bg-gray-800 flex flex-col text-sm py-4 px-2 dark:text-gray-100 text-gray-900 shadow-lg ">

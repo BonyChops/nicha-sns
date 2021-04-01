@@ -4,7 +4,8 @@ import Topics from './parts/Topics'
 import NotificationIcon from '../../resources/notification';
 import PostButton from './parts/PostButton';
 import AddButton from '../../resources/add';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/src/sweetalert2.js'
+import '@sweetalert2/themes/dark';
 import '@sweetalert2/themes/dark';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
