@@ -12,6 +12,8 @@ import NewToLogin from './components/NewToLogin/NewToLogin';
 import NewPost from './components/NewPost/NewPost';
 import { createBrowserHistory } from "history";
 import Icon from './resources/logo.png';
+import contextSwitcher from './functions/contextSwitcher';
+import ContextMenu from './components/ContextMenu/ContextMenu';
 const history = createBrowserHistory();
 
 const merge = require('deepmerge');
@@ -48,15 +50,31 @@ class AccountsManager extends React.Component {
     }
 
     accessor = (state, id = this.props.state.loggedInUsers.find(user => user.selected)?.id) => {
+        console.log(state)
         if (id === undefined) return false;
+        console.log("updated")
         const keyName = `user_${id}`;
         this.setState({
             [keyName]: merge(
-                (this.state[keyName] === undefined ? {} : this.state[keyName]),
+                (this.state[keyName] === undefined ? {
+                } : this.state[keyName]),
                 state,
                 { arrayMerge: (destinationArray, sourceArray, options) => sourceArray }
             )
         })
+        console.log(this.state[keyName]);
+    }
+
+    toggleAccessor = (key, state) => {
+        this.accessor({
+            [key]: (this.userState())[key] === false ? state : false
+        });
+    }
+
+    toggleBaseAccessor = (key, state) => {
+        this.props.accessor({
+            [key]: this.props.state[key] === false ? state : false
+        });
     }
 
     userState = (id = (this.props.state.loggedInUsers !== false ? this.props.state.loggedInUsers.find(user => user.selected)?.id : undefined)) => {
@@ -65,10 +83,10 @@ class AccountsManager extends React.Component {
         let result = this.state[`user_${id}`];
         if (typeof result !== "object") result = {};
         result.userInfo = this.props.state.loggedInUsers.find(user => user.id === id);
-        result = merge(result, {
+        result = merge({
             users: { nicha: { icon: Icon, display_id: "nichaSNS", display_name: "Nicha for NNCT" } },
-            posts: { test: "a" }
-        })
+            posts: { test: "a" },
+        }, result)
         return result;
     }
 
@@ -127,6 +145,7 @@ class AccountsManager extends React.Component {
                                         state={this.userState()}
                                         baseState={this.props.state}
                                         accessor={this.accessor}
+                                        toggleAccessor={this.toggleAccessor}
                                         {...props}
                                     />} />
                                     <Route path="/posts/:id" children={(props) => (<Post
@@ -135,6 +154,8 @@ class AccountsManager extends React.Component {
                                         state={this.userState()}
                                         baseState={this.props.state}
                                         accessor={this.accessor}
+                                        toggleAccessor={this.toggleAccessor}
+                                        toggleBaseAccessor={this.toggleBaseAccessor}
                                         {...props}
                                     />)
                                     } />
@@ -143,6 +164,7 @@ class AccountsManager extends React.Component {
                                         state={this.userState()}
                                         baseState={this.props.state}
                                         accessor={this.accessor}
+                                        toggleAccessor={this.toggleAccessor}
                                         {...props}
                                     />} />
                                     <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />

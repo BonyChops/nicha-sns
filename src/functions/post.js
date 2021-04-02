@@ -1,6 +1,6 @@
 import config from '../nicha.config';
 import { useEffect } from 'react';
-import { fetchGet, fetchPost } from './fetch';
+import { fetchGet, fetchPost, fetchPut } from './fetch';
 import { cacheUsers } from './users';
 
 const getPost = async (authData, currentUserId, id) => {
@@ -14,14 +14,23 @@ const getPost = async (authData, currentUserId, id) => {
             mes: "Request not occurred because of invalid post id"
         }
     }
-    return fetchGet(`${config.apiDomain}/v1/posts/${id}`, authData, currentUserId);
+    return await fetchGet(`${config.apiDomain}/v1/posts/${id}`, authData, currentUserId);
 }
 
 const postPost = async (authData, currentUserId, data) => {
     if (authData === undefined) {
         return false;
     }
-    return fetchPost(`${config.apiDomain}/v1/posts`, data, authData, currentUserId);
+    return await fetchPost(`${config.apiDomain}/v1/posts`, data, authData, currentUserId);
+}
+
+const putPost = async (authData, currentUserId, postId, data) => {
+    if (authData === undefined) {
+        return false;
+    }
+    console.log(data);
+    console.log(postId)
+    return await fetchPut(`${config.apiDomain}/v1/posts/${postId}`, data, authData, currentUserId);
 }
 
 const cachePost = (post, accessor) => {
@@ -36,10 +45,10 @@ const cachePost = (post, accessor) => {
     return postData;
 }
 
-const getCachePost = async (authData, currentUserId, id) => {
+const getCachePost = async (authData, currentUserId, id, accessor) => {
     const post = await getPost(authData, currentUserId, id);
     if (post.status !== "ok") return post;
-    return cachePost(post);
+    return cachePost(post, accessor);
 }
 
-export { getPost, postPost, cachePost, getCachePost };
+export { getPost, postPost, cachePost, getCachePost, putPost };

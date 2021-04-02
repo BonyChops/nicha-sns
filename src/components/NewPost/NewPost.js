@@ -9,7 +9,7 @@ import ErrorHandler from '../../functions/ErrorHandler';
 import Swal from 'sweetalert2/src/sweetalert2.js'
 import '@sweetalert2/themes/dark';
 import firebase, { getIdToken } from '../../Firebase';
-import { postPost } from '../../functions/post';
+import { postPost, putPost } from '../../functions/post';
 import { useHistory } from 'react-router-dom';
 
 const NewPost = (props) => {
@@ -21,7 +21,8 @@ const NewPost = (props) => {
             popup: false
         })
     }
-    const [post, setPost] = useState("");
+    const popupState = props.state.popup;
+    const [post, setPost] = useState(popupState.mode === "modify" ? popupState.post.content.body : "");
     const [preview, setPreview] = useState(false);
     const [previewRendered, setPreviewRendered] = useState(false);
     const [submitSw, setSubmit] = useState(false);
@@ -45,7 +46,6 @@ const NewPost = (props) => {
         setSubmit(false);
     }
     const successPreview = () => {
-        console.log("assfwadfewagwaegeawgewgewagwragewag")
         setPreviewRendered(true);
         if (submitSw) {
             submit();
@@ -59,13 +59,14 @@ const NewPost = (props) => {
             setPreview(true);
         }
     }
+    const send = async (token, userId, data, modify = false, postId = false) => (modify ? await putPost(token, userId, postId, data) : await postPost(token, userId, data));
     const submit = () => {
         setSubmitting(true);
         getIdToken().then(token => {
             console.log(token);
-            postPost(token, props.state.userInfo.id, {
+            send(token, props.state.userInfo.id, ({
                 content: post
-            }).then(post => {
+            }), popupState.mode === "modify", popupState.post?.id).then(post => {
                 if (post.status === "ok") {
                     Swal.mixin({
                         toast: true,
@@ -139,7 +140,7 @@ const NewPost = (props) => {
             <div className="fixed md:py-20 md:px-32 w-full h-full">
                 <div className="bg-white dark:bg-gray-800 dark:text-gray-100 md:rounded-xl md:shadow-md text-lg h-full md:p-20 p-5 w-full  overflow-auto">
                     <div className="flex w-full mb-10">
-                        <h1 className="text-5xl">{langChoose({ ja: "投稿", en: "Post" })}</h1>
+                        <h1 className="text-5xl">{langChoose({ ja: "投稿" + (popupState.mode === "modify" ? "を編集" : ""), en: "Post" })}</h1>
                         <button className="ml-auto focus:outline-none" onClick={closeConfig}>
                             <CloseIcon width="46" />
                         </button>
@@ -177,7 +178,7 @@ const NewPost = (props) => {
                             disabled={submitting || (preview && !previewRendered)}
                             onClick={confirm}
                         >
-                            <img src={Icon} className={"w-6 mr-2 " + (submitting ? "animate-spin" : "")} /><p className="top-0 bottom-0 my-auto">{langChoose({ ja: "投稿", en: "Start" })}</p>
+                            <img src={Icon} className={"w-6 mr-2 " + (submitting ? "animate-spin" : "")} /><p className="top-0 bottom-0 my-auto">{langChoose({ ja: popupState.mode ? "編集" : "投稿", en: "Start" })}</p>
                         </button>
                     </div>
                 </div>

@@ -30,7 +30,7 @@ const Post = (props) => {
             console.log("Start fetching...");
             console.log(props.state)
             getIdToken().then(token => {
-                getCachePost(token, props.state.userInfo.id, id).then(value => { setPost(value) }).catch(e => { setPost(e) });
+                getCachePost(token, props.state.userInfo.id, id, props.accessor).then(value => { setPost(value) }).catch(e => { setPost(e) });
             })
             setFlag(true);
         } else {
@@ -44,8 +44,16 @@ const Post = (props) => {
             }
         })
     }
-    const openMenu = () => {
-        Swal.fire("test")
+    const openMenu = (e) => {
+        props.toggleBaseAccessor("contextMenu", {
+            name: "postConf",
+            pos: {
+                x: e.clientX,
+                y: e.clientY
+            },
+            post: postData,
+            accessor: props.accessor
+        })
     }
     console.log(postData)
     console.log(postData === undefined)

@@ -13,10 +13,12 @@ const fetchGet = async (uri, auth = false, currentUser = false, params = {}) => 
     }))
 }
 
-const fetchPost = async (uri, data, auth = false, currentUser = false) => {
-    const body = Object.keys(data).map(key => (`${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)).join("&") + (auth !== false ? `&authorization=${auth}` : "")+ (currentUser !== false ? `&current_user=${currentUser}` : "");
+const fetchPost = async (uri, data, auth = false, currentUser = false, method = "POST") => {
+    console.log(uri);
+    console.log(data);
+    const body = Object.keys(data).map(key => (`${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)).join("&") + (auth !== false ? `&authorization=${auth}` : "") + (currentUser !== false ? `&current_user=${currentUser}` : "");
     return await new Promise((resolve, reject) => request(uri + (auth !== false ? `?authorization=${auth}` : ""), {
-        method: "POST",
+        method,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -29,5 +31,7 @@ const fetchPost = async (uri, data, auth = false, currentUser = false) => {
     }))
 }
 
+const fetchPut = async (uri, data, auth = false, currentUser = false) => (await fetchPost(uri, data, auth, currentUser, "PUT"));
 
-export { fetchGet, fetchPost };
+
+export { fetchGet, fetchPost, fetchPut };
