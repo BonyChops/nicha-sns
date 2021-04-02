@@ -17,6 +17,7 @@ const postUsers = async (data, authData) => {
 
 const cacheUsers = (user, accessor) => {
     const userData = user;
+    if (userData === undefined) return undefined;
     accessor({
         users: {
             [userData.id]: userData

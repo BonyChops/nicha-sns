@@ -65,7 +65,10 @@ class AccountsManager extends React.Component {
         let result = this.state[`user_${id}`];
         if (typeof result !== "object") result = {};
         result.userInfo = this.props.state.loggedInUsers.find(user => user.id === id);
-        result = merge(result, { users: { nicha: { icon: Icon, display_id: "nichaSNS", display_name: "Nicha for NNCT" } } })
+        result = merge(result, {
+            users: { nicha: { icon: Icon, display_id: "nichaSNS", display_name: "Nicha for NNCT" } },
+            posts: { test: "a" }
+        })
         return result;
     }
 

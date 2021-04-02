@@ -38,6 +38,7 @@ const cachePost = (post, accessor) => {
 
 const getCachePost = async (authData, currentUserId, id) => {
     const post = await getPost(authData, currentUserId, id);
+    if (post.status !== "ok") return post;
     return cachePost(post);
 }
 

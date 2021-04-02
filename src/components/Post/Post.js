@@ -26,7 +26,7 @@ const Post = (props) => {
     const [postData, setPost] = useState(props.state.posts[id]);
     const [fetchingFlag, setFlag] = useState(false);
     useEffect(() => {
-        if (fetchingFlag === false && props.state !== undefined && postData === false) {
+        if (fetchingFlag === false && props.state !== undefined) {
             console.log("Start fetching...");
             console.log(props.state)
             getIdToken().then(token => {
@@ -47,10 +47,12 @@ const Post = (props) => {
     const openMenu = () => {
         Swal.fire("test")
     }
+    console.log(postData)
+    console.log(postData === undefined)
     return (
         <div className="font-sans">
             <div className="font-sans">
-                {postData === false || postData === undefined ? (
+                {(postData === false || postData === undefined) ? (
                     <Loading key={id} />
                 ) : ((postData.status == "error") ? (
                     <Error key={id} errorData={postData} baseState={props.baseState} />
@@ -75,14 +77,14 @@ const Post = (props) => {
                         <div className="flex pt-4 px-4">
                             <div className="w-16 mr-2">
                                 <img className="w-16 rounded-full border-green-600 border-2"
-                                    src={props.state.users[postData.author].icon} />
+                                    src={props.state.users?.[postData.author]?.icon} />
                             </div>
                             <div className="px-2 pt-2 flex-grow">
                                 <header className="flex">
                                     <div>
                                         <a href="#" className="text-black dark:text-white no-underline">
-                                            <span className="font-medium mr-2">{props.state.users[postData.author].display_name}</span>
-                                            <span className="font-normal text-gray-400 text">@{props.state.users[postData.author].display_id}</span>
+                                            <span className="font-medium mr-2">{props.state.users?.[postData.author]?.display_name}</span>
+                                            <span className="font-normal text-gray-400 text">@{props.state.users?.[postData.author]?.display_id}</span>
                                         </a>
                                         <div className="text-xs text-gray-400 flex items-center my-1">
                                             <CalenderIcon />
@@ -90,14 +92,14 @@ const Post = (props) => {
                                         </div>
                                     </div>
 
-                                    <MenuIcon className="ml-auto text-gray-400 w-6 h-6" onClick={test}/>
+                                    <MenuIcon className="ml-auto text-gray-400 w-6 h-6" onClick={openMenu}/>
 
                                 </header>
                                 <article className="py-4 text-gray-800 dark:text-gray-300 w-80 whitespace-pre-wrap">
                                     <BrowserRouter>
                                         <ErrorHandler>
                                             <PostViewer className={"h-full w-full overflow-auto"} baseState={props.baseState} history={props.history}>
-                                                {postData.content.body}
+                                                {postData?.content?.body}
                                             </PostViewer>
                                         </ErrorHandler>
                                     </BrowserRouter>
