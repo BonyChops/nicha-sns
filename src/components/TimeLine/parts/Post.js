@@ -13,6 +13,9 @@ import { langChooseG } from '../../Configuration/Configuration';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Loading from './Loading';
 import getDate from '../../../functions/getDate';
+import OfficialIcon from '../../../resources/check';
+import TeacherIcon from '../../../resources/teacher';
+
 
 const Post = (props) => {
     const openPost = () => {
@@ -48,14 +51,14 @@ const Post = (props) => {
                             <div className="px-2 pt-2 flex-grow">
                                 <header>
                                     <a href="#" className="text-black dark:text-white no-underline">
-                                        <span className="font-medium mr-2">{props.state.users[props.data.author].display_name}</span>
+                                        <span className="font-medium mr-2 flex">{props.state.users[props.data.author].display_name}{/* <OfficialIcon className="w-4 h-4 my-auto ml-1"/> */}<TeacherIcon className="w-4 h-4 my-auto ml-1"/></span>
                                         <span className="font-normal text-gray-400 text-xs">@{props.state.users[props.data.author].display_id}</span>
                                     </a>
                                     <div className="text-xs text-gray-400 flex items-center my-1">
-                                        <div className="flex mr-2">
+                                        {!props.disableActions ? (<div className="flex mr-2">
                                             <CalenderIcon />
-                                            <span>{getDate(props.baseState.language, props.data.lastModified)}</span>
-                                        </div>
+                                            <span>{(getDate(props.baseState.language, props.data.lastModified))}</span>
+                                        </div>) : null}
                                         <div className="flex">
                                             <ModifyIcon className="h-4 w-4" /> 4
                                         </div>

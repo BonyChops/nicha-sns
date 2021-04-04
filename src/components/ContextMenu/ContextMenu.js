@@ -5,6 +5,9 @@ import SignOutIcon from '../../resources/signout'
 import ContextButton from './parts/button';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import '@sweetalert2/themes/dark';
+import { deletePost } from '../../functions/post';
+import { getIdToken } from '../../Firebase';
+import { sendFeedback } from '../../functions/appeal';
 
 const ContextMenu = (props) => {
     const langChoose = (property) => (property[props.state.language]);
@@ -73,8 +76,10 @@ const ContextMenu = (props) => {
                                     }
                                 }).fire({
                                     icon: 'success',
-                                    title: 'フィードバックへのご協力ありがとうございました' + result.value
+                                    title: 'フィードバックへのご協力ありがとうございました'
                                 })
+                                getIdToken().then(token => sendFeedback(token, result.value));
+
                             }
                         })
                     }} icon={<SettingIcon />} />
@@ -90,6 +95,39 @@ const ContextMenu = (props) => {
                     <ContextButton title={langChoose({ en: "Edit", ja: "編集" })} onClick={(e) => {
                         buf.accessor({
                             popup: { title: "newPost", mode: "modify", post: buf.post }
+                        })
+                        returnResult(e, "modify_window");
+                    }} icon={<SettingIcon />} />
+                    <ContextButton title={langChoose({ en: "Delete", ja: "削除" })} onClick={(e) => {
+                        Swal.fire({
+                            title: "投稿を削除",
+                            html: "投稿を削除してよろしいですか？<span class=\"text-red-600\">消した投稿は復元できません．</span>",
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: "削除"
+                        }).then(result => {
+                            if (result.isConfirmed) {
+                                getIdToken().then(token => deletePost(token, props.state.loggedInUsers.find(user => user.selected).id, buf.post.id)
+                                    .then(result => {
+                                        if (result.status !== "error") {
+                                            Swal.mixin({
+                                                toast: true,
+                                                position: 'top-end',
+                                                showConfirmButton: false,
+                                                timer: 3000,
+                                                timerProgressBar: true,
+                                                didOpen: (toast) => {
+                                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                                }
+                                            }).fire({
+                                                icon: 'success',
+                                                title: '投稿を削除しました'
+                                            })
+                                        }
+                                    }))
+
+                            }
                         })
                         returnResult(e, "modify_window");
                     }} icon={<SettingIcon />} />

@@ -23,7 +23,10 @@ app.get("/:id", async (req, res, next) => {
         if (!postSnaps.empty) {
             for (let key in (postSnaps.docs)) {
                 const post = await postSnaps.docs[key].data().post_reference.get()
+                //if (!post.exists) continue;
                 const postData = post.data();
+                console.log(post);
+                console.log(postData);
                 if (req.query.posts_author === "true") postData.author = (await postData.author.get()).data();
                 if (post.exists) posts.push(postData);
             }

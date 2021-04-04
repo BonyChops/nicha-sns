@@ -1,6 +1,6 @@
 import config from '../nicha.config';
 import { useEffect } from 'react';
-import { fetchGet, fetchPost, fetchPut } from './fetch';
+import { fetchGet, fetchPost, fetchPut, fetchDelete } from './fetch';
 import { cacheUsers } from './users';
 
 const getPost = async (authData, currentUserId, id) => {
@@ -33,6 +33,12 @@ const putPost = async (authData, currentUserId, postId, data) => {
     return await fetchPut(`${config.apiDomain}/v1/posts/${postId}`, data, authData, currentUserId);
 }
 
+const deletePost = async (authData, currentUserId, postId) => {
+    if (authData === undefined) {
+        return false;
+    }
+    return await fetchDelete(`${config.apiDomain}/v1/posts/${postId}`, {}, authData, currentUserId);
+}
 const cachePost = (post, accessor) => {
     const postData = post;
     cacheUsers(postData.author, accessor);
@@ -51,4 +57,4 @@ const getCachePost = async (authData, currentUserId, id, accessor) => {
     return cachePost(post, accessor);
 }
 
-export { getPost, postPost, cachePost, getCachePost, putPost };
+export { getPost, postPost, cachePost, getCachePost, putPost, deletePost };

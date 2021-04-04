@@ -32,6 +32,7 @@ const fetchPost = async (uri, data, auth = false, currentUser = false, method = 
 }
 
 const fetchPut = async (uri, data, auth = false, currentUser = false) => (await fetchPost(uri, data, auth, currentUser, "PUT"));
+const fetchDelete = async (uri, data, auth = false, currentUser = false) => (await fetchPost(uri, data, auth, currentUser, "DELETE"));
 
 
-export { fetchGet, fetchPost, fetchPut };
+export { fetchGet, fetchPost, fetchPut, fetchDelete };

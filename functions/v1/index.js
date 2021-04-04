@@ -8,6 +8,7 @@ const userRouter = require("./users/users");
 const listRouter = require("./lists/lists");
 const topicRouter = require("./topics/topics");
 const accountsRouter = require("./accounts/accounts");
+const appealRouter = require("./appeal/appeal");
 const { error, success, checkParams } = require("../returnResult");
 const { errReport } = require("./errReport");
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
@@ -71,6 +72,7 @@ app.use("/teapot", (req, res, next) => {
 
 app.use('/users', userSelfRouter);
 app.use('/accounts', accountsRouter);
+app.use('/appeal', appealRouter);
 
 app.use(async (req, res, next) => {
     if (!checkParams(req, res, ["current_user"], "current_user_not_provided", "You have to provide current user's uid.")) return;

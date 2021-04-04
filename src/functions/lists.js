@@ -26,6 +26,9 @@ const postPost = async (authData, currentUserId, data) => {
 
 const getCacheList = async (authData, currentUserId, id, posts = false, members = false, posts_author = false, accessor) => {
     const list = await getList(authData, currentUserId, id, posts, members, posts_author);
+    if (list.status !== "ok") {
+        return list;
+    }
     console.log(id);
     list.posts.forEach(post => {
         const postData = cachePost(post, accessor);
@@ -40,11 +43,6 @@ const getCacheList = async (authData, currentUserId, id, posts = false, members 
             [id]: list.posts.map(post => post.id)
         }
     });
-    console.log({
-        lists: {
-            [id]: list.posts.map(post => post.id)
-        }
-    })
 }
 
 export { getList, getCacheList };
