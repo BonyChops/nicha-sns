@@ -14,6 +14,8 @@ import { createBrowserHistory } from "history";
 import Icon from './resources/logo.png';
 import contextSwitcher from './functions/contextSwitcher';
 import ContextMenu from './components/ContextMenu/ContextMenu';
+import Loading from './components/TimeLine/parts/Loading'
+
 const history = createBrowserHistory();
 
 const merge = require('deepmerge');
@@ -84,7 +86,7 @@ class AccountsManager extends React.Component {
         if (typeof result !== "object") result = {};
         result.userInfo = this.props.state.loggedInUsers.find(user => user.id === id);
         result = merge({
-            users: { nicha: { icon: Icon, display_id: "nichaSNS", display_name: "Nicha for NNCT" } },
+            users: { nicha: { icon: Icon, display_id: "nichaSNS", display_name: "Nicha for NNCT", official: true } },
             posts: { test: "a" },
         }, result)
         return result;
@@ -136,7 +138,15 @@ class AccountsManager extends React.Component {
 
                 <BrowserRouter>
                     <Sidebar accessor={this.accessor} state={this.userState()} />
-                    {this.userState() === undefined ? null : (
+                    {this.userState() === undefined ? (
+                        <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
+                            <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
+                                {Array.from({ length: 3 }, (v, k) => (
+                                    <Loading />
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
                         <div className="flex-1 flex flex-col dark:bg-gray-800 overflow-auto">
                             <div>
                                 <Switch>

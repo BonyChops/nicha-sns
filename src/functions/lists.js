@@ -27,6 +27,11 @@ const postPost = async (authData, currentUserId, data) => {
 const getCacheList = async (authData, currentUserId, id, posts = false, members = false, posts_author = false, accessor) => {
     const list = await getList(authData, currentUserId, id, posts, members, posts_author);
     if (list.status !== "ok") {
+        accessor({
+            lists: {
+                [id]: list
+            }
+        })
         return list;
     }
     console.log(id);

@@ -5,6 +5,7 @@ import { getCacheList } from '../../functions/lists';
 import firebase, { getIdToken } from '../../Firebase';
 import Loading from './parts/Loading';
 import moment from 'moment';
+import Error from './parts/Error';
 
 class TimeLine extends React.Component {
     constructor(props) {
@@ -51,17 +52,20 @@ class TimeLine extends React.Component {
                             <Loading />
                         ))}
                     </div>
-                ) : this.props.state.lists[this.state.listId].length === 0 ? (
+                ) : (this.props.state.lists[this.state.listId].status === "error" ? (
+                    <Error errorData={this.props.state.lists[this.state.listId]} baseState={this.props.baseState} />
+                ) : (this.props.state.lists[this.state.listId].length === 0 ? (
                     <div>
                         <this.NichaDummyPost body={"**まだ投稿がありません！**\nなにか投稿してみましょう！"} />
                         <this.NichaDummyPost body={"タイムラインはこのように投稿が一列になって表示されます．他のSNSとおんなじですね"} />
-                       {(this.props.location.pathname === "/") ? ( <this.NichaDummyPost body={"まだフォローした人がいないのであれば，興味がある人をフォローしてみましょう！もしかしたら仲良くなれるかも？\n[おすすめのユーザーを探す！](https://google.com)"} />) : null}
+                        {(this.props.location.pathname === "/") ? (<this.NichaDummyPost body={"まだフォローした人がいないのであれば，興味がある人をフォローしてみましょう！もしかしたら仲良くなれるかも？\n[おすすめのユーザーを探す！](https://google.com)"} />) : null}
                         <this.NichaDummyPost body={"**Tips:**\nNichaでは**マークダウン**が使えます．上手く使いこなして，投稿を彩ってみましょう！\n\n**強調**:\n```\n**強調**\n```\n\n*斜体*:\n```\n*斜体*\n```\n\n~取り消し~:\n```\n~取り消し~\n```\n\nソースコード:\n```text\n/`\\`\\`\nconsole.log(\"Hello World!\");\n\\`\\`\\`\n```\n↓\n```javascript\nconsole.log(\"Hello World!\")\n```\n通常は自動で言語が判別されてシンタックスカラーリングされますが，自分で言語を指定することもできます．\n```text\n\``\`hsp\nmes \"Hello World!\"\n`\`\`\n```\n↓\n```hsp\nmes \"Hello World!\"\n```\n"} />
                     </div>
                 ) :
                     this.props.state.lists[this.state.listId].map((postId, k) => (
                         <Post key={k} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
-                    ))}
+                    ))
+                ))}
             </div>
         )
     }

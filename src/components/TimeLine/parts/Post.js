@@ -19,6 +19,7 @@ import TeacherIcon from '../../../resources/teacher';
 
 const Post = (props) => {
     const openPost = () => {
+        if (props.disableActions) return;
         props.history.push(`/posts/${props.data.id}`)
     }
 
@@ -43,7 +44,7 @@ const Post = (props) => {
                                 </div>
                             </div>
                         </div>) : null}
-                        <div className="flex pt-4 px-4 cursor-pointer" onClick={openPost}>
+                        <div className={"flex pt-4 px-4 " + (props.disableActions ? "" : "cursor-pointer")} onClick={openPost}>
                             <div className="w-16 p-2 mr-2">
                                 <img className="w-16 rounded-full"
                                     src={props.state.users[props.data.author].icon} />
@@ -51,7 +52,7 @@ const Post = (props) => {
                             <div className="px-2 pt-2 flex-grow">
                                 <header>
                                     <a href="#" className="text-black dark:text-white no-underline">
-                                        <span className="font-medium mr-2 flex">{props.state.users[props.data.author].display_name}{/* <OfficialIcon className="w-4 h-4 my-auto ml-1"/> */}<TeacherIcon className="w-4 h-4 my-auto ml-1"/></span>
+                                        <span className="font-medium mr-2 flex">{props.state.users[props.data.author].display_name}{props.state.users[props.data.author].official ? (<OfficialIcon className="w-4 h-4 my-auto ml-1" />) : null}{props.state.users[props.data.author].teacher ? (<TeacherIcon className="w-4 h-4 my-auto ml-1" />) : null}</span>
                                         <span className="font-normal text-gray-400 text-xs">@{props.state.users[props.data.author].display_id}</span>
                                     </a>
                                     <div className="text-xs text-gray-400 flex items-center my-1">

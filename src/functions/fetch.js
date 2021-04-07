@@ -17,7 +17,7 @@ const fetchPost = async (uri, data, auth = false, currentUser = false, method = 
     console.log(uri);
     console.log(data);
     const body = Object.keys(data).map(key => (`${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)).join("&") + (auth !== false ? `&authorization=${auth}` : "") + (currentUser !== false ? `&current_user=${currentUser}` : "");
-    return await new Promise((resolve, reject) => request(uri + (auth !== false ? `?authorization=${auth}` : ""), {
+    return await new Promise((resolve, reject) => request(uri, {
         method,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
