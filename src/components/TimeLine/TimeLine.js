@@ -6,6 +6,7 @@ import firebase, { getIdToken } from '../../Firebase';
 import Loading from './parts/Loading';
 import moment from 'moment';
 import Error from './parts/Error';
+import Icon from '../../resources/logo.png';
 
 class TimeLine extends React.Component {
     constructor(props) {
@@ -62,9 +63,27 @@ class TimeLine extends React.Component {
                         <this.NichaDummyPost body={"**Tips:**\nNichaでは**マークダウン**が使えます．上手く使いこなして，投稿を彩ってみましょう！\n\n**強調**:\n```\n**強調**\n```\n\n*斜体*:\n```\n*斜体*\n```\n\n~取り消し~:\n```\n~取り消し~\n```\n\nソースコード:\n```text\n/`\\`\\`\nconsole.log(\"Hello World!\");\n\\`\\`\\`\n```\n↓\n```javascript\nconsole.log(\"Hello World!\")\n```\n通常は自動で言語が判別されてシンタックスカラーリングされますが，自分で言語を指定することもできます．\n```text\n\``\`hsp\nmes \"Hello World!\"\n`\`\`\n```\n↓\n```hsp\nmes \"Hello World!\"\n```\n"} />
                     </div>
                 ) :
-                    this.props.state.lists[this.state.listId].map((postId, k) => (
-                        <Post key={k} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
-                    ))
+                    (<div className="flex w-3/5 mx-auto">
+                        <div className="absolute w-44 mr-10 mt-8">
+                            <img src={Icon} className="rounded-full border-green-600 border-2" />
+                            <h1 className="mt-6 text-4xl">TEST</h1>
+                            <h2 className="text-2xl text-gray-500">@TEST</h2>
+                            <button className="mt-6 w-full rounded-xl h-8 bg-gray-600">
+                                プロフィールを編集
+                            </button>
+                            <button className="mt-6">
+                                11 フォロー
+                            </button>
+                            <p className="mt-6">Web系が好きな高専4年 2/10〜4/1はよく寝よう月間です なんもわからん</p>
+                        </div>
+
+                        <div className="ml-56 max-w-md">
+                            {this.props.state.lists[this.state.listId].map((postId, k) => (
+                                <Post key={k} disableUser={false} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
+                            ))}
+                        </div>
+
+                    </div>)
                 ))}
             </div>
         )
