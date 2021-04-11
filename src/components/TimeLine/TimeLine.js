@@ -102,57 +102,62 @@ class TimeLine extends React.Component {
                         <this.NichaDummyPost body={"**Tips:**\nNichaでは**マークダウン**が使えます．上手く使いこなして，投稿を彩ってみましょう！\n\n**強調**:\n```\n**強調**\n```\n\n*斜体*:\n```\n*斜体*\n```\n\n~取り消し~:\n```\n~取り消し~\n```\n\nソースコード:\n```text\n/`\\`\\`\nconsole.log(\"Hello World!\");\n\\`\\`\\`\n```\n↓\n```javascript\nconsole.log(\"Hello World!\")\n```\n通常は自動で言語が判別されてシンタックスカラーリングされますが，自分で言語を指定することもできます．\n```text\n\``\`hsp\nmes \"Hello World!\"\n`\`\`\n```\n↓\n```hsp\nmes \"Hello World!\"\n```\n"} />
                     </div>
                 ) :
-                    (<div className="flex max-w-3xl mx-auto">
-                        <div className="absolute w-44 mr-10 mt-8">
-                            <img src={Icon} className="rounded-full border-green-600 border-2" />
-                            <h1 className="mt-6 text-4xl">TEST</h1>
-                            <h2 className="text-2xl text-gray-500">@TEST</h2>
-                            <p className="mt-3">学生アカウント</p>
-                            <button className="mt-6 w-full rounded-xl h-8 bg-gray-600">
-                                プロフィールを編集
-                            </button>
-                            <button className="mt-6">
-                                11 フォロー
-                            </button>
-                            <p className="mt-6">Web系が好きな高専4年 2/10〜4/1はよく寝よう月間です なんもわからん</p>
-                        </div>
-                        <div className="w-44 mr-10 mt-8" />
-                        <div className="">
-                            <div className="absolute bg-gray-800 rounded-xl shadow-md px-4 py-2 mx-0">
-                                <button className={"px-4 py-2 focus:outline-none " + (this.state.mode === "posts" ? "border-b-2" : "")} onClick={() => this.switchMode("posts")}>投稿</button>
-                                <button className=" px-4 py-2 focus:outline-none " onClick={() => Swal.fire({ title: "開発中です！", text: "ここでユーザーが公開しているレポジトリが確認できるようになる...予定です！" })}>レポジトリ</button>
-                                <button className={"px-4 py-2 focus:outline-none " + (this.state.mode === "userDetails" ? "border-b-2" : "")} onClick={() => this.switchMode("userDetails")}>詳細</button>
-                            </div>
-                            <div className="right-0 mt-20 mr-10 max-w-md">
-                                {this.state.mode === "posts" ? this.props.state.lists[this.state.listId].map((postId, k) => (
-                                    <Post key={k} disableUser={false} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
-                                )) : (this.state.mode === "userDetails" ? (
-                                    <div>
-                                        <div className="mb-4">
-                                            <h2 className="text-2xl">本名:</h2>
-                                            <p>小島祐介</p>
-                                        </div>
-                                        <div className="mb-4">
-                                            <h2 className="text-2xl">識別ID:</h2>
-                                            <p>12345678</p>
-                                        </div>
-                                        <div className="mb-4">
-                                            <h2 className="text-2xl">詳細な自己紹介:</h2>
-                                            <BrowserRouter>
-                                                <ErrorHandler>
-                                                    <PostViewer textScalingDisable={true}>
-                                                        みなさんこんにちは！YouTubeで活動を行っている**田中一郎**です！_チャンネル登録してくれると嬉しいです_！
-                                                        https://youtube.com/BonyChops
-                                                    </PostViewer>
-                                                </ErrorHandler>
-                                            </BrowserRouter>
-                                        </div>
-
+                    (<div className="max-w-3xl mx-auto">
+                        {this.props.userView ? (
+                            <div className="flex">
+                                <div className="absolute w-44 mr-10 mt-8">
+                                    <img src={Icon} className="rounded-full border-green-600 border-2" />
+                                    <h1 className="mt-6 text-4xl">TEST</h1>
+                                    <h2 className="text-2xl text-gray-500">@TEST</h2>
+                                    <p className="mt-3">学生アカウント</p>
+                                    <button className="mt-6 w-full rounded-xl h-8 bg-gray-600">
+                                        プロフィールを編集
+                                </button>
+                                    <button className="mt-6">
+                                        11 フォロー
+                                </button>
+                                    <p className="mt-6">Web系が好きな高専4年 2/10〜4/1はよく寝よう月間です なんもわからん</p>
+                                </div>
+                                <div className="w-44 mr-10 mt-8" />
+                                <div className="">
+                                    <div className="absolute bg-gray-800 rounded-xl shadow-md px-4 py-2 mx-0">
+                                        <button className={"px-4 py-2 focus:outline-none " + (this.state.mode === "posts" ? "border-b-2" : "")} onClick={() => this.switchMode("posts")}>投稿</button>
+                                        <button className=" px-4 py-2 focus:outline-none " onClick={() => Swal.fire({ title: "開発中です！", text: "ここでユーザーが公開しているレポジトリが確認できるようになる...予定です！" })}>レポジトリ</button>
+                                        <button className={"px-4 py-2 focus:outline-none " + (this.state.mode === "userDetails" ? "border-b-2" : "")} onClick={() => this.switchMode("userDetails")}>詳細</button>
                                     </div>
-                                ) : null
-                                )}
+                                    <div className="right-0 mt-20 mr-10 max-w-md">
+                                        {this.state.mode === "posts" ? this.props.state.lists[this.state.listId].map((postId, k) => (
+                                            <Post key={k} disableUser={false} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
+                                        )) : (this.state.mode === "userDetails" ? (
+                                            <div>
+                                                <div className="mb-4">
+                                                    <h2 className="text-2xl">本名:</h2>
+                                                    <p>小島祐介</p>
+                                                </div>
+                                                <div className="mb-4">
+                                                    <h2 className="text-2xl">識別ID:</h2>
+                                                    <p>12345678</p>
+                                                </div>
+                                                <div className="mb-4">
+                                                    <h2 className="text-2xl">詳細な自己紹介:</h2>
+                                                    <BrowserRouter>
+                                                        <ErrorHandler>
+                                                            <PostViewer textScalingDisable={true}>
+                                                                みなさんこんにちは！YouTubeで活動を行っている**田中一郎**です！_チャンネル登録してくれると嬉しいです_！
+                                                                https://youtube.com/BonyChops
+                                                        </PostViewer>
+                                                        </ErrorHandler>
+                                                    </BrowserRouter>
+                                                </div>
+                                            </div>
+                                        ) : null
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        ) : this.props.state.lists[this.state.listId].map((postId, k) => (
+                            <Post key={k} disableUser={false} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
+                        ))}
 
 
                     </div>)

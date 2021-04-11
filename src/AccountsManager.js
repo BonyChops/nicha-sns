@@ -1,10 +1,6 @@
 import React from 'react';
-import firebase from './Firebase';
-import nichaConfig from './nicha.config';
-import { getUsers } from './functions/users';
 import Sidebar from './components/Sidebar/Sidebar';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { Router } from "react-router"
 import NotFound from './components/NotFound/NotFound';
 import Post from './components/Post/Post';
 import TimeLine from './components/TimeLine/TimeLine';
@@ -12,8 +8,6 @@ import NewToLogin from './components/NewToLogin/NewToLogin';
 import NewPost from './components/NewPost/NewPost';
 import { createBrowserHistory } from "history";
 import Icon from './resources/logo.png';
-import contextSwitcher from './functions/contextSwitcher';
-import ContextMenu from './components/ContextMenu/ContextMenu';
 import Loading from './components/TimeLine/parts/Loading'
 import YouTube from 'react-youtube';
 
@@ -184,6 +178,7 @@ class AccountsManager extends React.Component {
                                         baseState={this.props.state}
                                         accessor={this.accessor}
                                         toggleAccessor={this.toggleAccessor}
+                                        userView={true}
                                         {...props}
                                     />} />
                                     <Route path="/secret" render={(props) => (

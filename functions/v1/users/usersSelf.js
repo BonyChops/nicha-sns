@@ -1,10 +1,10 @@
-const { db, admin } = require('../../firestore.js');
+const {db, admin} = require('../../firestore.js');
 const functions = require('firebase-functions');
 const moment = require("moment");
 //const { google } = require('googleapis')
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 const genRandomDigits = (digits) => (rand(10 ** (digits - 1), (10 ** digits) - 1));
-const { error, success, checkParams } = require("../../returnResult");
+const {error, success, checkParams} = require("../../returnResult");
 const express = require("express");
 const app = express();
 
@@ -26,18 +26,23 @@ app.get("/", async (req, res, next) => {
 });
 
 
-
 app.post("/", async (req, res, next) => {
     const users = await db.doc(`accounts/${req.account.uid}`).get();
     if (!checkParams(req, res, ["isMain"])) return;
-    if (req.body.bio.length > 300) { error(res, 400, "too_long_bio"); return; }
+    if (req.body.bio.length > 300) {
+        error(res, 400, "too_long_bio");
+        return;
+    }
     const id = genRandomDigits(16);
     const listId = genRandomDigits(16);
+    const postsListsId = genRandomDigits(16);
     if (!users.exists) {
         //Main account
         if (!checkParams(req, res, ["display_name", "bio"])) return;
-        if (req.body.isMain !== "true") { error(res, 400, "main_not_exists"); return; }
-        console.log("GO");
+        if (req.body.isMain !== "true") {
+            error(res, 400, "main_not_exists");
+            return;
+        }
         // Use Google People API
         /*  const auth = new google.auth.OAuth2(...Object.values(functions.config().googleapi));
         console.log(...Object.values(functions.config().googleapi));
@@ -68,7 +73,10 @@ app.post("/", async (req, res, next) => {
         }); */
         console.log("-----");
         const display_id = req.googleAccount.email.match(/^(.*)@(.*)$/)[1];
-        if (!(await db.collection("users").where("display_id", "==", display_id).get()).empty) { error(res, 400, "display_id_already_in_use"); return; }
+        if (!(await db.collection("users").where("display_id", "==", display_id).get()).empty) {
+            error(res, 400, "display_id_already_in_use");
+            return;
+        }
         let usersInfo = [
             {
                 id,
@@ -79,7 +87,8 @@ app.post("/", async (req, res, next) => {
                 student: (req.googleAccount.email.match(new RegExp(`${functions.config().schooladdress.student}$`)) !== null),
                 main: true,
                 userDetail: db.doc(`users_detail/${id}`),
-                follow: db.doc(`lists/${listId}`)
+                follow: db.doc(`lists/${listId}`),
+                posts: db.doc(`lists/${postsListsId}`)
                 //longData: "nawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapvawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapvawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapv"
             }
         ]
@@ -131,15 +140,27 @@ app.post("/", async (req, res, next) => {
         usersInfo[0].selected = true;
         usersInfo[0].userDetail = userDetail;
 
-        success(res, { users: usersInfo });
+        success(res, {users: usersInfo});
         return;
     }
     //Sub-account
-    if (req.body.isMain !== "false") { error(res, 409, "main_already_exists"); return; }
+    if (req.body.isMain !== "false") {
+        error(res, 409, "main_already_exists");
+        return;
+    }
     if (!checkParams(req, res, ["display_name", "bio", "display_id"])) return;
-    if (req.body.bio.length > 300) { error(res, 400, "too_long_bio"); return; }
-    if (req.body.display_id.match(/(?=^[\w]{3,16})(?!^\d+$)^.+$/) === null) { error(res, 400, "invalid_display_id"); return; }
-    if (!(await db.collection("users").where("display_id", "==", req.body.display_id).get()).empty) { error(res, 400, "display_id_already_in_use"); return; }
+    if (req.body.bio.length > 300) {
+        error(res, 400, "too_long_bio");
+        return;
+    }
+    if (req.body.display_id.match(/(?=^[\w]{3,16})(?!^\d+$)^.+$/) === null) {
+        error(res, 400, "invalid_display_id");
+        return;
+    }
+    if (!(await db.collection("users").where("display_id", "==", req.body.display_id).get()).empty) {
+        error(res, 400, "display_id_already_in_use");
+        return;
+    }
     const userInfo = (await db.doc(`accounts/${req.account.uid}`).get()).data();
     let usersInfo = {
         id,
@@ -152,7 +173,6 @@ app.post("/", async (req, res, next) => {
         userDetail: db.doc(`users_detail/${id}`),
         follow: db.doc(`lists/${listId}`)
     }
-    userInfo.users
     userInfo.users.push(usersInfo)
     userInfo.usersClaim.push(Object.assign({}, usersInfo))
 
@@ -194,7 +214,7 @@ app.post("/", async (req, res, next) => {
         }),
     ])
     userInfo.users.slice(-1)[0].selected = true;
-    success(res, { users: userInfo.users });
+    success(res, {users: userInfo.users});
     return;
 });
 
