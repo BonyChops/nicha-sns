@@ -15,6 +15,7 @@ import Icon from './resources/logo.png';
 import contextSwitcher from './functions/contextSwitcher';
 import ContextMenu from './components/ContextMenu/ContextMenu';
 import Loading from './components/TimeLine/parts/Loading'
+import YouTube from 'react-youtube';
 
 const history = createBrowserHistory();
 
@@ -151,14 +152,14 @@ class AccountsManager extends React.Component {
                             <div>
                                 <Switch>
                                     <Route exact path="/" render={(props) => <TimeLine
-                                        key={this.userState()?.userInfo.id}
+                                        key={this.userState()?.userInfo.id + props.match.params.id}
                                         state={this.userState()}
                                         baseState={this.props.state}
                                         accessor={this.accessor}
                                         toggleAccessor={this.toggleAccessor}
                                         {...props}
                                     />} />
-                                    <Route path="/posts/:id" children={(props) => (<Post
+                                    <Route path="/p/:id" children={(props) => (<Post
                                         history={props.history}
                                         key={props.match.params.id}
                                         state={this.userState()}
@@ -169,14 +170,29 @@ class AccountsManager extends React.Component {
                                         {...props}
                                     />)
                                     } />
-                                    <Route path="/lists/:id" render={(props) => <TimeLine
-                                        key={this.userState()?.userInfo.id}
+                                    <Route path="/l/:id" render={(props) => <TimeLine
+                                        key={this.userState()?.userInfo.id + props.match.params.id}
                                         state={this.userState()}
                                         baseState={this.props.state}
                                         accessor={this.accessor}
                                         toggleAccessor={this.toggleAccessor}
                                         {...props}
                                     />} />
+                                    <Route path="/u/:id" render={(props) => <TimeLine
+                                        key={this.userState()?.userInfo.id + props.match.params.id}
+                                        state={this.userState()}
+                                        baseState={this.props.state}
+                                        accessor={this.accessor}
+                                        toggleAccessor={this.toggleAccessor}
+                                        {...props}
+                                    />} />
+                                    <Route path="/secret" render={(props) => (
+                                        <div className="dark:text-gray-400">
+                                            <h1 className="text-3xl">名曲</h1>
+                                            <p className="">いつかYouTube Playerも実装したい＞＜</p>
+                                            <YouTube videoId="dQw4w9WgXcQ" onReady={(event) => { setTimeout(() => { event.target.playVideo(); }, 300) }} />
+                                        </div>
+                                    )} />
                                     <Route render={() => <NotFound key={this.userState()?.userInfo.id} state={this.state} baseState={this.props.state} />} />
                                 </Switch>
                                 {(this.userState()?.popup?.title === "newPost") ? <NewPost toggleAccessor={this.toggleAccessor} accessor={this.accessor} state={this.userState()} baseState={this.props.state} /> : null}

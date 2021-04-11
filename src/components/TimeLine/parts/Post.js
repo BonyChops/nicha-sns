@@ -20,7 +20,7 @@ import TeacherIcon from '../../../resources/teacher';
 const Post = (props) => {
     const openPost = () => {
         if (props.disableActions) return;
-        props.history.push(`/posts/${props.data.id}`)
+        props.history.push(`/p/${props.data.id}`)
     }
 
     return (

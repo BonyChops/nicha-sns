@@ -41,7 +41,7 @@ const PostViewer = (props) => {
     return (
         <BrowserRouter>
             <ReactMarkdown
-                className={props.className + " whitespace-pre-wrap w-full break-words  " + (props.children.length < powerWordLength ? "text-3xl" : "text-base")}
+                className={props.className + " whitespace-pre-wrap w-full break-words  " + (props.children.length < powerWordLength && !props.textScalingDisable ? "text-3xl" : "text-base")}
                 plugins={[gfm]}
                 renderers={renderers}
                 history={props.history}

@@ -9,6 +9,18 @@ const app = express();
 
 
 app.get("/:id", async (req, res, next) => {
+    const buf = [];
+    const getUserData = async (ref) => {
+        console.log(ref.path)
+        const userId = ref.path.match(/^users\/(.*)$/)[1];
+        if(buf.some(user => user.id_str === userId)){
+            return buf.find(user => user.id_str === userId);
+        }
+        console.log("getData")
+        const data = (await ref.get()).data();
+        buf.push(data);
+        return data;
+    }
     const listRef = db.doc(`lists/${req.params.id}`);
     const list = await listRef.get();
     if (!list.exists) { error(res, 404, "lists", "List not found."); return; }
@@ -25,9 +37,7 @@ app.get("/:id", async (req, res, next) => {
                 const post = await postSnaps.docs[key].data().post_reference.get()
                 //if (!post.exists) continue;
                 const postData = post.data();
-                console.log(post);
-                console.log(postData);
-                if (req.query.posts_author === "true") postData.author = (await postData.author.get()).data();
+                if (req.query.posts_author === "true") postData.author = await getUserData(postData.author);
                 if (post.exists) posts.push(postData);
             }
         }

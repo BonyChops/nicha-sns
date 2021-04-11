@@ -114,7 +114,7 @@ const NewPost = (props) => {
     }
     const history = useHistory();
     const jumpPage = (id) => {
-        history.push(`/posts/${id}`);
+        history.push(`/p/${id}`);
     }
     /* const handleKeyDown = (e) => {
 

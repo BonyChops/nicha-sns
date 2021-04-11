@@ -7,12 +7,18 @@ import Loading from './parts/Loading';
 import moment from 'moment';
 import Error from './parts/Error';
 import Icon from '../../resources/logo.png';
+import Swal from 'sweetalert2/src/sweetalert2.js'
+import '@sweetalert2/themes/dark';
+import { BrowserRouter } from 'react-router-dom';
+import ErrorHandler from '../../functions/ErrorHandler';
+import PostViewer from '../PostViewer/PostViewer';
 
 class TimeLine extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            listId: (this.props.location.pathname === "/") ? this.props.state.userInfo.follow.match(/^lists\/(.*)$/)[1] : this.props.match.params.id
+            listId: (this.props.location.pathname === "/") ? this.props.state.userInfo.follow.match(/^lists\/(.*)$/)[1] : this.props.match.params.id,
+            mode: "posts"
         }
     }
 
@@ -39,6 +45,39 @@ class TimeLine extends React.Component {
         }} state={this.props.state} baseState={this.props.baseState} disableActions={true} {...props} />
     )
 
+    switchMode = (name) => {
+        if (name === "userDetails") {
+            if (!this.state.warnedPrivacy) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "注意！",
+                    html: "詳細タブには個人情報が含まれていることがあります．表示する際にはスクリーンショットや配信等による意図しない拡散に注意してください．<br /><br />安全のため，一定時間が経つと自動的にページが戻ります．",
+                    showCancelButton: true,
+                    cancelButtonText: "キャンセル"
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        this.setState({ mode: name, warnedPrivacy: true })
+                        setTimeout(() => {
+                            if (name === "userDetails") {
+                                this.setState({ mode: "posts" })
+                            }
+                        }, 30000);
+                    }
+                })
+            } else {
+                this.setState({ mode: name })
+                setTimeout(() => {
+                    if (name === "userDetails") {
+                        this.setState({ mode: "posts" })
+                    }
+                }, 30000);
+            }
+
+        } else {
+            this.setState({ mode: name })
+        }
+    }
+
     render() {
         console.log(this.props.state)
         /* if (this.props.state.posts === undefined || this.props.state.lists === undefined) {
@@ -46,7 +85,7 @@ class TimeLine extends React.Component {
             return null;
         } */
         return (
-            <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
+            <div className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll mt-6">
                 {this.props.state.lists === undefined || this.props.state?.lists[this.state.listId] === undefined ? (
                     <div>
                         {Array.from({ length: 3 }, (v, k) => (
@@ -63,11 +102,12 @@ class TimeLine extends React.Component {
                         <this.NichaDummyPost body={"**Tips:**\nNichaでは**マークダウン**が使えます．上手く使いこなして，投稿を彩ってみましょう！\n\n**強調**:\n```\n**強調**\n```\n\n*斜体*:\n```\n*斜体*\n```\n\n~取り消し~:\n```\n~取り消し~\n```\n\nソースコード:\n```text\n/`\\`\\`\nconsole.log(\"Hello World!\");\n\\`\\`\\`\n```\n↓\n```javascript\nconsole.log(\"Hello World!\")\n```\n通常は自動で言語が判別されてシンタックスカラーリングされますが，自分で言語を指定することもできます．\n```text\n\``\`hsp\nmes \"Hello World!\"\n`\`\`\n```\n↓\n```hsp\nmes \"Hello World!\"\n```\n"} />
                     </div>
                 ) :
-                    (<div className="flex w-3/5 mx-auto">
+                    (<div className="flex max-w-3xl mx-auto">
                         <div className="absolute w-44 mr-10 mt-8">
                             <img src={Icon} className="rounded-full border-green-600 border-2" />
                             <h1 className="mt-6 text-4xl">TEST</h1>
                             <h2 className="text-2xl text-gray-500">@TEST</h2>
+                            <p className="mt-3">学生アカウント</p>
                             <button className="mt-6 w-full rounded-xl h-8 bg-gray-600">
                                 プロフィールを編集
                             </button>
@@ -76,12 +116,44 @@ class TimeLine extends React.Component {
                             </button>
                             <p className="mt-6">Web系が好きな高専4年 2/10〜4/1はよく寝よう月間です なんもわからん</p>
                         </div>
+                        <div className="w-44 mr-10 mt-8" />
+                        <div className="">
+                            <div className="absolute bg-gray-800 rounded-xl shadow-md px-4 py-2 mx-0">
+                                <button className={"px-4 py-2 focus:outline-none " + (this.state.mode === "posts" ? "border-b-2" : "")} onClick={() => this.switchMode("posts")}>投稿</button>
+                                <button className=" px-4 py-2 focus:outline-none " onClick={() => Swal.fire({ title: "開発中です！", text: "ここでユーザーが公開しているレポジトリが確認できるようになる...予定です！" })}>レポジトリ</button>
+                                <button className={"px-4 py-2 focus:outline-none " + (this.state.mode === "userDetails" ? "border-b-2" : "")} onClick={() => this.switchMode("userDetails")}>詳細</button>
+                            </div>
+                            <div className="right-0 mt-20 mr-10 max-w-md">
+                                {this.state.mode === "posts" ? this.props.state.lists[this.state.listId].map((postId, k) => (
+                                    <Post key={k} disableUser={false} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
+                                )) : (this.state.mode === "userDetails" ? (
+                                    <div>
+                                        <div className="mb-4">
+                                            <h2 className="text-2xl">本名:</h2>
+                                            <p>小島祐介</p>
+                                        </div>
+                                        <div className="mb-4">
+                                            <h2 className="text-2xl">識別ID:</h2>
+                                            <p>12345678</p>
+                                        </div>
+                                        <div className="mb-4">
+                                            <h2 className="text-2xl">詳細な自己紹介:</h2>
+                                            <BrowserRouter>
+                                                <ErrorHandler>
+                                                    <PostViewer textScalingDisable={true}>
+                                                        みなさんこんにちは！YouTubeで活動を行っている**田中一郎**です！_チャンネル登録してくれると嬉しいです_！
+                                                        https://youtube.com/BonyChops
+                                                    </PostViewer>
+                                                </ErrorHandler>
+                                            </BrowserRouter>
+                                        </div>
 
-                        <div className="ml-56 max-w-md">
-                            {this.props.state.lists[this.state.listId].map((postId, k) => (
-                                <Post key={k} disableUser={false} data={this.props.state.posts[postId]} state={this.props.state} baseState={this.props.baseState} />
-                            ))}
+                                    </div>
+                                ) : null
+                                )}
+                            </div>
                         </div>
+
 
                     </div>)
                 ))}
