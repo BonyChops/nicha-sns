@@ -43,34 +43,6 @@ app.post("/", async (req, res, next) => {
             error(res, 400, "main_not_exists");
             return;
         }
-        // Use Google People API
-        /*  const auth = new google.auth.OAuth2(...Object.values(functions.config().googleapi));
-        console.log(...Object.values(functions.config().googleapi));
-        console.log(req.body.google_token)
-        auth.setCredentials({ access_token: req.body.google_token });
-        const service = google.people({ version: 'v1', auth })
-        service.people.connections.list({
-            resourceName: 'people/me',
-            personFields: 'birthdays',
-        }, (err, res) => {
-            console.log("hello");
-            if (err) return console.error(err);
-            console.log("hello");
-            console.log(res);
-            const connections = res.data.connections;
-            if (connections) {
-                console.log('Connections:');
-                connections.forEach((person) => {
-                    if (person.names && person.names.length > 0) {
-                        console.log(person.names[0].displayName);
-                    } else {
-                        console.log('No display name found for connection.');
-                    }
-                });
-            } else {
-                console.log('No connections found.');
-            }
-        }); */
         console.log("-----");
         const display_id = req.googleAccount.email.match(/^(.*)@(.*)$/)[1];
         if (!(await db.collection("users").where("display_id", "==", display_id).get()).empty) {

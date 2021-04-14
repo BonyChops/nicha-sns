@@ -42,7 +42,7 @@ class Sidebar extends React.Component {
             <div className="bg-indigo-900 text-purple-lighter flex-none w-64 pb-6 hidden lg:block scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll">
                 <div className="text-white mb-2 mt-3 px-4 flex justify-between">
                     <div className="flex-auto overflow-x-hidden">
-                        {this.props.state?.userInfo !== undefined ? (<h1 className="font-semibold text-xl leading-tight mb-1 truncate">{this.props.state.userInfo?.display_name}</h1>)
+                        {this.props.state?.userInfo !== undefined ? (<Link to={`/u/${this.props.state.userInfo?.display_id}`} className="font-semibold text-xl leading-tight mb-1 truncate text-white hover:underline">{this.props.state.userInfo?.display_name}</Link>)
                             : (<div className="w-32 h-4 bg-gray-700 rounded-xl animate-pulse" />)}
                         <div className="flex items-center mt-2 mb-6">
                             <span className={(this.props.state?.userInfo === undefined ? "bg-gray-700 animate-pulse" : "bg-green-400") + " rounded-full block w-2 h-2 mr-2"} />
