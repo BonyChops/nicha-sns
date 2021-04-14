@@ -1,3 +1,5 @@
+import {generateList} from "../functions/lists";
+
 const {db, admin} = require('../../firestore.js');
 const functions = require('firebase-functions');
 const moment = require("moment");
@@ -61,7 +63,6 @@ app.post("/", async (req, res, next) => {
                 userDetail: db.doc(`users_detail/${id}`),
                 follow: db.doc(`lists/${listId}`),
                 posts: db.doc(`lists/${postsListsId}`)
-                //longData: "nawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapvawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapvawevnaewuvanwpoavwavniewvinaewinawpaeiuavevinvauawvepuioeavwpuivenivnvweinvnrvnpavwvaeaaaevinapaeavwanewpanwvaenpainanaavnaewapvnweanpiavnpwanerinpanvaweanvavananvapinrawenanvananavweavnanoaninpavwenaaevpanawavanvaneanpiavpiawpeanvvwaeponianpvaonppirnaoaoanvpionawpoanupaoeavepioaeaupvoiapoiuaapv"
             }
         ]
         const userInfo = {
@@ -96,7 +97,9 @@ app.post("/", async (req, res, next) => {
             db.doc(`accounts/${req.account.uid}`).set(userInfo),
             db.doc(`users/${usersInfo[0].id}`).set(usersInfo[0]),
             usersInfo[0].userDetail.set(userDetail),
-            usersInfo[0].follow.set(followList),
+            generateList(listId, "secret", [id], [id]),
+            generateList(postsListsId, "secret", [id], [id]),
+            /*usersInfo[0].follow.set(followList),
             usersInfo[0].follow.collection("listUsers").doc(String(id)).set({
                 id,
                 listed_at: moment().format(),
@@ -106,7 +109,7 @@ app.post("/", async (req, res, next) => {
                 id,
                 listed_at: moment().format(),
                 user_reference: db.doc(`users/${id}`)
-            }),
+            }),*/
         ]);
 
         usersInfo[0].selected = true;
