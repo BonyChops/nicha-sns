@@ -1,5 +1,3 @@
-import {generateList} from "../functions/lists";
-
 const {db, admin} = require('../../firestore.js');
 const functions = require('firebase-functions');
 const moment = require("moment");
@@ -7,6 +5,7 @@ const moment = require("moment");
 const rand = (min, max) => (Math.floor(Math.random() * (max - min + 1)) + min);
 const genRandomDigits = (digits) => (rand(10 ** (digits - 1), (10 ** digits) - 1));
 const {error, success, checkParams} = require("../../returnResult");
+const {generateList} = require("../functions/lists");
 const express = require("express");
 const app = express();
 
@@ -98,7 +97,7 @@ app.post("/", async (req, res, next) => {
             db.doc(`users/${usersInfo[0].id}`).set(usersInfo[0]),
             usersInfo[0].userDetail.set(userDetail),
             generateList(listId, "secret", [id], [id]),
-            generateList(postsListsId, "secret", [id], [id]),
+            generateList(postsListsId, "public", [id]),
             /*usersInfo[0].follow.set(followList),
             usersInfo[0].follow.collection("listUsers").doc(String(id)).set({
                 id,

@@ -93,7 +93,7 @@ class TimeLine extends React.Component {
         return (
             <div
                 className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll mt-6">
-                {this.props.state.lists === undefined || this.props.state?.lists[this.state.listId] === undefined ? (
+                {this.props.state?.lists?.[this.state.listId] === undefined ? (
                     <div>
                         {Array.from({length: 3}, (v, k) => (
                             <Loading/>

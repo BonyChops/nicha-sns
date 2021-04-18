@@ -1,16 +1,16 @@
-import React, { useCallback } from 'react';
-import { langChooseG } from '../Configuration/Configuration';
+import React, {useCallback} from 'react';
+import {langChooseG} from '../Configuration/Configuration';
 import CloseIcon from '../../resources/close';
-import { useState } from 'react';
+import {useState} from 'react';
 import Icon from '../../resources/logo.png';
 import PostViewer from '../PostViewer/PostViewer';
 import CheckBox from '../parts/Toggle';
 import ErrorHandler from '../../functions/ErrorHandler';
 import Swal from 'sweetalert2/src/sweetalert2.js'
 import '@sweetalert2/themes/dark';
-import firebase, { getIdToken } from '../../Firebase';
-import { postPost, putPost } from '../../functions/post';
-import { useHistory } from 'react-router-dom';
+import firebase, {getIdToken} from '../../Firebase';
+import {postPost, putPost} from '../../functions/post';
+import {useHistory} from 'react-router-dom';
 
 const NewPost = (props) => {
     const powerWordLength = 20;
@@ -84,10 +84,11 @@ const NewPost = (props) => {
                     }).then(result => {
                         if (result.isConfirmed) {
                             jumpPage(post.id);
-                            props.accessor({ popup: false });
+                            props.accessor({popup: false});
                         }
                     })
-                    props.accessor({ popup: false });
+                    props.state.refreshState();
+                    props.accessor({popup: false});
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -135,19 +136,23 @@ const NewPost = (props) => {
     } */
 
     return (
-        <div className="fixed top-0 left-0 w-full mx-auto h-full" >
-            <div className="fixed bg-gray-600 opacity-50 w-full h-full" />
+        <div className="fixed top-0 left-0 w-full mx-auto h-full">
+            <div className="fixed bg-gray-600 opacity-50 w-full h-full"/>
             <div className="fixed md:py-20 md:px-32 w-full h-full">
-                <div className="bg-white dark:bg-gray-800 dark:text-gray-100 md:rounded-xl md:shadow-md text-lg h-full md:p-20 p-5 w-full  overflow-auto">
+                <div
+                    className="bg-white dark:bg-gray-800 dark:text-gray-100 md:rounded-xl md:shadow-md text-lg h-full md:p-20 p-5 w-full  overflow-auto">
                     <div className="flex w-full mb-10">
-                        <h1 className="text-5xl">{langChoose({ ja: "投稿" + (popupState.mode === "modify" ? "を編集" : ""), en: "Post" })}</h1>
+                        <h1 className="text-5xl">{langChoose({
+                            ja: "投稿" + (popupState.mode === "modify" ? "を編集" : ""),
+                            en: "Post"
+                        })}</h1>
                         <button className="ml-auto focus:outline-none" onClick={closeConfig}>
-                            <CloseIcon width="46" />
+                            <CloseIcon width="46"/>
                         </button>
                     </div>
                     <div className=" w-full h-4/6">
                         <div className="w-12 mb-2">
-                            <img className="rounded-full" src={props.state.userInfo.icon} />
+                            <img className="rounded-full" src={props.state.userInfo.icon}/>
                         </div>
                         <div className="w-full h-5/6">
                             {(!preview ? (
@@ -156,7 +161,7 @@ const NewPost = (props) => {
                                     placeholder="今どんな気持ち？"
                                     value={post}
                                     onChange={postHandler}
-                                /*  onKeyDown={handleKeyDown.bind(this)} */
+                                    /*  onKeyDown={handleKeyDown.bind(this)} */
                                 />) : (
                                 <ErrorHandler error={errorHandled} callback={successPreview}>
                                     <PostViewer className={"h-full w-full overflow-y-auto"} baseState={props.baseState}>
@@ -167,18 +172,24 @@ const NewPost = (props) => {
                         </div>
                     </div>
 
-                    <div className={"w-full text-right mb-5 " + (postLimits - post.length < 500 ? "visible text-yellow-600" : "invisible")}>
+                    <div
+                        className={"w-full text-right mb-5 " + (postLimits - post.length < 500 ? "visible text-yellow-600" : "invisible")}>
                         <p className={"ml-auto " + (postLimits - post.length < 0 ? "text-red-600" : "")}>{postLimits - post.length}</p>
                     </div>
                     <div className="w-full flex">
-                        <CheckBox name={langChoose({ ja: "プレビュー", en: "Preview" })} toggle={preview} callback={togglePreview} />
+                        <CheckBox name={langChoose({ja: "プレビュー", en: "Preview"})} toggle={preview}
+                                  callback={togglePreview}/>
                         <button type="submit"
-                            className={"flex ml-auto rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white focus:outline-none " + (submitting ? "animate-pulse" : "")}
-                            translate="no"
-                            disabled={submitting || (preview && !previewRendered)}
-                            onClick={confirm}
+                                className={"flex ml-auto rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white focus:outline-none " + (submitting ? "animate-pulse" : "")}
+                                translate="no"
+                                disabled={submitting || (preview && !previewRendered)}
+                                onClick={confirm}
                         >
-                            <img src={Icon} className={"w-6 mr-2 " + (submitting ? "animate-spin" : "")} /><p className="top-0 bottom-0 my-auto">{langChoose({ ja: popupState.mode ? "編集" : "投稿", en: "Start" })}</p>
+                            <img src={Icon} className={"w-6 mr-2 " + (submitting ? "animate-spin" : "")}/><p
+                            className="top-0 bottom-0 my-auto">{langChoose({
+                            ja: popupState.mode ? "編集" : "投稿",
+                            en: "Start"
+                        })}</p>
                         </button>
                     </div>
                 </div>

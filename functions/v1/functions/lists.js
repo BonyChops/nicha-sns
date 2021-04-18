@@ -1,6 +1,8 @@
 const {db} = require("../../firestore");
-
-const generateList = async (listId, scope_type = "secret", listUsers, listScopeUsers) => {
+const moment = require("moment");
+require('moment-timezone');
+moment.tz.setDefault('Asia/Tokyo');
+const generateList = async (listId, scope_type = "secret", listUsers, listScopeUsers = []) => {
     const options = {
         id: listId,
         id_str: String(listId),
@@ -18,11 +20,12 @@ const generateList = async (listId, scope_type = "secret", listUsers, listScopeU
             listed_at: moment().format(),
             user_reference: db.doc(`users/${id}`)
         })))),
-        Promise.all(listUsers.map(id => (ref.collection("listScopeUsers").doc(String(id)).set({
+        Promise.all(listScopeUsers.map(id => (ref.collection("listScopeUsers").doc(String(id)).set({
             id,
             listed_at: moment().format(),
             user_reference: db.doc(`users/${id}`)
         })))),
     ])
 }
-export {generateList}
+
+exports.generateList = generateList;

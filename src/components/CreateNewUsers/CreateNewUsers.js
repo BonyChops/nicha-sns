@@ -1,12 +1,12 @@
 import React from 'react';
-import firebase, { getIdToken } from '../../Firebase';
+import firebase, {getIdToken} from '../../Firebase';
 import Icon from '../../resources/logo.png';
 import Logo from '../../resources/logo_full.png';
 import LogoWhite from '../../resources/logo_full_white.png';
-import { langChooseG } from '../Configuration/Configuration';
+import {langChooseG} from '../Configuration/Configuration';
 import CheckBox from '../parts/Toggle';
 import CloseIcon from '../../resources/close';
-import { postUsers } from '../../functions/users';
+import {postUsers} from '../../functions/users';
 import Swal from 'sweetalert2/src/sweetalert2.js';
 import '@sweetalert2/themes/dark';
 import config from '../../nicha.config';
@@ -39,7 +39,7 @@ class CreateNewUsers extends React.Component {
                 .then((result) => {
                     if (result.credential) {
                         const google_token = result.credential.accessToken;
-                        this.setState({ google_token })
+                        this.setState({google_token})
                     } else {
                         console.log(result);
                         Swal.fire({
@@ -50,13 +50,13 @@ class CreateNewUsers extends React.Component {
                         }).then(() => firebase.auth().signOut())
                     }
                 }).catch(e => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '再ログインが必要です',
-                        text: 'Googleのトークンを取得できませんでした．ログインし直してください...',
-                        confirmButtonText: `ログアウト`,
-                    }).then(() => firebase.auth().signOut())
-                })
+                Swal.fire({
+                    icon: 'error',
+                    title: '再ログインが必要です',
+                    text: 'Googleのトークンを取得できませんでした．ログインし直してください...',
+                    confirmButtonText: `ログアウト`,
+                }).then(() => firebase.auth().signOut())
+            })
         }
     }
 
@@ -105,13 +105,13 @@ class CreateNewUsers extends React.Component {
         }
         if (this.state.userId.match(/^[\w]{3,16}$/) === null) errors.push("not_valid_id");
         if (this.state.bio.length > this.bioLimit) errors.push("bio_too_long");
-        this.setState({ errors });
+        this.setState({errors});
         if (errors.length !== 0) {
             return false;
         }
 
 
-        this.setState({ sending: true });
+        this.setState({sending: true});
         getIdToken().then(idToken => {
             postUsers({
                 display_name: this.state.userName,
@@ -127,8 +127,10 @@ class CreateNewUsers extends React.Component {
                                 title: 'アカウントを作成できませんでした',
                                 text: 'サーバーの状況とクライアントの状況が衝突しました．最読み込みしてください...',
                                 confirmButtonText: `再読み込み`,
-                            }).then(res => { getIdToken(true).then(() => window.location.reload()) })
-                            this.setState({ sending: false });
+                            }).then(res => {
+                                getIdToken(true).then(() => window.location.reload())
+                            })
+                            this.setState({sending: false});
                             return;
                         case result.type.match(/^bad_request_display_id_already_in_use$/) !== null:
                             Swal.fire({
@@ -146,7 +148,15 @@ class CreateNewUsers extends React.Component {
                                     })
                                 }
                             })
-                            this.setState({ sending: false });
+                            this.setState({sending: false});
+                            return;
+                        case result.type.match(/^not_authorized_invalid_token$/) !== null:
+                            Swal.fire({
+                                icon: 'error',
+                                 title: 'アカウントを作成できませんでした',
+                                text: `ログイン情報が古くなりました．再読込する必要があります．`
+                            }).then(res => {getIdToken(true).then(window.location.reload())})
+                            this.setState({sending: false});
                             return;
                     }
                     Swal.fire({
@@ -164,7 +174,7 @@ class CreateNewUsers extends React.Component {
                             })
                         }
                     })
-                    this.setState({ sending: false });
+                    this.setState({sending: false});
                     return;
                 }
                 const Toast = Swal.mixin({
@@ -193,9 +203,15 @@ class CreateNewUsers extends React.Component {
                 Swal.fire({
                     icon: 'error',
                     title: 'アカウントを作成できませんでした',
-                    text: 'サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください...',
+                    text: ((type) => {
+                        const mes = {
+                            connection_refused: "サーバーへ接続できませんでした．接続を確かめてください．"
+                        }[type];
+                        return mes === "undefined" ? "サーバーのエラーによりログインできませんでした．時間を置いて再読込してみてください..." : mes;
+                    })(e.type),
                 })
-                console.error(e);
+                console.error(e.error);
+                this.setState({sending: false});
                 return;
             })
         })
@@ -207,29 +223,43 @@ class CreateNewUsers extends React.Component {
                 <div>
                     <div className="flex w-full mb-5">
                         {this.langChoose({
-                            ja: (<h1 className="text-2xl flex align-text-bottom"><img className="w-64" src={this.logoFull()} /><span className="mt-auto">へようこそ</span></h1>),
-                            en: (<h1 className="text-2xl">Welcome to <img className="w-64" src={this.logoFull()} /></h1>)
+                            ja: (<h1 className="text-2xl flex align-text-bottom"><img className="w-64"
+                                                                                      src={this.logoFull()}/><span
+                                className="mt-auto">へようこそ</span></h1>),
+                            en: (<h1 className="text-2xl">Welcome to <img className="w-64" src={this.logoFull()}/></h1>)
                         })}
-                        {this.state.closeDisabled ? null : (<button className="ml-auto focus:outline-none" onClick={this.closeConfig}>
-                            <CloseIcon width="24" />
-                        </button>)}
+                        {this.state.closeDisabled ? null : (
+                            <button className="ml-auto focus:outline-none" onClick={this.closeConfig}>
+                                <CloseIcon width="24"/>
+                            </button>)}
                     </div>
                     <div className="my-16">
                         <div className="my-2">
-                            {this.langChoose({ ja: "言語", en: "Language" })}:
-                            <button className="border border-gray-500 rounded-xl w-auto px-5 mx-5 py-2 focus:outline-none" onClick={this.langSelect}>
+                            {this.langChoose({ja: "言語", en: "Language"})}:
+                            <button
+                                className="border border-gray-500 rounded-xl w-auto px-5 mx-5 py-2 focus:outline-none"
+                                onClick={this.langSelect}>
                                 {this.props.state.languageDefine[this.props.state.language]}
                             </button>
                         </div>
-                        <CheckBox name={this.props.state.dark ? this.langChoose({ ja: "ダークモード", en: "Dark Mode" }) : this.langChoose({ ja: "ライトモード(β)", en: "Light Mode(β)" })} toggle={this.props.state.dark} callback={this.toggleDarkMode} />
+                        <CheckBox name={this.props.state.dark ? this.langChoose({
+                            ja: "ダークモード",
+                            en: "Dark Mode"
+                        }) : this.langChoose({ja: "ライトモード(β)", en: "Light Mode(β)"})} toggle={this.props.state.dark}
+                                  callback={this.toggleDarkMode}/>
                     </div>
                     {this.langChoose({
-                        ja: <p className="flex">ここの項目は右下の<img className="w-7 h-7 mx-2 rounded-full" src={this.props.state.googleAccount.photoURL} />からいつでも変更できます．</p>,
-                        en: <p className="flex">You can always change these options by pressing <img className="w-6 h-6 mx-2 rounded-full" src={this.props.state.googleAccount.photoURL} /> at the right bottom.</p>
+                        ja: <p className="flex">ここの項目は右下の<img className="w-7 h-7 mx-2 rounded-full"
+                                                              src={this.props.state.googleAccount.photoURL}/>からいつでも変更できます．
+                        </p>,
+                        en: <p className="flex">You can always change these options by pressing <img
+                            className="w-6 h-6 mx-2 rounded-full" src={this.props.state.googleAccount.photoURL}/> at the
+                            right bottom.</p>
                     })}
                     <div className="text-right pr-4 pt-2">
-                        <button onClick={() => this.sceneChanger("create_user")} className="rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white" translate="no">
-                            {this.langChoose({ ja: "次へ", en: "Next" })}
+                        <button onClick={() => this.sceneChanger("create_user")}
+                                className="rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white" translate="no">
+                            {this.langChoose({ja: "次へ", en: "Next"})}
                         </button>
                     </div>
                 </div>
@@ -241,9 +271,10 @@ class CreateNewUsers extends React.Component {
                             ja: this.state.sending ? "アカウントを作成しています..." : "アカウントの作成",
                             en: this.state.sending ? "Creating your account..." : "Create an account"
                         })}</h1>
-                        {(this.state.closeDisabled || this.state.sending) ? null : (<button className="ml-auto focus:outline-none" onClick={this.closeConfig}>
-                            <CloseIcon width="24" />
-                        </button>)}
+                        {(this.state.closeDisabled || this.state.sending) ? null : (
+                            <button className="ml-auto focus:outline-none" onClick={this.closeConfig}>
+                                <CloseIcon width="24"/>
+                            </button>)}
                     </div>
                     {this.state.firstAccount ? (!this.state.sending ? (this.langChoose({
                         ja: (<div className="text-sm">
@@ -258,9 +289,13 @@ class CreateNewUsers extends React.Component {
                             <div className="text-sm">
                                 <p>Let's create your main account first.</p>
                                 <ui className="list-disc mt-2">
-                                    <li><b>Your display name, real name, classroom, department</b> will be displayed on your profile.</li>
+                                    <li><b>Your display name, real name, classroom, department</b> will be displayed on
+                                        your profile.
+                                    </li>
                                     <li>We recommend you to use the main account for <u>academic things</u>.</li>
-                                    <li>In addition to the main account, you can create the sub-account, having an editable ID, no limits to creating and anonymous.</li>
+                                    <li>In addition to the main account, you can create the sub-account, having an
+                                        editable ID, no limits to creating and anonymous.
+                                    </li>
                                 </ui>
                             </div>
                         )
@@ -270,47 +305,55 @@ class CreateNewUsers extends React.Component {
                     <form onSubmit={this.confirm}>
                         <div className="my-16">
                             <div className="my-2 flex">
-                                {this.langChoose({ ja: "ディスプレイ名", en: "Display Name" })}:
+                                {this.langChoose({ja: "ディスプレイ名", en: "Display Name"})}:
                                 <input
                                     className={"ml-auto border border-gray-500 dark:bg-gray-700 rounded-xl w-64 px-5 mx-5 py-2 focus:outline-none " + (this.state.sending ? "text-gray-500" : "dark:text-gray-200")}
                                     value={this.state.userName}
                                     disabled={this.state.sending}
                                     required={true}
                                     maxLength={20}
-                                    onChange={(e) => this.setState({ userName: e.target.value })}
+                                    onChange={(e) => this.setState({userName: e.target.value})}
                                 />
                             </div>
-                            {this.state.errors.some(error => error === "no_username") ? <p className="text-red-600 text-right">ディスプレイ名を入力してください．</p> : null}
-                            {this.state.errors.some(error => error === "username_too_long") ? <p className="text-red-600 text-right">ディスプレイ名が長すぎます．</p> : null}
+                            {this.state.errors.some(error => error === "no_username") ?
+                                <p className="text-red-600 text-right">ディスプレイ名を入力してください．</p> : null}
+                            {this.state.errors.some(error => error === "username_too_long") ?
+                                <p className="text-red-600 text-right">ディスプレイ名が長すぎます．</p> : null}
                             <div className="my-2 flex">
                                 <p>ID:</p>
-                                <div className={"flex ml-auto border border-gray-500 bg-white shadow-md dark:bg-gray-700  rounded-xl w-64 px-5 mx-5 py-2 " + ((this.state.firstAccount || this.state.sending) ? "text-gray-500" : "dark:text-gray-200")}>
+                                <div
+                                    className={"flex ml-auto border border-gray-500 bg-white shadow-md dark:bg-gray-700  rounded-xl w-64 px-5 mx-5 py-2 " + ((this.state.firstAccount || this.state.sending) ? "text-gray-500" : "dark:text-gray-200")}>
                                     @<input
-                                        className="dark:bg-gray-700 bg-white focus:outline-none w-52"
-                                        value={this.state.userId}
-                                        required={true}
-                                        maxLength={16}
-                                        disabled={this.state.firstAccount || this.state.sending}
-                                        onChange={(e) => this.setState({ userId: e.target.value })}
-                                    />
+                                    className="dark:bg-gray-700 bg-white focus:outline-none w-52"
+                                    value={this.state.userId}
+                                    required={true}
+                                    maxLength={16}
+                                    disabled={this.state.firstAccount || this.state.sending}
+                                    onChange={(e) => this.setState({userId: e.target.value})}
+                                />
                                 </div>
                             </div>
-                            {this.state.errors.some(error => error === "no_userId") ? <p className="text-red-600">IDを入力してください．</p> : null}
-                            {this.state.errors.some(error => error === "not_valid_id") ? <p className="text-red-600">無効なIDです．3〜16文字の英数字，アンダースコアのみ使用できます．</p> : null}
-                            {this.state.errors.some(error => error === "not_valid_id_for_sub") ? <p className="text-red-600">数字のみのアカウントはメインアカウントでのみ使用できます．</p> : null}
+                            {this.state.errors.some(error => error === "no_userId") ?
+                                <p className="text-red-600">IDを入力してください．</p> : null}
+                            {this.state.errors.some(error => error === "not_valid_id") ?
+                                <p className="text-red-600">無効なIDです．3〜16文字の英数字，アンダースコアのみ使用できます．</p> : null}
+                            {this.state.errors.some(error => error === "not_valid_id_for_sub") ?
+                                <p className="text-red-600">数字のみのアカウントはメインアカウントでのみ使用できます．</p> : null}
 
                             <div className="my-2">
-                                <p>  {this.langChoose({ ja: "自己紹介文", en: "Bio" })}:</p>
-                                <div className={"ml-auto border border-gray-500 dark:bg-gray-700  rounded-xl w-full px-5 mx-5 py-2 shadow-md " + (this.state.sending ? "text-gray-500" : "dark:text-gray-200")}>
+                                <p>  {this.langChoose({ja: "自己紹介文", en: "Bio"})}:</p>
+                                <div
+                                    className={"ml-auto border border-gray-500 dark:bg-gray-700  rounded-xl w-full px-5 mx-5 py-2 shadow-md " + (this.state.sending ? "text-gray-500" : "dark:text-gray-200")}>
                                     <textarea
                                         className="mt-2 dark:bg-gray-700 focus:outline-none w-full h-16"
                                         value={this.state.bio}
                                         disabled={this.state.sending}
-                                        onChange={(e) => this.setState({ bio: e.target.value })}
+                                        onChange={(e) => this.setState({bio: e.target.value})}
                                     />
                                     <p className={"ml-auto w-10 " + (this.bioLimit - this.state.bio.length < 0 ? "text-red-600" : "")}>{this.bioLimit - this.state.bio.length}</p>
                                 </div>
-                                {this.state.errors.some(error => error === "bio_too_long") ? <p className="text-red-600">自己紹介文が長すぎます．ここは簡潔に書いたほうがかっこいいらしいですよ？</p> : null}
+                                {this.state.errors.some(error => error === "bio_too_long") ?
+                                    <p className="text-red-600">自己紹介文が長すぎます．ここは簡潔に書いたほうがかっこいいらしいですよ？</p> : null}
                             </div>
                         </div>
                         {this.langChoose({
@@ -321,20 +364,25 @@ class CreateNewUsers extends React.Component {
                             <div className="flex pr-4 pt-2 bottom-7">
                                 {this.state.firstAccount ? (<div className="relative">
                                     <button onClick={() => this.sceneChanger("first_account")}
-                                        className={"ml-auto rounded-xl px-5 py-2 shadow-md text-white " + (this.state.sending ? "bg-gray-700" : "bg-blue-500")}
-                                        translate="no"
-                                        disabled={this.state.sending}
+                                            className={"ml-auto rounded-xl px-5 py-2 shadow-md text-white " + (this.state.sending ? "bg-gray-700" : "bg-blue-500")}
+                                            translate="no"
+                                            disabled={this.state.sending}
                                     >
-                                        {this.langChoose({ ja: "戻る", en: "Back" })}
+                                        {this.langChoose({ja: "戻る", en: "Back"})}
                                     </button>
                                 </div>) : null}
                                 <div className="relative ml-auto">
                                     <button type="submit"
-                                        className={"flex ml-auto rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white focus:outline-none " + (this.state.sending ? "animate-pulse" : "")}
-                                        translate="no"
-                                        disabled={this.state.sending}
+                                            className={"flex ml-auto rounded-xl bg-blue-500 px-5 py-2 shadow-md text-white focus:outline-none " + (this.state.sending ? "animate-pulse" : "")}
+                                            translate="no"
+                                            disabled={this.state.sending}
                                     >
-                                        <img src={Icon} className={"w-6 mr-2 " + (this.state.sending ? "animate-spin" : "")} /><p className="top-0 bottom-0 my-auto">{this.langChoose({ ja: "はじめる", en: "Start" })}</p>
+                                        <img src={Icon}
+                                             className={"w-6 mr-2 " + (this.state.sending ? "animate-spin" : "")}/><p
+                                        className="top-0 bottom-0 my-auto">{this.langChoose({
+                                        ja: "はじめる",
+                                        en: "Start"
+                                    })}</p>
                                     </button>
                                 </div>
                             </div>
@@ -349,9 +397,10 @@ class CreateNewUsers extends React.Component {
     render() {
         return (
             <div className="fixed top-0 left-0 w-full mx-auto h-full">
-                <div className="fixed bg-gray-600 opacity-50 w-full h-full" />
+                <div className="fixed bg-gray-600 opacity-50 w-full h-full"/>
                 <div className="fixed xl:p-20 w-full h-full">
-                    <div className="bg-white dark:bg-gray-800 dark:text-gray-100 xl:rounded-xl xl:shadow-md text-lg h-full p-20 xl:w-4/6 w-full xl:mx-auto overflow-auto">
+                    <div
+                        className="bg-white dark:bg-gray-800 dark:text-gray-100 xl:rounded-xl xl:shadow-md text-lg h-full p-20 xl:w-4/6 w-full xl:mx-auto overflow-auto">
                         {this.pageSelector(this.state.page)}
                     </div>
                 </div>
