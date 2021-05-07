@@ -28,4 +28,8 @@ const generateList = async (listId, scope_type = "secret", listUsers, listScopeU
     ])
 }
 
+const getList = async(id) => {
+    //unko
+}
+
 exports.generateList = generateList;

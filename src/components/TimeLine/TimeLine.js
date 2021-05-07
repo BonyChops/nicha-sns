@@ -12,7 +12,7 @@ import '@sweetalert2/themes/dark';
 import {BrowserRouter} from 'react-router-dom';
 import ErrorHandler from '../../functions/ErrorHandler';
 import PostViewer from '../PostViewer/PostViewer';
-import {getCacheUsers} from "../../functions/users";
+import {getCacheUsersProfile} from "../../functions/users";
 
 class TimeLine extends React.Component {
     constructor(props) {
@@ -26,9 +26,32 @@ class TimeLine extends React.Component {
     componentDidMount = () => {
         if (true || this.props.state?.lists?.[this.state.listId] === undefined) {
             // TODO Consider Update Condition
-            console.log("aaa");
+            console.log(this.props.userView);
             if (this.props.userView) {
-                getIdToken().then(token => getCacheUsers(this.props.accessor, token, this.props.match.params.id, this.props.state.userInfo?.id, true))
+                getIdToken().then(token => getCacheUsersProfile(
+                    this.props.accessor,
+                    token,
+                    this.props.match.params.id,
+                    this.props.state.userInfo?.id,
+                    ["userDetail"],
+                    true
+                ).then(user => {
+                        console.log(user);
+                        getCacheList(
+                            token,
+                            this.props.state.userInfo.id,
+                            user.posts.match(/^lists\/(.*)$/)[1],
+                            true,
+                            false,
+                            true,
+                            this.props.accessor
+                        ).then(list => {
+                            this.setState({
+                                listId: user.posts.match(/^lists\/(.*)$/)[1]
+                            })
+                        });
+                    })
+                )
             } else {
                 getIdToken().then(token => getCacheList(
                     token,
@@ -90,6 +113,7 @@ class TimeLine extends React.Component {
             console.log("bye");
             return null;
         } */
+        console.log(this.props.userView);
         return (
             <div
                 className="dark:text-white scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400 overflow-y-scroll mt-6">
@@ -101,7 +125,7 @@ class TimeLine extends React.Component {
                     </div>
                 ) : (this.props.state.lists[this.state.listId].status === "error" ? (
                     <Error errorData={this.props.state.lists[this.state.listId]} baseState={this.props.baseState}/>
-                ) : (this.props.state.lists[this.state.listId].length === 0 ? (
+                ) : (this.props.state.lists[this.state.listId].length === 0 && !this.props.userView  ? (
                             <div>
                                 <this.NichaDummyPost body={"**まだ投稿がありません！**\nなにか投稿してみましょう！"}/>
                                 <this.NichaDummyPost body={"タイムラインはこのように投稿が一列になって表示されます．他のSNSとおんなじですね"}/>

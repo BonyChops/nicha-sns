@@ -80,7 +80,7 @@ app.post("/", async (req, res, next) => {
                 id: Number(display_id),
                 listed_at: moment().format(),
                 user_reference: userRefs
-            })
+            });
         };
     }
     list.members = membersList;
