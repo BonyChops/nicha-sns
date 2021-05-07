@@ -51,7 +51,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use("*", (req, res, next) => {
-    error(res, 404);
+    error(res, 404, "endpoint", "Endpoint not found...(nicha");
     return;
 })
 

@@ -19,7 +19,7 @@ app.get("/", async (req, res, next) => {
     success(res, users.data());
     console.log(users.data());
     console.log(JSON.stringify(users.data().users[0].userDetail, null, 2))
-    console.log("----------------------------------")
+    console.log("----------------------------------");
     console.log(users.data().users[0].userDetail)
     console.log(users.data().users[0].userDetail.toJSON())
     console.log((await users.data().users[0].userDetail.get()).data())

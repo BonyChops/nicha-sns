@@ -4,7 +4,7 @@ const mesDefine = {
     400: { type: "bad_request", mes: "Please check api docs. https://github.com/BonyChops/nicha-sns/blob/main/functions/docs/v1.md" },
     401: { type: "not_authorized", mes: "Not authorized." },
     403: { type: "forbidden", mes: "Not permitted request." },
-    404: { type: "not_found", mes: "Endpoint not found...(nicha" },
+    404: { type: "not_found", mes: "Resource not found." },
     409: { type: "conflict", mes: "Conflicted request." },
     418: { type: "I_am_a_teapot", mes: "Failed to brew coffee with a teapot." },
     500: { type: "internal_server_error", mes: "Internal Server Error. This means server's error(not the client). Could you contact the owner of this: Nicha? Thanks for your support." },
