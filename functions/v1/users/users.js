@@ -8,11 +8,14 @@ const app = express();
 
 
 app.get("/:id/profile", async(req, res, next) => {
+    //if (!checkParams(req, res, ["isMain"])) return;
+    const requiredInfo = req.query.required_info !== undefined ? req.query.required_info.split(",") : [];
     const screenNameMode = (req.query.screen_id === "true");
+
     console.log(screenNameMode);
     console.log(req.params);
     console.log(req.query);
-    const user = await getUser(req.params.id, screenNameMode);
+    const user = await getUser(req.params.id, screenNameMode, requiredInfo);
     if(!user) {
         error(res, 404, "user");
         return;
