@@ -19,6 +19,7 @@ class TimeLine extends React.Component {
         super(props);
         this.state = {
             listId: (this.props.location.pathname === "/") ? this.props.state.userInfo.follow.match(/^lists\/(.*)$/)[1] : this.props.match.params.id,
+            userId:
             mode: "posts"
         }
     }
@@ -140,7 +141,7 @@ class TimeLine extends React.Component {
                                 <div className="flex">
                                     <div className="absolute w-44 mr-10 mt-8">
                                         <img src={Icon} className="rounded-full border-green-600 border-2"/>
-                                        <h1 className="mt-6 text-4xl">TEST</h1>
+                                        <h1 className="mt-6 text-4xl">{this.props.state.users[this.state.]}</h1>
                                         <h2 className="text-2xl text-gray-500">@TEST</h2>
                                         <p className="mt-3">学生アカウント</p>
                                         <button className="mt-6 w-full rounded-xl h-8 bg-gray-600">
